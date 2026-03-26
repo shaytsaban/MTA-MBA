@@ -24,14 +24,30 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .course-note-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3), 0 2px 4px -1px rgba(59, 130, 246, 0.06);
+        .notes-card {
+            background: white;
+            border: 2px solid #3b82f6;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .course-note-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+        .notes-card::before {
+            content: 'LIVE';
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            background: #ef4444;
+            color: white;
+            padding: 2px 40px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            transform: rotate(45deg);
+        }
+
+        .notes-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
         }
 
         .lecture-badge {
@@ -56,6 +72,15 @@
         .exercise-btn:hover {
             background-color: #dbeafe;
             transform: scale(1.02);
+        }
+
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0px rgba(59, 130, 246, 0.4); }
+            100% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
         }
     </style>
 </head>
@@ -88,19 +113,29 @@
 
     <main class="max-w-5xl mx-auto px-6 -mt-8 pb-20">
         
-        <!-- Main Link Button -->
+        <!-- Main Link Button Redesigned -->
         <section class="mb-12">
-            <a href="https://mypac-my.sharepoint.com/:x:/g/personal/shay_tsaban_pac_org_il/IQCFNgjxUyt3RrAMG24-NPiRAUzuyyN7eKl1SSgej7oliGA?e=cKyGXB" 
-               target="_blank"
-               class="course-note-btn flex items-center justify-center gap-4 w-full py-6 bg-blue-600 text-white rounded-2xl text-2xl font-bold">
-                <i class="fas fa-file-excel"></i>
-                Access Live Course Notes
-                <i class="fas fa-external-link-alt text-lg"></i>
-            </a>
+            <div class="notes-card rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-3xl pulse">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Live Course Notes</h2>
+                        <p class="text-slate-500">The central repository for all class spreadsheets, calculations, and live notes.</p>
+                    </div>
+                </div>
+                <a href="https://mypac-my.sharepoint.com/:x:/g/personal/shay_tsaban_pac_org_il/IQCFNgjxUyt3RrAMG24-NPiRAUzuyyN7eKl1SSgej7oliGA?e=cKyGXB" 
+                   target="_blank"
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 transition-all transform hover:scale-105">
+                    Open Spreadsheet
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
         </section>
 
         <div class="grid md:grid-cols-3 gap-8">
-            <!-- Left Column: Syllabus Info -->
+            <!-- Left Column: Content -->
             <div class="md:col-span-2 space-y-8">
                 <section class="glass-card p-8 rounded-2xl shadow-sm border border-slate-200">
                     <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-blue-900">
@@ -123,10 +158,6 @@
                             <i class="fas fa-check-circle text-green-500 mt-1"></i>
                             <span>Transition from <strong>Accrual Basis</strong> to Cash Basis reporting.</span>
                         </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-check-circle text-green-500 mt-1"></i>
-                            <span>Practical application through case studies and digital collaborative tools.</span>
-                        </li>
                     </ul>
                 </section>
 
@@ -134,117 +165,97 @@
                 <section>
                     <h2 class="text-2xl font-bold mb-6 text-blue-900">Course Roadmap</h2>
                     
-                    <!-- Lecture 2 -->
-                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-500 border-slate-200 mb-6">
+                    <!-- Lecture 3: NEW -->
+                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-600 border-slate-200 mb-6">
                         <div class="flex justify-between items-start mb-4">
                             <div>
-                                <span class="lecture-badge px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Lecture 2</span>
+                                <span class="lecture-badge px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Lecture 3</span>
+                                <h3 class="text-xl font-bold mt-2 text-blue-900">Constructing Complete Financial Statements</h3>
+                            </div>
+                            <span class="text-slate-500 font-medium"><i class="far fa-calendar-alt"></i> 26.03.2026</span>
+                        </div>
+                        <div class="prose prose-slate max-w-none">
+                            <p class="text-slate-600 italic mb-4">"Mastering the flow from a complete set of accounts to the final Balance Sheet and Profit & Loss statements."</p>
+                            
+                            <!-- Video Embed Section -->
+                            <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
+                                <div class="aspect-video">
+                                    <iframe 
+                                        class="w-full h-full"
+                                        src="https://www.youtube.com/embed/jiHJqqP2eoY" 
+                                        title="Lecture 3: Constructing Complete Financial Statements" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                                <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
+                                    <span class="flex items-center gap-2 font-semibold">
+                                        <i class="fab fa-youtube text-red-600"></i>
+                                        Lecture Recording
+                                    </span>
+                                    <span>Approx. 2 hours</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h4 class="font-semibold text-blue-800 mb-3">Self-Study Materials:</h4>
+                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQDUn3cRjCdkT4FxnCu28plTAZ-yV9gmQOuZQN6U14mV5iA?e=J7g3j2" 
+                                   target="_blank" 
+                                   class="exercise-btn">
+                                    <i class="fas fa-file-word"></i> Exercise 3 - Comprehensive Statements
+                                </a>
+                                <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+                                    <p class="text-sm text-yellow-800 flex items-center gap-2">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Note:</strong> No submission is required for this exercise. We will solve it together in class on 27.03.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <h4 class="font-semibold text-blue-800 mb-2">Key Topics Covered:</h4>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
+                                <li>• Building the Trial Balance</li>
+                                <li>• From Accounts to Balance Sheet</li>
+                                <li>• Revenue & Expense aggregation for P&L</li>
+                                <li>• Linking Profit to the Statement of Changes in Equity</li>
+                                <li>• Practical Case Study: Full Cycle Recording</li>
+                                <li>• Checksums and Balance verification</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Lecture 2 -->
+                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-400 border-slate-200 mb-6 opacity-80">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Lecture 2</span>
                                 <h3 class="text-xl font-bold mt-2">Deep Dive into Financial Statements</h3>
                             </div>
                             <span class="text-slate-500 font-medium"><i class="far fa-calendar-alt"></i> 19.03.2026</span>
                         </div>
                         <div class="prose prose-slate max-w-none">
-                            <p class="text-slate-600 italic mb-4">"Understanding how transactions flow through the accounting identity is the key to mastering financial reporting."</p>
-                            
-                            <!-- Video Embed Section -->
-                            <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
-                                <div class="aspect-video">
-                                    <iframe 
-                                        class="w-full h-full"
-                                        src="https://www.youtube.com/embed/czoHDAt5YmE" 
-                                        title="Lecture 2: Deep Dive into Financial Statements" 
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                        referrerpolicy="strict-origin-when-cross-origin" 
-                                        allowfullscreen>
-                                    </iframe>
-                                </div>
-                                <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2">
-                                        <i class="fab fa-youtube text-red-600"></i>
-                                        Lecture Recording
-                                    </span>
-                                    <span>Duration: ~30 minutes</span>
-                                </div>
-                            </div>
-
-                            <div class="mb-6">
-                                <h4 class="font-semibold text-blue-800 mb-3">Resources & Assignments:</h4>
-                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQC-vyPGVnzFQLZT9y_lEYDJAb-ufIoyPDKIsm-NKhCaxcE?e=MmkEiH" 
-                                   target="_blank" 
-                                   class="exercise-btn">
-                                    <i class="fas fa-file-word"></i> Exercise 2 - Profit and Loss
+                            <div class="mb-4">
+                                <a href="https://www.youtube.com/watch?v=czoHDAt5YmE" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">
+                                    <i class="fab fa-youtube"></i> View Recording (30 min)
                                 </a>
-                                <p class="mt-3 text-sm text-red-600 font-medium flex items-center gap-2">
-                                    <i class="fas fa-info-circle"></i>
-                                    Important: This is a mandatory assignment. Please submit your work on Moodle by Friday, 27.3, 8:00 AM
-                                </p>
                             </div>
-
-                            <h4 class="font-semibold text-blue-800 mb-2">Key Topics Covered:</h4>
-                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
-                                <li>• Deep dive into the Accounting Identity (Assets = Liabilities + Equity)</li>
-                                <li>• Classification: Current vs. Non-current Assets & Liabilities</li>
-                                <li>• The structure of the multi-step Income Statement</li>
-                                <li>• Recording business transactions and their impact on equity</li>
-                                <li>• Understanding Financing Expenses and Tax implications</li>
-                                <li>• Practical exercises using live digital spreadsheets</li>
-                            </ul>
+                            <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQC-vyPGVnzFQLZT9y_lEYDJAb-ufIoyPDKIsm-NKhCaxcE?e=MmkEiH" 
+                               target="_blank" 
+                               class="exercise-btn bg-slate-100 text-slate-600 border-slate-200">
+                                <i class="fas fa-file-word"></i> Exercise 2 - Profit and Loss
+                            </a>
                         </div>
                     </div>
 
                     <!-- Lecture 1 -->
-                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-500 border-slate-200 mb-6">
+                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-slate-300 border-slate-200 mb-6 opacity-80">
                         <div class="flex justify-between items-start mb-4">
                             <div>
-                                <span class="lecture-badge px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Lecture 1</span>
+                                <span class="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Lecture 1</span>
                                 <h3 class="text-xl font-bold mt-2">Basics of Financial Statements</h3>
                             </div>
                             <span class="text-slate-500 font-medium"><i class="far fa-calendar-alt"></i> 12.03.2026</span>
-                        </div>
-                        <div class="prose prose-slate max-w-none">
-                            <p class="text-slate-600 italic mb-4">"The purpose of accounting is to provide relevant information for decision-makers."</p>
-                            
-                            <!-- Video Embed Section -->
-                            <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
-                                <div class="aspect-video">
-                                    <iframe 
-                                        class="w-full h-full"
-                                        src="https://www.youtube.com/embed/HCNQEkOh3DY" 
-                                        title="Lecture 1: Basics of Financial Statements" 
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                        referrerpolicy="strict-origin-when-cross-origin" 
-                                        allowfullscreen>
-                                    </iframe>
-                                </div>
-                                <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2">
-                                        <i class="fab fa-youtube text-red-600"></i>
-                                        Lecture Recording
-                                    </span>
-                                    <span>Duration: ~2 hours</span>
-                                </div>
-                            </div>
-
-                            <div class="mb-6">
-                                <h4 class="font-semibold text-blue-800 mb-3">Resources:</h4>
-                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQCrpERLalsoSoWRONHXrn3dAVFyYKbMHtk0nW1-NJB4PHg" 
-                                   target="_blank" 
-                                   class="exercise-btn">
-                                    <i class="fas fa-file-word"></i> Exercise 1 - Statement of Financial Position
-                                </a>
-                            </div>
-
-                            <h4 class="font-semibold text-blue-800 mb-2">Key Topics Covered:</h4>
-                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
-                                <li>• The need for structured financial data</li>
-                                <li>• The structure of the Income Statement</li>
-                                <li>• Revenue vs. COGS (Cost of Goods Sold)</li>
-                                <li>• Operating vs. Financial income structures</li>
-                                <li>• Gross Profit vs. Operating Profit</li>
-                                <li>• Differences between industry, commerce, and service firms</li>
-                            </ul>
                         </div>
                     </div>
 
@@ -294,7 +305,7 @@
                 <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
                     <h4 class="font-bold text-lg mb-2 text-blue-900">Need help?</h4>
                     <p class="text-sm text-blue-800 mb-4 leading-relaxed">
-                        For any questions regarding the curriculum or technical issues with the shared notes, please reach out via the contact button below.
+                        For any questions regarding the curriculum or technical issues with the shared notes, please reach out via email.
                     </p>
                     <a href="mailto:shay.tsaban@gmail.com" class="block text-center py-2 px-4 bg-white border border-blue-200 text-blue-700 rounded-xl font-semibold hover:bg-blue-100 transition">
                         Contact Instructor
