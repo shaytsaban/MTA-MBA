@@ -3,468 +3,840 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>תרגיל 5 - חישובי מלאי (גרסה דינמית והדרגתית)</title>
+    <title>תרגיל 5 - חישובי מלאי</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
-        .table-header { background-color: #e5e7eb; font-weight: bold; }
-        
-        /* אנימציית הבהוב למשיכת תשומת לב */
-        .cell-highlight { animation: highlight-flash 1.5s ease-out; }
-        @keyframes highlight-flash {
-            0% { background-color: #fef08a; } /* צהוב */
-            100% { background-color: transparent; }
+        body { font-family: 'Heebo', sans-serif; background: #f0f4f8; }
+
+        /* ── Flash animations ── */
+        .cell-flash  { animation: cellFlash  1.4s ease-out; }
+        .row-flash td{ animation: rowFlash   1.4s ease-out; }
+        @keyframes cellFlash { 0%{background:#fde047} 100%{background:transparent} }
+        @keyframes rowFlash  { 0%{background:#fde047} 100%{background:rgba(255,255,255,0)} }
+
+        /* ── Tables ── */
+        .q-table th, .q-table td,
+        .ref-table th, .ref-table td {
+            border: 1px solid #d1d5db;
+            padding: 0.35rem 0.6rem;
+            font-size: 0.82rem;
         }
-        
-        /* אנימציית הבהוב לשורות בטבלת ההסבר */
-        .row-highlight td { animation: row-flash 1.5s ease-out; }
-        @keyframes row-flash {
-            0% { background-color: #fde047; } 
-            100% { background-color: rgba(255, 255, 255, 0); }
+        .q-table th, .ref-table th { background:#e5e7eb; font-weight:700; }
+        .q-table th:not(:first-child),
+        .ref-table th:not(:first-child) { text-align:center; }
+        .q-table td:not(:first-child),
+        .ref-table td:not(:first-child) { text-align:center; font-family:monospace; font-size:0.9rem; }
+
+        .unknown { color:#dc2626; font-weight:700; }
+        .solved  { color:#15803d; font-weight:700; }
+
+        /* ── Calc step table (inside explanation box) ── */
+        .calc-table { border-collapse:collapse; width:100%; margin-top:0.5rem; }
+        .calc-table td {
+            border: 1px solid #fde047;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.88rem;
+            color: #78350f;
+        }
+        .calc-table td:last-child { text-align:center; font-family:monospace; font-weight:600; white-space:nowrap; }
+        .calc-table .result-row td {
+            border-top: 2.5px double #b45309;
+            background: rgba(253,224,71,0.35);
+            font-weight:800;
+            color:#92400e;
         }
 
-        .accounting-table th, .accounting-table td {
-            border: 1px solid #d1d5db;
-            padding: 0.5rem;
+        /* ── Why-box formula tables ── */
+        .why-wrap { display:flex; flex-direction:column; gap:0.6rem; }
+        .why-tbl-title { font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.25rem; }
+        .why-formula { border-collapse:collapse; width:100%; font-size:0.78rem; }
+        .why-formula td { padding:0.28rem 0.6rem; border-bottom:1px solid rgba(0,0,0,0.06); }
+        .why-formula td:last-child { text-align:center; font-family:monospace; font-weight:700; width:32%; white-space:nowrap; }
+        /* row types */
+        .wr-plain   td { background:#fff;    color:#334155; }
+        .wr-plus    td { background:#f0fdf4; color:#15803d; }
+        .wr-minus   td { background:#fff1f2; color:#be123c; }
+        .wr-unknown td { background:#fef9c3; color:#92400e; font-weight:800; font-style:italic; }
+        .wr-result  td { border-top:2.5px double #475569 !important; border-bottom:none; font-weight:800; background:#f1f5f9; color:#1e293b; }
+        .wr-known-result td { background:#dbeafe; color:#1e40af; font-weight:700; border-bottom:none; }
+        /* algebra note */
+        .algebra-note { background:#e0f2fe; border:1px solid #bae6fd; border-radius:0.5rem; padding:0.4rem 0.7rem; font-size:0.75rem; color:#0c4a6e; }
+        .algebra-note strong { color:#0369a1; }
+        /* side-by-side wrapper */
+        .why-two-col { display:flex; gap:0.5rem; align-items:flex-start; flex-wrap:wrap; }
+        .why-two-col > div { flex:1; min-width:130px; }
+        .why-arrow { align-self:center; font-size:1.2rem; color:#94a3b8; flex-shrink:0; padding:0 0.2rem; }
+
+        /* ── Definition template tables ── */
+        .def-tpl-table { border-collapse: collapse; font-size: 0.82rem; width:100%; }
+        .def-tpl-table td { padding: 0.38rem 0.75rem; border-bottom: 1px solid #f1f5f9; }
+        .def-tpl-table td:last-child { text-align: center; font-family: monospace; font-weight: 700; width: 30%; white-space: nowrap; }
+        .tpl-row-plain td  { background: #fff;    color: #334155; }
+        .tpl-row-plus  td  { background: #f0fdf4; color: #15803d; }
+        .tpl-row-minus td  { background: #fff1f2; color: #be123c; }
+        .tpl-row-arrow td  { background: #fffbeb; color: #b45309; font-size:0.78rem; padding:0.2rem; border:none; }
+        .tpl-row-result td { border-top: 2.5px double #64748b !important; border-bottom: none; font-weight: 800; font-size: 0.85rem; background: #f8fafc; color: #1e3a5f; }
+        .tpl-result-green  td { background:#dcfce7; color:#14532d; border-top-color:#16a34a !important; }
+        .tpl-result-red    td { background:#ffe4e6; color:#9f1239; border-top-color:#dc2626 !important; }
+        .tpl-result-indigo td { background:#e0e7ff; color:#3730a3; border-top-color:#4f46e5 !important; }
+        .tpl-result-amber  td { background:#fef9c3; color:#92400e; border-top-color:#d97706 !important; }
+
+        /* ── Smooth transition for explanation box content ── */
+        .exp-inner { transition: opacity 0.25s ease; }
+        .exp-inner.fading { opacity: 0; }
+
+        /* ── Step counter pill ── */
+        .step-pill {
+            display:inline-flex; align-items:center; gap:0.3rem;
+            background:#1e40af; color:#fff;
+            font-size:0.75rem; font-weight:700;
+            padding:0.2rem 0.65rem; border-radius:9999px;
         }
-        .accounting-table th:not(:first-child), .accounting-table td:not(:first-child) {
-            text-align: center !important;
-            font-family: monospace;
-            font-size: 1.1rem;
-        }
-        .unknown-cell { color: #dc2626; font-weight: bold; }
-        .solved-cell { color: #16a34a; font-weight: bold; }
-        
-        /* עיצוב טבלאות ההסבר */
-        .exp-table {
-            width: auto;
-            min-width: 280px;
-            margin-top: 0.75rem;
-            border-collapse: collapse;
-            background-color: rgba(255, 255, 255, 0.7);
-            font-size: 0.95rem;
-        }
-        .exp-table td {
-            border: 1px solid #fde047;
-            padding: 0.4rem 0.75rem;
-            color: #854d0e;
-        }
-        .exp-table td:last-child {
-            text-align: center;
-            font-family: monospace;
-            font-weight: bold;
-        }
-        .exp-table .calc-row td { 
-            border-top: 2px solid #ca8a04; 
-            font-weight: bold;
-            background-color: rgba(254, 240, 138, 0.5);
-        }
+
+        /* ── Progress bar ── */
+        #progressBar { transition: width 0.4s ease; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="min-h-screen py-6 px-3 md:px-6">
 
-    <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-        
-        <!-- Header -->
-        <div class="bg-blue-800 text-white p-6">
-            <h1 class="text-2xl font-bold">תרגיל: חישובי מלאי ועלות המכר</h1>
-            <p class="mt-2 opacity-90">כל קליק חושף רכיב אחד בדרך לחישוב הנעלם, להבנה מלאה של המשוואות.</p>
+<div class="max-w-6xl mx-auto space-y-5">
+
+    <!-- ══════════ HEADER ══════════ -->
+    <div class="bg-blue-800 text-white rounded-2xl shadow-xl px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+            <h1 class="text-2xl font-extrabold leading-tight">תרגיל: חישובי מלאי ועלות המכר</h1>
+            <p class="text-blue-200 text-sm mt-1">לחץ "קליק הבא" כדי לגלות כל שלב. כל שלב מסביר <em>מה</em> מחשבים ו<em>למה</em>.</p>
         </div>
-
-        <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
-            <!-- Left Side: The Question -->
-            <div>
-                <h2 class="text-xl font-bold text-blue-800 mb-4 border-b-2 border-blue-200 pb-2">השאלה (נתוני החברה)</h2>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-right accounting-table">
-                        <thead class="table-header">
-                            <tr>
-                                <th class="w-1/2">פריט</th>
-                                <th>2025</th>
-                                <th>2026</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>מכירות, ברוטו</td><td class="unknown-cell">(א)</td><td>38,000</td></tr>
-                            <tr><td>החזרות מלקוחות</td><td>3,000</td><td>2,500</td></tr>
-                            <tr><td>הנחות ללקוחות</td><td>5,000</td><td>1,500</td></tr>
-                            <tr class="bg-gray-50 font-semibold"><td>מכירות, נטו</td><td>42,000</td><td class="unknown-cell">(ב)</td></tr>
-                            
-                            <tr><td>קניות, ברוטו</td><td>26,000</td><td>15,000</td></tr>
-                            <tr><td>החזרות לספקים</td><td class="unknown-cell">(ג)</td><td>1,000</td></tr>
-                            <tr><td>הנחות שהתקבלו מספקים</td><td>2,000</td><td>2,000</td></tr>
-                            <tr class="bg-gray-50 font-semibold"><td>קניות, נטו</td><td>20,000</td><td class="unknown-cell">(ד)</td></tr>
-                            
-                            <tr><td>מלאי פתיחה</td><td class="unknown-cell">(ה)</td><td class="unknown-cell">(ו)</td></tr>
-                            <tr><td>מלאי סגירה</td><td>9,000</td><td>4,000</td></tr>
-                            <tr class="bg-gray-50 font-semibold"><td>עלות המכר</td><td class="unknown-cell">(ז)</td><td class="unknown-cell">(ח)</td></tr>
-                            <tr class="bg-blue-50 font-bold text-blue-900"><td>רווח גולמי</td><td>24,000</td><td class="unknown-cell">(ט)</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Progress -->
+        <div class="text-left min-w-[160px]">
+            <div class="text-xs text-blue-300 mb-1 text-left">
+                <span id="progressLabel">טרם התחיל</span>
             </div>
-
-            <!-- Right Side: The Solution -->
-            <div class="bg-gray-50 rounded-lg border border-gray-200 flex flex-col">
-                <div class="p-4 bg-gray-200 border-b border-gray-300 flex justify-between items-center flex-wrap gap-2">
-                    <h2 class="text-xl font-bold text-gray-800">הפתרון (תצוגת אקסל)</h2>
-                    
-                    <div class="flex gap-2">
-                        <button id="prevBtn" disabled class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-3 rounded transition shadow-md flex items-center disabled:opacity-50 disabled:cursor-not-allowed">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                            <span>אחורה</span>
-                        </button>
-                        <button id="nextBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded transition shadow-md flex items-center disabled:opacity-50 disabled:cursor-not-allowed w-[125px] justify-center">
-                            <span id="nextBtnText">התחל פתרון</span>
-                            <svg id="nextIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="p-4 flex-grow overflow-y-auto" style="max-height: 600px;">
-                    
-                    <!-- Explanation Box -->
-                    <div id="explanationBox" class="mb-6 p-4 bg-yellow-50 border border-yellow-300 rounded-lg text-yellow-900 hidden transition-all">
-                        <h3 id="expTitle" class="font-bold text-lg mb-1"></h3>
-                        <div id="expIntro" class="mb-2"></div>
-                        <div id="expTableContainer"></div>
-                        <div id="expOutro" class="mt-2 text-xs opacity-80"></div>
-                    </div>
-
-                    <!-- Main Table -->
-                    <h3 class="font-bold mb-2">דו"ח רווח והפסד (חלקי)</h3>
-                    <table class="w-full text-sm text-right accounting-table mb-6 bg-white">
-                        <thead class="table-header">
-                            <tr><th class="w-1/2"></th><th>2025</th><th>2026</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>מכירות, נטו (1)</td><td>42,000</td><td id="main-net-2026"></td></tr>
-                            <tr><td>(עלות המכר) (2)</td><td id="main-cogs-2025"></td><td id="main-cogs-2026"></td></tr>
-                            <tr class="font-bold border-t-2 border-black"><td>רווח גולמי</td><td>24,000</td><td id="main-gross-2026"></td></tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Note 1 -->
-                    <h3 class="font-bold mb-2 text-sm text-gray-600">(1) מכירות נטו</h3>
-                    <table class="w-full text-sm text-right accounting-table mb-6 bg-white">
-                        <thead class="bg-gray-100">
-                            <tr><th class="w-1/2"></th><th>2025</th><th>2026</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>מכירות, ברוטו</td><td id="note1-gross-2025"></td><td>38,000</td></tr>
-                            <tr><td>(החזרות מלקוחות)</td><td>(3,000)</td><td>(2,500)</td></tr>
-                            <tr><td>(הנחות ללקוחות)</td><td>(5,000)</td><td>(1,500)</td></tr>
-                            <tr class="font-bold border-t-2 border-gray-400"><td>מכירות, נטו</td><td>42,000</td><td id="note1-net-2026"></td></tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Note 2 -->
-                    <h3 class="font-bold mb-2 text-sm text-gray-600">(2) עלות המכר</h3>
-                    <table class="w-full text-sm text-right accounting-table mb-6 bg-white">
-                        <thead class="bg-gray-100">
-                            <tr><th class="w-1/2"></th><th>2025</th><th>2026</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>מלאי פתיחה</td><td id="note2-open-2025"></td><td id="note2-open-2026"></td></tr>
-                            <tr><td>קניות, נטו (3)</td><td>20,000</td><td id="note2-netpurch-2026"></td></tr>
-                            <tr><td>(מלאי סגירה)</td><td>(9,000)</td><td>(4,000)</td></tr>
-                            <tr class="font-bold border-t-2 border-gray-400"><td>עלות המכר</td><td id="note2-cogs-2025"></td><td id="note2-cogs-2026"></td></tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Note 3 -->
-                    <h3 class="font-bold mb-2 text-sm text-gray-600">(3) קניות נטו</h3>
-                    <table class="w-full text-sm text-right accounting-table bg-white border-b-4 border-blue-800">
-                        <thead class="bg-gray-100">
-                            <tr><th class="w-1/2"></th><th>2025</th><th>2026</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>קניות, ברוטו</td><td>26,000</td><td>15,000</td></tr>
-                            <tr><td>(החזרות לספקים)</td><td id="note3-ret-2025"></td><td>(1,000)</td></tr>
-                            <tr><td>(הנחות מספקים)</td><td>(2,000)</td><td>(2,000)</td></tr>
-                            <tr class="font-bold border-t-2 border-gray-400"><td>קניות, נטו</td><td>20,000</td><td id="note3-net-2026"></td></tr>
-                        </tbody>
-                    </table>
-
-                </div>
-                
-                <!-- Progress indicator -->
-                <div class="p-3 bg-white border-t border-gray-200 text-center text-sm text-gray-500">
-                    התקדמות: <span id="progressText" class="font-bold text-blue-600">טרם התחיל</span>
-                </div>
+            <div class="bg-blue-900 rounded-full h-2.5 w-full overflow-hidden">
+                <div id="progressBar" class="bg-emerald-400 h-2.5 rounded-full" style="width:0%"></div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Data structure defining the logic for each calculation block
-        const calculationsData = [
-            {
-                title: "שלב 1: מציאת (א) - מכירות ברוטו 2025",
-                intro: "כדי למצוא את המכירות ברוטו, נלך מהסוף להתחלה ונוסיף בחזרה למכירות הנטו את ההחזרות וההנחות:",
-                rows: [
-                    { text: "מכירות נטו", value: "42,000" },
-                    { text: "בתוספת: החזרות מלקוחות", value: "3,000" },
-                    { text: "בתוספת: הנחות ללקוחות", value: "5,000" }
-                ],
-                resultRow: { text: "מכירות ברוטו (א)", value: "50,000" },
-                outro: "",
-                mainUpdates: [ { id: "note1-gross-2025", value: "50,000", label: "(א)" } ]
-            },
-            {
-                title: "שלב 2: מציאת (ג) - החזרות לספקים 2025",
-                intro: "כדי למצוא את ההחזרות לספקים, נחסיר מקניות ברוטו את ההנחות ואת הקניות נטו:",
-                rows: [
-                    { text: "קניות ברוטו", value: "26,000" },
-                    { text: "בניכוי: הנחות מספקים", value: "(2,000)" },
-                    { text: "בניכוי: קניות נטו", value: "(20,000)" }
-                ],
-                resultRow: { text: "החזרות לספקים (ג)", value: "4,000" },
-                outro: "* בדו\"ח יופיע בסוגריים כיוון שזו פעולת הקטנה של הקניות.",
-                mainUpdates: [ { id: "note3-ret-2025", value: "(4,000)", label: "(ג)" } ]
-            },
-            {
-                title: "שלב 3: מציאת (ז) - עלות המכר 2025",
-                intro: "רווח גולמי = מכירות נטו פחות עלות המכר. לכן נחלץ את עלות המכר:",
-                rows: [
-                    { text: "מכירות נטו", value: "42,000" },
-                    { text: "בניכוי: רווח גולמי", value: "(24,000)" }
-                ],
-                resultRow: { text: "עלות המכר (ז)", value: "18,000" },
-                outro: "",
-                mainUpdates: [
-                    { id: "main-cogs-2025", value: "(18,000)", label: "" },
-                    { id: "note2-cogs-2025", value: "18,000", label: "(ז)" }
-                ]
-            },
-            {
-                title: "שלב 4: מציאת (ה) - מלאי פתיחה 2025",
-                intro: "עלות המכר מורכבת ממלאי פתיחה + קניות - מלאי סגירה. נחלץ את מלאי הפתיחה:",
-                rows: [
-                    { text: "עלות המכר", value: "18,000" },
-                    { text: "בניכוי: קניות נטו", value: "(20,000)" },
-                    { text: "בתוספת: מלאי סגירה", value: "9,000" }
-                ],
-                resultRow: { text: "מלאי פתיחה (ה)", value: "7,000" },
-                outro: "",
-                mainUpdates: [ { id: "note2-open-2025", value: "7,000", label: "(ה)" } ]
-            },
-            {
-                title: "שלב 5: מציאת (ב) - מכירות נטו 2026",
-                intro: "עוברים לשנה הבאה. חישוב ישיר לפי נוסחת המכירות:",
-                rows: [
-                    { text: "מכירות ברוטו", value: "38,000" },
-                    { text: "בניכוי: החזרות מלקוחות", value: "(2,500)" },
-                    { text: "בניכוי: הנחות ללקוחות", value: "(1,500)" }
-                ],
-                resultRow: { text: "מכירות נטו (ב)", value: "34,000" },
-                outro: "",
-                mainUpdates: [
-                    { id: "note1-net-2026", value: "34,000", label: "" },
-                    { id: "main-net-2026", value: "34,000", label: "(ב)" }
-                ]
-            },
-            {
-                title: "שלב 6: מציאת (ד) - קניות נטו 2026",
-                intro: "חישוב ישיר לפי נוסחת הקניות:",
-                rows: [
-                    { text: "קניות ברוטו", value: "15,000" },
-                    { text: "בניכוי: החזרות לספקים", value: "(1,000)" },
-                    { text: "בניכוי: הנחות מספקים", value: "(2,000)" }
-                ],
-                resultRow: { text: "קניות נטו (ד)", value: "12,000" },
-                outro: "",
-                mainUpdates: [
-                    { id: "note3-net-2026", value: "12,000", label: "(ד)" },
-                    { id: "note2-netpurch-2026", value: "12,000", label: "" }
-                ]
-            },
-            {
-                title: "שלב 7: מציאת (ו) - מלאי פתיחה 2026",
-                intro: "<strong>כלל חשבונאי ברזל:</strong> מלאי סגירה של שנה קודמת הוא מלאי הפתיחה של השנה הנוכחית.",
-                rows: [
-                    { text: "מלאי סגירה 2025", value: "9,000" }
-                ],
-                resultRow: { text: "מלאי פתיחה 2026 (ו)", value: "9,000" },
-                outro: "",
-                mainUpdates: [ { id: "note2-open-2026", value: "9,000", label: "(ו)" } ]
-            },
-            {
-                title: "שלב 8: מציאת (ח) - עלות המכר 2026",
-                intro: "חישוב ישיר לפי נוסחת עלות המכר (מלאי פתיחה + קניות - מלאי סגירה):",
-                rows: [
-                    { text: "מלאי פתיחה", value: "9,000" },
-                    { text: "בתוספת: קניות נטו", value: "12,000" },
-                    { text: "בניכוי: מלאי סגירה", value: "(4,000)" }
-                ],
-                resultRow: { text: "עלות המכר (ח)", value: "17,000" },
-                outro: "",
-                mainUpdates: [
-                    { id: "note2-cogs-2026", value: "17,000", label: "(ח)" },
-                    { id: "main-cogs-2026", value: "(17,000)", label: "" }
-                ]
-            },
-            {
-                title: "שלב 9: מציאת (ט) - רווח גולמי 2026",
-                intro: "השלב האחרון בדו\"ח הראשי, חישוב ישיר של הרווח:",
-                rows: [
-                    { text: "מכירות נטו", value: "34,000" },
-                    { text: "בניכוי: עלות המכר", value: "(17,000)" }
-                ],
-                resultRow: { text: "רווח גולמי (ט)", value: "17,000" },
-                outro: "",
-                mainUpdates: [ { id: "main-gross-2026", value: "17,000", label: "(ט)" } ]
-            }
-        ];
+    <!-- ══════════ MAIN AREA (question + active step) ══════════ -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-        // Break down calculations into granular UI frames (one frame per click)
-        const frames = [];
-        
-        calculationsData.forEach((calc, calcIndex) => {
-            let currentTableRows = [];
-            
-            // Generate a frame for each constituent row
-            calc.rows.forEach((row, rowIndex) => {
-                currentTableRows.push({ html: `<tr><td>${row.text}</td><td>${row.value}</td></tr>`, isResult: false });
-                frames.push({
-                    calcIndex: calcIndex,
-                    title: calc.title,
-                    intro: calc.intro,
-                    outro: "",
-                    tableRows: [...currentTableRows], // clone array
-                    triggerMainUpdate: false,
-                    mainUpdates: []
-                });
-            });
+        <!-- LEFT: Question -->
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+            <div class="bg-blue-50 border-b border-blue-200 px-5 py-3">
+                <h2 class="font-bold text-blue-900 text-lg">השאלה — נתוני החברה</h2>
+            </div>
+            <div class="p-4 overflow-x-auto">
+                <table class="w-full text-right q-table">
+                    <thead><tr><th class="w-1/2">פריט</th><th>2025</th><th>2026</th></tr></thead>
+                    <tbody>
+                        <tr class="bg-white"><td>מכירות, ברוטו</td><td class="unknown" id="q-a">(א)</td><td>38,000</td></tr>
+                        <tr><td>החזרות מלקוחות</td><td>3,000</td><td>2,500</td></tr>
+                        <tr><td>הנחות ללקוחות</td><td>5,000</td><td>1,500</td></tr>
+                        <tr class="bg-slate-50 font-semibold"><td>מכירות, נטו</td><td>42,000</td><td class="unknown" id="q-b">(ב)</td></tr>
 
-            // Generate the final frame for this calculation (Result row + Main table update)
-            currentTableRows.push({ html: `<tr class="calc-row"><td>${calc.resultRow.text}</td><td>${calc.resultRow.value}</td></tr>`, isResult: true });
-            frames.push({
-                calcIndex: calcIndex,
-                title: calc.title,
-                intro: calc.intro,
-                outro: calc.outro,
-                tableRows: [...currentTableRows],
-                triggerMainUpdate: true,
-                mainUpdates: calc.updates || calc.mainUpdates
-            });
-        });
+                        <tr><td>קניות, ברוטו</td><td>26,000</td><td>15,000</td></tr>
+                        <tr><td>החזרות לספקים</td><td class="unknown" id="q-g">(ג)</td><td>1,000</td></tr>
+                        <tr><td>הנחות שהתקבלו מספקים</td><td>2,000</td><td>2,000</td></tr>
+                        <tr class="bg-slate-50 font-semibold"><td>קניות, נטו</td><td>20,000</td><td class="unknown" id="q-d">(ד)</td></tr>
 
-        let currentFrame = 0;
-        const totalFrames = frames.length;
-        const totalCalcs = calculationsData.length;
-        
-        // Extract all dynamic main table IDs to reset them
-        const allMainUpdateIds = new Set();
-        calculationsData.forEach(c => c.mainUpdates.forEach(u => allMainUpdateIds.add(u.id)));
+                        <tr><td>מלאי פתיחה</td><td class="unknown" id="q-h">(ה)</td><td class="unknown" id="q-v">(ו)</td></tr>
+                        <tr><td>מלאי סגירה</td><td>9,000</td><td>4,000</td></tr>
+                        <tr class="bg-slate-50 font-semibold"><td>עלות המכר</td><td class="unknown" id="q-z">(ז)</td><td class="unknown" id="q-kh">(ח)</td></tr>
+                        <tr class="bg-blue-50 font-bold text-blue-900"><td>רווח גולמי</td><td>24,000</td><td class="unknown" id="q-t">(ט)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Solved legend -->
+            <div class="px-4 pb-3 flex gap-4 text-xs text-slate-500">
+                <span><span class="unknown">אדום</span> = נעלם</span>
+                <span><span class="solved">ירוק</span> = נפתר</span>
+            </div>
+        </div>
 
-        // DOM Elements
-        const nextBtn = document.getElementById('nextBtn');
-        const nextBtnText = document.getElementById('nextBtnText');
-        const prevBtn = document.getElementById('prevBtn');
-        const expBox = document.getElementById('explanationBox');
-        const expTitle = document.getElementById('expTitle');
-        const expIntro = document.getElementById('expIntro');
-        const expOutro = document.getElementById('expOutro');
-        const expTableContainer = document.getElementById('expTableContainer');
-        const progressText = document.getElementById('progressText');
+        <!-- RIGHT: Active Step Explanation -->
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden flex flex-col">
+            <div class="bg-yellow-50 border-b border-yellow-200 px-5 py-3 flex items-center justify-between">
+                <h2 class="font-bold text-yellow-900 text-lg">הפתרון — שלב אחר שלב</h2>
+                <span id="stepPill" class="step-pill hidden">שלב 1 מתוך 9</span>
+            </div>
 
-        function renderState(animateTransition = true) {
-            // 1. Reset all main table dynamic cells
-            allMainUpdateIds.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.innerHTML = '';
-                    el.classList.remove('cell-highlight');
-                }
-            });
+            <!-- Explanation content — sized to avoid scroll -->
+            <div class="flex-1 p-4 flex flex-col gap-3 exp-inner" id="expInner">
 
-            if (currentFrame === 0) {
-                expBox.classList.add('hidden');
-                progressText.innerText = "טרם התחיל";
-                prevBtn.disabled = true;
-                nextBtnText.innerText = "התחל פתרון";
-                return;
-            }
+                <!-- Initial prompt -->
+                <div id="startPrompt" class="flex-1 flex flex-col items-center justify-center text-center text-slate-400 py-8">
+                    <svg class="w-14 h-14 mb-3 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    <p class="text-lg font-semibold text-slate-500 mb-1">מוכן להתחיל?</p>
+                    <p class="text-sm">לחץ על "התחל פתרון" כדי לגלות את הפתרון שלב אחר שלב</p>
+                </div>
 
-            // 2. We are at a specific frame > 0. Apply all main table updates up to this frame.
-            for (let i = 0; i < currentFrame; i++) {
-                if (frames[i].triggerMainUpdate) {
-                    frames[i].mainUpdates.forEach(update => {
-                        const el = document.getElementById(update.id);
-                        if (el) {
-                            const labelSpan = update.label ? `<span class="text-xs text-blue-500 ml-1">${update.label}</span>` : '';
-                            el.innerHTML = `${labelSpan}<span class="solved-cell">${update.value}</span>`;
-                            
-                            // Highlight the main table cell if it was just revealed in THIS frame
-                            if (animateTransition && i === currentFrame - 1) {
-                                void el.offsetWidth;
-                                el.classList.add('cell-highlight');
-                            }
-                        }
-                    });
-                }
-            }
+                <!-- Step content (hidden until started) -->
+                <div id="stepContent" class="hidden flex flex-col gap-3">
 
-            // 3. Render the explanation box for the current frame
-            const frame = frames[currentFrame - 1];
-            expBox.classList.remove('hidden');
-            expTitle.innerHTML = frame.title;
-            expIntro.innerHTML = frame.intro;
-            expOutro.innerHTML = frame.outro;
+                    <!-- What & Why box -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-3">
+                        <p class="text-xs font-bold text-blue-500 uppercase tracking-wide mb-2">מה עושים ולמה</p>
+                        <div id="whyBox"></div>
+                    </div>
 
-            // Build the explanation table HTML
-            let tableHtml = '<table class="exp-table">';
-            frame.tableRows.forEach((rowObj, index) => {
-                let rowStr = rowObj.html;
-                // If we're animating, highlight the *last* row added to the explanation table
-                if (animateTransition && index === frame.tableRows.length - 1) {
-                    rowStr = rowStr.replace('<tr', '<tr class="row-highlight"');
-                }
-                tableHtml += rowStr;
-            });
-            tableHtml += '</table>';
-            expTableContainer.innerHTML = tableHtml;
+                    <!-- "If you don't understand" note -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-500 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>אם הפתרון לא ברור, <a href="#definitions" class="text-blue-600 font-semibold underline">עיין בהגדרות ובנוסחאות</a> שבתחתית הדף כדי לראות את המבנה הנדרש.</span>
+                    </div>
 
-            // 4. Update UI controls
-            prevBtn.disabled = false;
-            
-            if (currentFrame === totalFrames) {
-                nextBtnText.innerText = 'הושלם!';
-                nextBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                nextBtn.classList.add('bg-green-600');
-                nextBtn.disabled = true;
-            } else {
-                nextBtn.disabled = false;
-                nextBtnText.innerText = 'קליק הבא';
-                nextBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
-                nextBtn.classList.remove('bg-green-600');
-            }
+                    <!-- Calculation title -->
+                    <div>
+                        <p id="calcTitle" class="font-bold text-slate-800 text-base"></p>
+                        <p id="calcIntro" class="text-slate-600 text-sm mt-0.5"></p>
+                    </div>
 
-            progressText.innerText = `שלב ${frame.calcIndex + 1} מתוך ${totalCalcs}`;
+                    <!-- Calculation table -->
+                    <div id="calcTableWrap" class="overflow-x-auto rounded-lg border border-yellow-200 bg-yellow-50 p-3"></div>
+
+                    <!-- Outro note -->
+                    <p id="calcOutro" class="text-xs text-slate-500 italic hidden"></p>
+
+                </div>
+
+            </div>
+
+            <!-- Nav buttons -->
+            <div class="border-t border-slate-200 bg-slate-50 px-4 py-3 flex justify-between items-center">
+                <button id="prevBtn" disabled
+                    class="flex items-center gap-1.5 bg-white border border-slate-300 text-slate-600 font-bold py-2 px-4 rounded-lg transition hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                    אחורה
+                </button>
+                <button id="nextBtn"
+                    class="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg transition shadow-md text-sm min-w-[130px] justify-center">
+                    <span id="nextBtnText">התחל פתרון</span>
+                    <svg id="nextIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════ REFERENCE TABLES (auto-fill as steps complete) ══════════ -->
+    <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+        <div class="bg-slate-700 text-white px-5 py-3">
+            <h2 class="font-bold text-base">טבלאות הפתרון המלאות — מתעדכנות בזמן אמת</h2>
+        </div>
+        <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-5">
+
+            <!-- Main P&L -->
+            <div>
+                <h3 class="font-bold text-sm text-slate-600 mb-2">דוח רווח והפסד (חלקי)</h3>
+                <table class="w-full text-right ref-table bg-white">
+                    <thead><tr><th class="w-1/2"></th><th>2025</th><th>2026</th></tr></thead>
+                    <tbody>
+                        <tr><td>מכירות, נטו (1)</td><td>42,000</td><td id="main-net-2026"></td></tr>
+                        <tr><td>(עלות המכר) (2)</td><td id="main-cogs-2025"></td><td id="main-cogs-2026"></td></tr>
+                        <tr class="font-bold border-t-2 border-slate-800"><td>רווח גולמי</td><td>24,000</td><td id="main-gross-2026"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Note 1: Sales -->
+            <div>
+                <h3 class="font-bold text-sm text-slate-600 mb-2">(1) מכירות נטו</h3>
+                <table class="w-full text-right ref-table bg-white">
+                    <thead><tr><th class="w-1/2"></th><th>2025</th><th>2026</th></tr></thead>
+                    <tbody>
+                        <tr><td>מכירות, ברוטו</td><td id="note1-gross-2025"></td><td>38,000</td></tr>
+                        <tr><td>(החזרות מלקוחות)</td><td>(3,000)</td><td>(2,500)</td></tr>
+                        <tr><td>(הנחות ללקוחות)</td><td>(5,000)</td><td>(1,500)</td></tr>
+                        <tr class="font-bold border-t-2 border-slate-400"><td>מכירות, נטו</td><td>42,000</td><td id="note1-net-2026"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Note 3: Purchases -->
+            <div>
+                <h3 class="font-bold text-sm text-slate-600 mb-2">(3) קניות נטו</h3>
+                <table class="w-full text-right ref-table bg-white border-b-4 border-blue-700">
+                    <thead><tr><th class="w-1/2"></th><th>2025</th><th>2026</th></tr></thead>
+                    <tbody>
+                        <tr><td>קניות, ברוטו</td><td>26,000</td><td>15,000</td></tr>
+                        <tr><td>(החזרות לספקים)</td><td id="note3-ret-2025"></td><td>(1,000)</td></tr>
+                        <tr><td>(הנחות מספקים)</td><td>(2,000)</td><td>(2,000)</td></tr>
+                        <tr class="font-bold border-t-2 border-slate-400"><td>קניות, נטו</td><td>20,000</td><td id="note3-net-2026"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Note 2: COGS — spans full width -->
+            <div class="md:col-span-3">
+                <h3 class="font-bold text-sm text-slate-600 mb-2">(2) עלות המכר</h3>
+                <table class="w-full max-w-lg text-right ref-table bg-white">
+                    <thead><tr><th class="w-1/2"></th><th>2025</th><th>2026</th></tr></thead>
+                    <tbody>
+                        <tr><td>מלאי פתיחה</td><td id="note2-open-2025"></td><td id="note2-open-2026"></td></tr>
+                        <tr><td>קניות, נטו (3)</td><td>20,000</td><td id="note2-netpurch-2026"></td></tr>
+                        <tr><td>(מלאי סגירה)</td><td>(9,000)</td><td>(4,000)</td></tr>
+                        <tr class="font-bold border-t-2 border-slate-400"><td>עלות המכר</td><td id="note2-cogs-2025"></td><td id="note2-cogs-2026"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══════════ DEFINITIONS ══════════ -->
+    <div id="definitions" class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden scroll-mt-4">
+        <div class="bg-blue-900 text-white px-5 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <div>
+                    <h2 class="font-bold text-lg">📖 הגדרות ותבניות חישוב</h2>
+                    <p class="text-blue-300 text-xs mt-0.5">כל תבנית מציגה את מבנה החישוב הסטנדרטי. כאשר שלושה מרכיבים ידועים — ניתן לבדד את הרביעי.</p>
+                </div>
+                <div class="bg-blue-800 border border-blue-600 rounded-lg px-4 py-2 text-sm text-blue-200 flex items-center gap-2 whitespace-nowrap">
+                    <span class="text-yellow-300 text-base">🎓</span>
+                    <span>להרחבה ודוגמאות נוספות — ראו <strong class="text-white">הרצאה 2</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+            <!-- 1. מכירות נטו -->
+            <div class="rounded-xl border border-blue-200 overflow-hidden">
+                <div class="bg-blue-50 px-4 py-2.5 border-b border-blue-200">
+                    <p class="font-bold text-blue-900 text-sm">מכירות נטו <span class="text-blue-400 font-normal text-xs">(Net Sales)</span></p>
+                    <p class="text-blue-700 text-xs mt-0.5">הכנסה שהחברה מממשת בפועל לאחר סילוק זיכויים ללקוחות. המספר שנכנס לדוח רווח והפסד הוא תמיד הנטו — לא הברוטו.</p>
+                </div>
+                <table class="w-full def-tpl-table">
+                    <tbody>
+                        <tr class="tpl-row-plain"><td>מכירות, ברוטו</td><td>XXX</td></tr>
+                        <tr class="tpl-row-minus"><td>פחות: החזרות מלקוחות</td><td>(XXX)</td></tr>
+                        <tr class="tpl-row-minus"><td>פחות: הנחות ללקוחות</td><td>(XXX)</td></tr>
+                        <tr class="tpl-row-result"><td>= מכירות, נטו</td><td>XXX</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 2. קניות נטו -->
+            <div class="rounded-xl border border-emerald-200 overflow-hidden">
+                <div class="bg-emerald-50 px-4 py-2.5 border-b border-emerald-200">
+                    <p class="font-bold text-emerald-900 text-sm">קניות נטו <span class="text-emerald-400 font-normal text-xs">(Net Purchases)</span></p>
+                    <p class="text-emerald-700 text-xs mt-0.5">עלות הסחורה שנרכשה בפועל לאחר זיכויים מהספקים. בדומה למכירות, המספר המשמש בחישובים הוא הנטו בלבד.</p>
+                </div>
+                <table class="w-full def-tpl-table">
+                    <tbody>
+                        <tr class="tpl-row-plain"><td>קניות, ברוטו</td><td>XXX</td></tr>
+                        <tr class="tpl-row-minus"><td>פחות: החזרות לספקים</td><td>(XXX)</td></tr>
+                        <tr class="tpl-row-minus"><td>פחות: הנחות מספקים</td><td>(XXX)</td></tr>
+                        <tr class="tpl-row-result tpl-result-green"><td>= קניות, נטו</td><td>XXX</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 3. עלות המכר -->
+            <div class="rounded-xl border border-rose-200 overflow-hidden">
+                <div class="bg-rose-50 px-4 py-2.5 border-b border-rose-200">
+                    <p class="font-bold text-rose-900 text-sm">עלות המכר — COGS <span class="text-rose-400 font-normal text-xs">(Cost of Goods Sold)</span></p>
+                    <p class="text-rose-700 text-xs mt-0.5">מה שעלה לחברה לייצר/לרכוש את הסחורה שנמכרה. מחשב כמה "זז" מהמלאי אל הלקוחות בתקופה.</p>
+                </div>
+                <table class="w-full def-tpl-table">
+                    <tbody>
+                        <tr class="tpl-row-plain"><td>מלאי פתיחה</td><td>XXX</td></tr>
+                        <tr class="tpl-row-plus"><td>בתוספת: קניות, נטו</td><td>XXX</td></tr>
+                        <tr class="tpl-row-minus"><td>פחות: מלאי סגירה</td><td>(XXX)</td></tr>
+                        <tr class="tpl-row-result tpl-result-red"><td>= עלות המכר</td><td>XXX</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 4. רווח גולמי -->
+            <div class="rounded-xl border border-indigo-200 overflow-hidden">
+                <div class="bg-indigo-50 px-4 py-2.5 border-b border-indigo-200">
+                    <p class="font-bold text-indigo-900 text-sm">רווח גולמי <span class="text-indigo-400 font-normal text-xs">(Gross Profit)</span></p>
+                    <p class="text-indigo-700 text-xs mt-0.5">הרווח לפני הוצאות תפעול, מימון ומסים. מבטא את הכדאיות הבסיסית של פעילות המכירה, עוד לפני הוצאות הנהלה.</p>
+                </div>
+                <table class="w-full def-tpl-table">
+                    <tbody>
+                        <tr class="tpl-row-plain"><td>מכירות, נטו</td><td>XXX</td></tr>
+                        <tr class="tpl-row-minus"><td>פחות: עלות המכר</td><td>(XXX)</td></tr>
+                        <tr class="tpl-row-result tpl-result-indigo"><td>= רווח גולמי</td><td>XXX</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 5. כלל הרציפות -->
+            <div class="rounded-xl border border-amber-200 overflow-hidden">
+                <div class="bg-amber-50 px-4 py-2.5 border-b border-amber-200">
+                    <p class="font-bold text-amber-900 text-sm">כלל הרציפות של המלאי</p>
+                    <p class="text-amber-700 text-xs mt-0.5">מלאי הסגירה של שנה אחת מהווה את מלאי הפתיחה של השנה העוקבת — המלאי לא "נעלם" בין שנים, אלא עובר.</p>
+                </div>
+                <table class="w-full def-tpl-table">
+                    <tbody>
+                        <tr class="tpl-row-plain"><td>מלאי סגירה — שנה N</td><td>XXX</td></tr>
+                        <tr class="tpl-row-arrow"><td colspan="2" class="text-center text-amber-600 font-bold text-base py-1">↓ עובר ישירות</td></tr>
+                        <tr class="tpl-row-result tpl-result-amber"><td>= מלאי פתיחה — שנה N+1</td><td>XXX</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 6. חילוץ נעלם -->
+            <div class="rounded-xl border border-slate-200 overflow-hidden">
+                <div class="bg-slate-50 px-4 py-2.5 border-b border-slate-200">
+                    <p class="font-bold text-slate-800 text-sm">טיפ: חילוץ נעלם מנוסחה</p>
+                    <p class="text-slate-600 text-xs mt-0.5">כאשר כל שאר הגורמים ידועים, ניתן לבדד את הנעלם על ידי "היפוך" הנוסחה — העברת כל הגורמים הידועים לצד אחד.</p>
+                </div>
+                <table class="w-full def-tpl-table">
+                    <tbody>
+                        <tr class="tpl-row-plain"><td>תוצאה ידועה (נטו)</td><td>XXX</td></tr>
+                        <tr class="tpl-row-plus"><td>בחזרה: כל הפחתה ידועה</td><td>XXX</td></tr>
+                        <tr class="tpl-row-minus"><td>פחות: כל תוספת ידועה</td><td>(XXX)</td></tr>
+                        <tr class="tpl-row-result"><td>= הנעלם (ברוטו)</td><td>XXX</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- Lecture reference footer -->
+        <div class="mx-5 mb-5 bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3 flex items-center gap-3 text-sm">
+            <span class="text-2xl">🎓</span>
+            <div>
+                <p class="font-bold text-yellow-900">הרחבה בהרצאה 2</p>
+                <p class="text-yellow-800 text-xs mt-0.5">בהרצאה 2 תמצאו פירוט מלא של כל אחת מהנוסחאות לעיל, דוגמאות מספריות נוספות, וכן הסברים על האופן שבו מוצגות בדוחות כספיים אמיתיים.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-slate-400 text-xs pb-4">
+        פתרון מלא לתרגיל שיעור 5 — חישובי מלאי ועלות המכר
+        <span class="mx-2 text-blue-300">|</span>
+        נבנה למענכם דינמית באדיבות <strong class="text-slate-500">ד"ר שי צבאן</strong>
+    </div>
+
+</div><!-- /max-w -->
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  WHY-BOX RENDERING HELPERS
+// ══════════════════════════════════════════════════════════
+function buildWhyTable(rows) {
+    let h = '<table class="why-formula">';
+    rows.forEach(r => {
+        h += `<tr class="${r.cls}"><td>${r.label}</td><td>${r.val}</td></tr>`;
+    });
+    return h + '</table>';
+}
+
+function renderWhyBox(wd) {
+    if (wd.isDirect) {
+        return `
+        <p class="text-xs text-blue-800 mb-2">${wd.intro}</p>
+        <div class="why-tbl-title text-emerald-700">${wd.directLabel}</div>
+        ${buildWhyTable(wd.directRows)}`;
+    }
+    return `
+    <p class="text-xs text-blue-800 mb-2">${wd.intro}</p>
+    <div class="why-two-col">
+        <div>
+            <div class="why-tbl-title text-slate-500">הנוסחה המקורית</div>
+            ${buildWhyTable(wd.originalRows)}
+        </div>
+        <div class="why-arrow">→</div>
+        <div>
+            <div class="why-tbl-title text-blue-600">אחרי העברת אגפים</div>
+            ${buildWhyTable(wd.rearrangedRows)}
+        </div>
+    </div>
+    <div class="algebra-note mt-2">
+        <strong>💡 העברת אגפים:</strong> ${wd.algebraNote}
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════════════
+const calcs = [
+    {
+        title: "שלב 1: מציאת (א) — מכירות ברוטו 2025",
+        whyData: {
+            isDirect: false,
+            intro: "הנוסחה הבסיסית: מכירות נטו = ברוטו − החזרות − הנחות. ידועים: נטו (42,000), החזרות (3,000), הנחות (5,000). הנעלם: ברוטו — נבדד אותו.",
+            originalRows: [
+                { cls:'wr-unknown',      label:'מכירות, ברוטו',       val:'?' },
+                { cls:'wr-minus',        label:'פחות: החזרות מלקוחות', val:'(3,000)' },
+                { cls:'wr-minus',        label:'פחות: הנחות ללקוחות',  val:'(1,500)' },
+                { cls:'wr-known-result', label:'= מכירות, נטו',        val:'42,000' },
+            ],
+            algebraNote: 'ברוטו נמצא בצד ימין של הנוסחה עם סימן חיבור. כשמעבירים אותו לצד שמאל ואת כל השאר לצד ימין — ה"פחות" של ההחזרות וההנחות הופך ל"חיבור". כלומר: ברוטו = נטו + החזרות + הנחות.',
+            rearrangedRows: [
+                { cls:'wr-plain',  label:'מכירות, נטו',            val:'42,000' },
+                { cls:'wr-plus',   label:'בתוספת: החזרות מלקוחות', val:'3,000' },
+                { cls:'wr-plus',   label:'בתוספת: הנחות ללקוחות',  val:'5,000' },
+                { cls:'wr-result', label:'= מכירות ברוטו (א)',      val:'50,000' },
+            ]
+        },
+        intro: "מכירות ברוטו = מכירות נטו + החזרות + הנחות:",
+        rows: [
+            { text:"מכירות נטו",               value:"42,000" },
+            { text:"בתוספת: החזרות מלקוחות",   value:"3,000" },
+            { text:"בתוספת: הנחות ללקוחות",    value:"5,000" }
+        ],
+        result: { text:"מכירות ברוטו (א)", value:"50,000" },
+        outro: "",
+        qUpdates: [ { id:"q-a", value:"50,000" } ],
+        mainUpdates: [ { id:"note1-gross-2025", value:"50,000", label:"(א)" } ]
+    },
+    {
+        title: "שלב 2: מציאת (ג) — החזרות לספקים 2025",
+        whyData: {
+            isDirect: false,
+            intro: "הנוסחה: קניות נטו = ברוטו − החזרות − הנחות. ידועים: ברוטו (26,000), הנחות (2,000), נטו (20,000). הנעלם: החזרות — נבדד.",
+            originalRows: [
+                { cls:'wr-plain',        label:'קניות, ברוטו',          val:'26,000' },
+                { cls:'wr-unknown',      label:'פחות: החזרות לספקים',   val:'?' },
+                { cls:'wr-minus',        label:'פחות: הנחות מספקים',    val:'(2,000)' },
+                { cls:'wr-known-result', label:'= קניות, נטו',           val:'20,000' },
+            ],
+            algebraNote: 'החזרות נמצאת בצד ימין עם סימן פחות. מעבירים אותה לצד שמאל (הופכת לחיבור), ומעבירים את קניות נטו לצד ימין (הופך לפחות). התוצאה: החזרות = ברוטו − הנחות − נטו.',
+            rearrangedRows: [
+                { cls:'wr-plain',  label:'קניות, ברוטו',          val:'26,000' },
+                { cls:'wr-minus',  label:'פחות: הנחות מספקים',    val:'(2,000)' },
+                { cls:'wr-minus',  label:'פחות: קניות נטו',       val:'(20,000)' },
+                { cls:'wr-result', label:'= החזרות לספקים (ג)',   val:'4,000' },
+            ]
+        },
+        intro: "החזרות לספקים = קניות ברוטו − הנחות מספקים − קניות נטו:",
+        rows: [
+            { text:"קניות ברוטו",             value:"26,000" },
+            { text:"בניכוי: הנחות מספקים",   value:"(2,000)" },
+            { text:"בניכוי: קניות נטו",       value:"(20,000)" }
+        ],
+        result: { text:"החזרות לספקים (ג)", value:"4,000" },
+        outro: "* בדוח יופיע בסוגריים (4,000) כי זו פעולת הקטנה של הקניות.",
+        qUpdates: [ { id:"q-g", value:"4,000" } ],
+        mainUpdates: [ { id:"note3-ret-2025", value:"(4,000)", label:"(ג)" } ]
+    },
+    {
+        title: "שלב 3: מציאת (ז) — עלות המכר 2025",
+        whyData: {
+            isDirect: false,
+            intro: "הנוסחה: רווח גולמי = מכירות נטו − עלות המכר. ידועים: נטו (42,000), רווח גולמי (24,000). הנעלם: עלות המכר — נבדד.",
+            originalRows: [
+                { cls:'wr-plain',        label:'מכירות, נטו',      val:'42,000' },
+                { cls:'wr-unknown',      label:'פחות: עלות המכר',  val:'?' },
+                { cls:'wr-known-result', label:'= רווח גולמי',     val:'24,000' },
+            ],
+            algebraNote: 'עלות המכר נמצאת בצד ימין עם פחות. מעבירים אותה לצד שמאל (הופכת לחיבור) ואת הרווח הגולמי לצד ימין (הופך לפחות). התוצאה: עלות המכר = מכירות נטו − רווח גולמי.',
+            rearrangedRows: [
+                { cls:'wr-plain',  label:'מכירות, נטו',       val:'42,000' },
+                { cls:'wr-minus',  label:'פחות: רווח גולמי',  val:'(24,000)' },
+                { cls:'wr-result', label:'= עלות המכר (ז)',   val:'18,000' },
+            ]
+        },
+        intro: "עלות המכר = מכירות נטו − רווח גולמי:",
+        rows: [
+            { text:"מכירות נטו",          value:"42,000" },
+            { text:"בניכוי: רווח גולמי", value:"(24,000)" }
+        ],
+        result: { text:"עלות המכר (ז)", value:"18,000" },
+        outro: "",
+        qUpdates: [ { id:"q-z", value:"18,000" } ],
+        mainUpdates: [
+            { id:"main-cogs-2025",  value:"(18,000)", label:"" },
+            { id:"note2-cogs-2025", value:"18,000",   label:"(ז)" }
+        ]
+    },
+    {
+        title: "שלב 4: מציאת (ה) — מלאי פתיחה 2025",
+        whyData: {
+            isDirect: false,
+            intro: "הנוסחה: עלות המכר = מלאי פתיחה + קניות נטו − מלאי סגירה. ידועים: עלות (18,000), קניות (20,000), סגירה (9,000). הנעלם: מלאי פתיחה.",
+            originalRows: [
+                { cls:'wr-unknown', label:'מלאי פתיחה',            val:'?' },
+                { cls:'wr-plus',    label:'בתוספת: קניות, נטו',   val:'20,000' },
+                { cls:'wr-minus',   label:'פחות: מלאי סגירה',      val:'(9,000)' },
+                { cls:'wr-known-result', label:'= עלות המכר',      val:'18,000' },
+            ],
+            algebraNote: 'מלאי פתיחה נמצא בצד ימין עם חיבור. מעבירים הכל: עלות המכר עוברת לצד ימין, קניות נטו (שהיתה +) הופכת ל(−), ומלאי סגירה (שהיתה −) הופכת ל(+). התוצאה: פתיחה = עלות − קניות + סגירה.',
+            rearrangedRows: [
+                { cls:'wr-plain',  label:'עלות המכר',            val:'18,000' },
+                { cls:'wr-minus',  label:'פחות: קניות, נטו',    val:'(20,000)' },
+                { cls:'wr-plus',   label:'בתוספת: מלאי סגירה', val:'9,000' },
+                { cls:'wr-result', label:'= מלאי פתיחה (ה)',    val:'7,000' },
+            ]
+        },
+        intro: "מלאי פתיחה = עלות המכר − קניות נטו + מלאי סגירה:",
+        rows: [
+            { text:"עלות המכר",            value:"18,000" },
+            { text:"בניכוי: קניות נטו",   value:"(20,000)" },
+            { text:"בתוספת: מלאי סגירה",  value:"9,000" }
+        ],
+        result: { text:"מלאי פתיחה (ה)", value:"7,000" },
+        outro: "",
+        qUpdates: [ { id:"q-h", value:"7,000" } ],
+        mainUpdates: [ { id:"note2-open-2025", value:"7,000", label:"(ה)" } ]
+    },
+    {
+        title: "שלב 5: מציאת (ב) — מכירות נטו 2026",
+        whyData: {
+            isDirect: true,
+            intro: "עוברים ל-2026. כל הנתונים ידועים (ברוטו 38,000 / החזרות 2,500 / הנחות 1,500) — חישוב ישיר, ללא צורך בהיפוך הנוסחה.",
+            directLabel: "חישוב ישיר — מכירות נטו",
+            directRows: [
+                { cls:'wr-plain',  label:'מכירות, ברוטו',           val:'38,000' },
+                { cls:'wr-minus',  label:'פחות: החזרות מלקוחות',   val:'(2,500)' },
+                { cls:'wr-minus',  label:'פחות: הנחות ללקוחות',    val:'(1,500)' },
+                { cls:'wr-result', label:'= מכירות נטו (ב)',        val:'34,000' },
+            ]
+        },
+        intro: "מכירות נטו = מכירות ברוטו − החזרות − הנחות:",
+        rows: [
+            { text:"מכירות ברוטו",                  value:"38,000" },
+            { text:"בניכוי: החזרות מלקוחות",        value:"(2,500)" },
+            { text:"בניכוי: הנחות ללקוחות",         value:"(1,500)" }
+        ],
+        result: { text:"מכירות נטו (ב)", value:"34,000" },
+        outro: "",
+        qUpdates: [ { id:"q-b", value:"34,000" } ],
+        mainUpdates: [
+            { id:"note1-net-2026", value:"34,000", label:"" },
+            { id:"main-net-2026",  value:"34,000", label:"(ב)" }
+        ]
+    },
+    {
+        title: "שלב 6: מציאת (ד) — קניות נטו 2026",
+        whyData: {
+            isDirect: true,
+            intro: "כל נתוני הקניות לשנת 2026 ידועים (ברוטו 15,000 / החזרות 1,000 / הנחות 2,000) — חישוב ישיר.",
+            directLabel: "חישוב ישיר — קניות נטו",
+            directRows: [
+                { cls:'wr-plain',  label:'קניות, ברוטו',            val:'15,000' },
+                { cls:'wr-minus',  label:'פחות: החזרות לספקים',    val:'(1,000)' },
+                { cls:'wr-minus',  label:'פחות: הנחות מספקים',     val:'(2,000)' },
+                { cls:'wr-result', label:'= קניות נטו (ד)',         val:'12,000' },
+            ]
+        },
+        intro: "קניות נטו = קניות ברוטו − החזרות לספקים − הנחות מספקים:",
+        rows: [
+            { text:"קניות ברוטו",              value:"15,000" },
+            { text:"בניכוי: החזרות לספקים",   value:"(1,000)" },
+            { text:"בניכוי: הנחות מספקים",    value:"(2,000)" }
+        ],
+        result: { text:"קניות נטו (ד)", value:"12,000" },
+        outro: "",
+        qUpdates: [ { id:"q-d", value:"12,000" } ],
+        mainUpdates: [
+            { id:"note3-net-2026",     value:"12,000", label:"(ד)" },
+            { id:"note2-netpurch-2026",value:"12,000", label:"" }
+        ]
+    },
+    {
+        title: "שלב 7: מציאת (ו) — מלאי פתיחה 2026",
+        whyData: {
+            isDirect: true,
+            intro: "כלל הרציפות: מלאי הסגירה של שנה אחת הופך למלאי הפתיחה של השנה העוקבת. אין חישוב — רק העברה ישירה.",
+            directLabel: "כלל הרציפות של המלאי",
+            directRows: [
+                { cls:'wr-plain',        label:'מלאי סגירה 2025',       val:'9,000' },
+                { cls:'wr-known-result', label:'= מלאי פתיחה 2026 (ו)', val:'9,000' },
+            ]
+        },
+        intro: "כלל חשבונאי ברזל — מלאי סגירה 2025 = מלאי פתיחה 2026:",
+        rows: [
+            { text:"מלאי סגירה 2025", value:"9,000" }
+        ],
+        result: { text:"מלאי פתיחה 2026 (ו)", value:"9,000" },
+        outro: "",
+        qUpdates: [ { id:"q-v", value:"9,000" } ],
+        mainUpdates: [ { id:"note2-open-2026", value:"9,000", label:"(ו)" } ]
+    },
+    {
+        title: "שלב 8: מציאת (ח) — עלות המכר 2026",
+        whyData: {
+            isDirect: true,
+            intro: "כל גורמי עלות המכר ל-2026 ידועים (פתיחה 9,000 / קניות נטו 12,000 / סגירה 4,000) — חישוב ישיר לפי הנוסחה.",
+            directLabel: "חישוב ישיר — עלות המכר",
+            directRows: [
+                { cls:'wr-plain',  label:'מלאי פתיחה',            val:'9,000' },
+                { cls:'wr-plus',   label:'בתוספת: קניות, נטו',   val:'12,000' },
+                { cls:'wr-minus',  label:'פחות: מלאי סגירה',      val:'(4,000)' },
+                { cls:'wr-result', label:'= עלות המכר (ח)',        val:'17,000' },
+            ]
+        },
+        intro: "עלות המכר = מלאי פתיחה + קניות נטו − מלאי סגירה:",
+        rows: [
+            { text:"מלאי פתיחה",             value:"9,000" },
+            { text:"בתוספת: קניות נטו",     value:"12,000" },
+            { text:"בניכוי: מלאי סגירה",    value:"(4,000)" }
+        ],
+        result: { text:"עלות המכר (ח)", value:"17,000" },
+        outro: "",
+        qUpdates: [ { id:"q-kh", value:"17,000" } ],
+        mainUpdates: [
+            { id:"note2-cogs-2026", value:"17,000",  label:"(ח)" },
+            { id:"main-cogs-2026",  value:"(17,000)", label:"" }
+        ]
+    },
+    {
+        title: "שלב 9: מציאת (ט) — רווח גולמי 2026",
+        whyData: {
+            isDirect: true,
+            intro: "מכירות נטו (34,000) ועלות המכר (17,000) ידועים — חישוב ישיר של הרווח הגולמי.",
+            directLabel: "חישוב ישיר — רווח גולמי",
+            directRows: [
+                { cls:'wr-plain',  label:'מכירות, נטו',        val:'34,000' },
+                { cls:'wr-minus',  label:'פחות: עלות המכר',   val:'(17,000)' },
+                { cls:'wr-result', label:'= רווח גולמי (ט)',   val:'17,000' },
+            ]
+        },
+        intro: "רווח גולמי = מכירות נטו − עלות המכר:",
+        rows: [
+            { text:"מכירות נטו",             value:"34,000" },
+            { text:"בניכוי: עלות המכר",     value:"(17,000)" }
+        ],
+        result: { text:"רווח גולמי (ט)", value:"17,000" },
+        outro: "",
+        qUpdates: [ { id:"q-t", value:"17,000" } ],
+        mainUpdates: [ { id:"main-gross-2026", value:"17,000", label:"(ט)" } ]
+    }
+];
+
+// ══ Build frames ══
+const frames = [];
+calcs.forEach((calc, ci) => {
+    let rows = [];
+    calc.rows.forEach((row) => {
+        rows.push({ html:`<tr><td>${row.text}</td><td>${row.value}</td></tr>`, isResult:false });
+        frames.push({ ci, isResult:false, rows:[...rows], calc });
+    });
+    rows.push({ html:`<tr class="result-row"><td>${calc.result.text}</td><td>${calc.result.value}</td></tr>`, isResult:true });
+    frames.push({ ci, isResult:true, rows:[...rows], calc });
+});
+
+const TOTAL_FRAMES = frames.length;
+const TOTAL_CALCS  = calcs.length;
+
+const allIds = new Set();
+calcs.forEach(c => {
+    c.mainUpdates.forEach(u => allIds.add(u.id));
+    c.qUpdates.forEach(u => allIds.add(u.id));
+});
+
+// DOM
+const nextBtn       = document.getElementById('nextBtn');
+const nextBtnText   = document.getElementById('nextBtnText');
+const prevBtn       = document.getElementById('prevBtn');
+const progressLabel = document.getElementById('progressLabel');
+const progressBar   = document.getElementById('progressBar');
+const startPrompt   = document.getElementById('startPrompt');
+const stepContent   = document.getElementById('stepContent');
+const stepPill      = document.getElementById('stepPill');
+const whyBox        = document.getElementById('whyBox');
+const calcTitle     = document.getElementById('calcTitle');
+const calcIntro     = document.getElementById('calcIntro');
+const calcTableWrap = document.getElementById('calcTableWrap');
+const calcOutro     = document.getElementById('calcOutro');
+
+// Original unknown labels for the question table — restored on every reset
+const qOriginalLabels = {
+    'q-a':'(א)', 'q-b':'(ב)', 'q-g':'(ג)', 'q-d':'(ד)',
+    'q-h':'(ה)', 'q-v':'(ו)', 'q-z':'(ז)', 'q-kh':'(ח)', 'q-t':'(ט)'
+};
+
+let cur = 0;
+
+function renderState(animate) {
+    allIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.className = el.className.replace(/cell-flash/g,'').trim();
+        if (id.startsWith('q-')) {
+            // Restore the red unknown letter rather than blanking the cell
+            el.className = 'unknown';
+            el.innerHTML = qOriginalLabels[id] || '';
+        } else {
+            el.innerHTML = '';
         }
+    });
 
-        nextBtn.addEventListener('click', () => {
-            if (currentFrame < totalFrames) {
-                currentFrame++;
-                renderState(true);
-            }
+    if (cur === 0) {
+        startPrompt.classList.remove('hidden');
+        stepContent.classList.add('hidden');
+        stepPill.classList.add('hidden');
+        progressLabel.innerText = 'טרם התחיל';
+        progressBar.style.width = '0%';
+        prevBtn.disabled = true;
+        nextBtnText.innerText = 'התחל פתרון';
+        nextBtn.className = nextBtn.className.replace('bg-green-600','bg-blue-600 hover:bg-blue-700');
+        nextBtn.disabled = false;
+        return;
+    }
+
+    for (let i = 0; i < cur; i++) {
+        const f = frames[i];
+        if (!f.isResult) continue;
+        const shouldFlash = animate && i === cur - 1;
+        f.calc.qUpdates.forEach(u => {
+            const el = document.getElementById(u.id);
+            if (!el) return;
+            el.className = 'solved';
+            el.innerHTML = u.value;
+            if (shouldFlash) { void el.offsetWidth; el.classList.add('cell-flash'); }
         });
-
-        prevBtn.addEventListener('click', () => {
-            if (currentFrame > 0) {
-                currentFrame--;
-                renderState(false); // don't animate when going backwards, keep it clean
-            }
+        f.calc.mainUpdates.forEach(u => {
+            const el = document.getElementById(u.id);
+            if (!el) return;
+            const lbl = u.label ? `<span class="text-xs text-blue-500 ml-1">${u.label}</span>` : '';
+            el.innerHTML = `${lbl}<span class="solved">${u.value}</span>`;
+            if (shouldFlash) { void el.offsetWidth; el.classList.add('cell-flash'); }
         });
+    }
 
-        // Initialize empty state
-        renderState(false);
-    </script>
+    const f = frames[cur - 1];
+    startPrompt.classList.add('hidden');
+    stepContent.classList.remove('hidden');
+    stepPill.classList.remove('hidden');
+    stepPill.innerText = `שלב ${f.ci + 1} מתוך ${TOTAL_CALCS}`;
+
+    // Render why box as tables
+    whyBox.innerHTML = renderWhyBox(f.calc.whyData);
+
+    calcTitle.innerText = f.calc.title;
+    calcIntro.innerText = f.calc.intro;
+
+    let html = '<table class="calc-table">';
+    f.rows.forEach((r, ri) => {
+        let row = r.html;
+        if (animate && ri === f.rows.length - 1) row = row.replace('<tr', '<tr class="row-flash"');
+        html += row;
+    });
+    html += '</table>';
+    calcTableWrap.innerHTML = html;
+
+    if (f.calc.outro) { calcOutro.innerText = f.calc.outro; calcOutro.classList.remove('hidden'); }
+    else { calcOutro.classList.add('hidden'); }
+
+    const pct = Math.round((cur / TOTAL_FRAMES) * 100);
+    progressBar.style.width = pct + '%';
+    progressLabel.innerText = `שלב ${f.ci + 1} מתוך ${TOTAL_CALCS} (${pct}%)`;
+
+    prevBtn.disabled = false;
+    if (cur >= TOTAL_FRAMES) {
+        nextBtnText.innerText = '✓ הושלם!';
+        nextBtn.className = nextBtn.className.replace('bg-blue-600 hover:bg-blue-700','bg-green-600');
+        nextBtn.disabled = true;
+    } else {
+        nextBtnText.innerText = 'קליק הבא';
+        nextBtn.className = nextBtn.className.replace('bg-green-600','bg-blue-600 hover:bg-blue-700');
+        nextBtn.disabled = false;
+    }
+}
+
+nextBtn.addEventListener('click', () => { if (cur < TOTAL_FRAMES) { cur++; renderState(true); } });
+prevBtn.addEventListener('click', () => { if (cur > 0) { cur--; renderState(false); } });
+
+renderState(false);
+</script>
 </body>
 </html>
