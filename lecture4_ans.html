@@ -6,377 +6,585 @@
     <title>המדריך המלא - התהליך החשבונאי</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap');
-        body {
-            font-family: 'Heebo', sans-serif;
-            background-color: #f8fafc;
-        }
-        .smooth-transition {
-            transition: all 0.3s ease-in-out;
-        }
-        .timeline-line::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 1.25rem;
-            width: 2px;
-            background: #cbd5e1;
-            z-index: 0;
-        }
-        /* Custom Table Styling */
-        .accounting-table th, .accounting-table td {
-            border: 1px solid #e2e8f0;
-            padding: 0.75rem 0.5rem;
+        body { font-family: 'Heebo', sans-serif; background-color: #f0f4f8; }
+        .smooth-transition { transition: all 0.3s ease-in-out; }
+
+        .acc-content { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .acc-content.open { max-height: 2000px; }
+        .acc-icon { transition: transform 0.35s ease; }
+        .acc-icon.rotated { transform: rotate(180deg); }
+
+        .entry-table th, .entry-table td {
+            border: 1.5px solid #e2e8f0;
+            padding: 0.5rem 0.6rem;
             text-align: center;
+            font-size: 0.82rem;
             white-space: nowrap;
         }
-        .accounting-table th {
-            font-weight: 700;
+        .entry-table th { font-weight: 700; font-size: 0.75rem; }
+        .col-asset-h  { background:#dcfce7; color:#14532d; }
+        .col-liab-h   { background:#ffe4e6; color:#881337; }
+        .col-equity-h { background:#dbeafe; color:#1e3a8a; }
+        .cell-pos     { background:#bbf7d0 !important; color:#14532d !important; font-weight:800; }
+        .cell-neg     { background:#fecdd3 !important; color:#9f1239 !important; font-weight:800; }
+        .cell-neutral { background:#f8fafc; color:#94a3b8; }
+
+        .accounting-table th, .accounting-table td {
+            border: 1px solid #e2e8f0; padding: 0.65rem 0.45rem;
+            text-align: center; white-space: nowrap;
         }
-        .accounting-table tr:hover td {
-            background-color: #f1f5f9;
-        }
-        .col-asset { background-color: #f0fdf4; color: #065f46; }
-        .col-liab { background-color: #fff1f2; color: #9f1239; }
+        .accounting-table th { font-weight: 700; }
+        .accounting-table tr:hover td { background-color: #f1f5f9; }
+        .col-asset  { background-color: #f0fdf4; color: #065f46; }
+        .col-liab   { background-color: #fff1f2; color: #9f1239; }
         .col-equity { background-color: #eff6ff; color: #1e40af; }
+
+        .tag { display:inline-block; padding:0.15rem 0.6rem; border-radius:9999px; font-size:0.72rem; font-weight:700; }
+        .tag-asset   { background:#dcfce7; color:#166534; }
+        .tag-liab    { background:#ffe4e6; color:#9f1239; }
+        .tag-equity  { background:#dbeafe; color:#1e40af; }
+        .tag-neutral { background:#f1f5f9; color:#475569; }
+
+        .balance-box { display:flex; align-items:center; gap:0.5rem; background:#f0fdf4; border:1.5px solid #86efac; border-radius:0.75rem; padding:0.6rem 1rem; font-size:0.82rem; font-weight:700; color:#15803d; }
+
+        @keyframes fadeSlideIn { from {opacity:0;transform:translateY(-8px)} to {opacity:1;transform:translateY(0)} }
+        .fade-in { animation: fadeSlideIn 0.35s ease both; }
+        .tab-btn { border-bottom:4px solid transparent; }
+        .tab-btn.active { border-bottom-color:#4f46e5; color:#3730a3; background:#fff; }
     </style>
 </head>
 <body class="text-slate-800 antialiased">
 
-    <!-- Header Section -->
-    <header class="bg-gradient-to-br from-slate-900 via-emerald-900 to-teal-800 text-white py-16 px-4 relative overflow-hidden shadow-2xl">
-        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-        <div class="max-w-6xl mx-auto relative z-10 text-center">
-            <span class="bg-emerald-500 text-xs font-bold px-3 py-1 rounded-full tracking-wider uppercase mb-4 inline-block shadow-lg">סיכום מעשי מקיף</span>
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">המדריך המלא לפתרון תרגילי <br><span class="text-emerald-400">"התהליך החשבונאי"</span></h1>
-            <p class="text-xl md:text-2xl font-light text-slate-200">מרמת הרציונל, דרך הרישום בטבלה, ועד לבניית הדוחות הכספיים</p>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-slate-900 via-emerald-900 to-teal-800 text-white py-16 px-4 relative overflow-hidden shadow-2xl">
+    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+    <div class="max-w-6xl mx-auto relative z-10 text-center">
+        <span class="bg-emerald-500 text-xs font-bold px-3 py-1 rounded-full tracking-wider uppercase mb-4 inline-block shadow-lg">סיכום מעשי מקיף</span>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+            המדריך המלא לפתרון תרגילי<br>
+            <span class="text-emerald-400">"התהליך החשבונאי"</span>
+        </h1>
+        <p class="text-xl font-light text-slate-200">מרמת הרציונל, דרך הרישום בטבלה, ועד לבניית הדוחות הכספיים</p>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-12 space-y-16">
+
+<!-- SECTION 1 – EQUATION -->
+<section class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-slate-100">
+    <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold text-slate-800 mb-4">
+            <i class="fa-solid fa-scale-balanced text-emerald-500 ml-2"></i>הרציונל הבסיסי: מאין באים המספרים?
+        </h2>
+        <p class="text-lg text-slate-600 max-w-4xl mx-auto">
+            דוחות כספיים אינם נוצרים יש מאין. הם תוצר של רישום שיטתי של כל אירוע כלכלי.
+            כל רישום חייב לשמור על איזון מוחלט על פי <strong>משוואת הזהות החשבונאית</strong>.
+        </p>
+    </div>
+    <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+        <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-6 w-full md:w-1/3 text-center">
+            <h3 class="text-2xl font-bold text-emerald-900 mb-2">נכסים</h3>
+            <p class="text-emerald-700 text-sm">מה שהחברה <strong>בבעלותה</strong><br>(מזומן, רכוש, לקוחות, שיקים לקבל)</p>
         </div>
-    </header>
+        <div class="text-4xl font-bold text-slate-300">=</div>
+        <div class="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 w-full md:w-1/3 text-center">
+            <h3 class="text-2xl font-bold text-rose-900 mb-2">התחייבויות</h3>
+            <p class="text-rose-700 text-sm">מה שהחברה <strong>חייבת לאחרים</strong><br>(הלוואות, ספקים, שיקים לפירעון)</p>
+        </div>
+        <div class="text-4xl font-bold text-slate-300">+</div>
+        <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 w-full md:w-1/3 text-center">
+            <h3 class="text-2xl font-bold text-blue-900 mb-2">הון עצמי</h3>
+            <p class="text-blue-700 text-sm"><strong>מקורות מימון שאינם התחייבותיים</strong>, הנובעים מהשקעת בעלים (הון מניות ופרמיה) ומרווחים שנצברו (יתרת רווח / עודפים)</p>
+        </div>
+    </div>
+</section>
 
-    <main class="max-w-6xl mx-auto px-4 py-12 space-y-16">
+<!-- SECTION 2 – TRANSACTIONS -->
+<section>
+    <h2 class="text-3xl font-bold text-slate-800 mb-2">
+        <i class="fa-solid fa-list-check text-indigo-500 ml-2"></i>ניתוח עסקאות: צעד אחר צעד
+    </h2>
+    <p class="text-slate-500 mb-4 text-base">לחץ על כל עסקה כדי לראות הסבר מפורט, ניתוח השפעה על המשוואה ותצוגת הרישום בטבלה.</p>
 
-        <!-- Section 1: The Equation -->
-        <section class="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-slate-100">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold text-slate-800 mb-4"><i class="fa-solid fa-scale-balanced text-emerald-500 ml-2"></i>הרציונל הבסיסי: מאין באים המספרים?</h2>
-                <p class="text-lg text-slate-600 max-w-4xl mx-auto">
-                    דוחות כספיים אינם נוצרים יש מאין. הם תוצר של רישום שיטתי של כל אירוע כלכלי. כל רישום חייב לשמור על איזון מוחלט על פי <strong>משוואת הזהות החשבונאית</strong>. סך השינויים בצד ימין חייב להיות זהה לסך השינויים בצד שמאל.
-                </p>
-            </div>
+    <!-- Notation banner -->
+    <div class="bg-amber-50 border border-amber-300 rounded-xl px-5 py-3 mb-6 flex items-center gap-3 text-sm">
+        <i class="fa-solid fa-circle-exclamation text-amber-500 text-lg flex-shrink-0"></i>
+        <span class="text-amber-900">
+            <strong>הערת סימון חשבונאית:</strong>
+            ערכים חיוביים (עלייה) נרשמים כמספר רגיל. ערכים שליליים (ירידה / הוצאה) נרשמים <strong>בסוגריים</strong> —
+            לדוגמה: <span class="font-mono font-bold">(180)</span> — בהתאם למקובל בחשבונאות.
+        </span>
+    </div>
 
-            <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-6 w-full md:w-1/3 text-center">
-                    <h3 class="text-2xl font-bold text-emerald-900 mb-2">נכסים</h3>
-                    <p class="text-emerald-700 text-sm">מה שהחברה <strong>בבעלותה</strong><br>(מזומן, רכוש, לקוחות, שיקים לקבל).</p>
-                </div>
-                <div class="text-4xl font-bold text-slate-300">=</div>
-                <div class="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 w-full md:w-1/3 text-center">
-                    <h3 class="text-2xl font-bold text-rose-900 mb-2">התחייבויות</h3>
-                    <p class="text-rose-700 text-sm">מה שהחברה <strong>חייבת לאחרים</strong><br>(הלוואות, ספקים, שיקים לפירעון).</p>
-                </div>
-                <div class="text-4xl font-bold text-slate-300">+</div>
-                <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 w-full md:w-1/3 text-center">
-                    <h3 class="text-2xl font-bold text-blue-900 mb-2">הון עצמי</h3>
-                    <p class="text-blue-700 text-sm">מה ששייך <strong>לבעלים</strong><br>(הון מניות מונפק + הכנסות פחות הוצאות).</p>
-                </div>
-            </div>
-        </section>
+    <div class="space-y-3" id="transactions-container"></div>
+</section>
 
-        <!-- Section 2: Transactions Accordion -->
-        <section>
-            <h2 class="text-3xl font-bold text-slate-800 mb-6"><i class="fa-solid fa-list-check text-indigo-500 ml-2"></i>ניתוח עסקאות: צעד אחר צעד</h2>
-            <p class="text-slate-600 mb-6">לפני שניגשים לטבלה, חשוב להבין את ההיגיון בכל פעולה. לחץ על כל עסקה כדי לראות את הרציונל שמאחוריה.</p>
-            <div class="space-y-3" id="transactions-container">
-                <!-- JS Generated -->
-            </div>
-        </section>
+<!-- SECTION 3 – BIG TABLE -->
+<section class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+    <div class="bg-slate-800 p-6 text-center">
+        <h2 class="text-3xl font-bold text-white">
+            <i class="fa-solid fa-table-cells text-emerald-400 ml-2"></i>טבלת הרישום המרכזת (באלפי ש"ח)
+        </h2>
+        <p class="text-slate-300 mt-2">כאן מתבצע הרישום בפועל. שימו לב כיצד כל שורה מאוזנת וכיצד נוצרות יתרות הסגירה.</p>
+    </div>
+    <div class="overflow-x-auto p-4 md:p-6">
+        <table class="w-full accounting-table text-sm text-slate-700">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="bg-slate-100 w-10">מס'</th>
+                    <th rowspan="2" class="bg-slate-100 min-w-[150px]">תיאור האירוע</th>
+                    <th colspan="4" class="col-asset text-lg border-b-4 border-emerald-500">נכסים (=)</th>
+                    <th colspan="3" class="col-liab text-lg border-b-4 border-rose-500">התחייבויות (+)</th>
+                    <th colspan="3" class="col-equity text-lg border-b-4 border-blue-500">הון עצמי</th>
+                </tr>
+                <tr class="text-xs md:text-sm">
+                    <th class="col-asset">מזומן</th><th class="col-asset">שיקים לקבל</th>
+                    <th class="col-asset">לקוחות</th><th class="col-asset">ריהוט וציוד</th>
+                    <th class="col-liab">הלוואות</th><th class="col-liab">ספקים</th>
+                    <th class="col-liab">שיקים לפירעון</th>
+                    <th class="col-equity">הון מניות</th><th class="col-equity">הכנסות</th>
+                    <th class="col-equity">הוצאות (-)</th>
+                </tr>
+            </thead>
+            <tbody class="font-mono text-base">
+                <tr><td>1</td><td class="text-right">הנפקת מניות למזומן</td><td class="text-emerald-600 font-bold">500</td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-blue-600 font-bold">500</td><td></td><td></td></tr>
+                <tr><td>2</td><td class="text-right">הכנסות מייעוץ</td><td class="text-emerald-600 font-bold">200</td><td class="text-emerald-600 font-bold">200</td><td class="text-emerald-600 font-bold">200</td><td></td><td></td><td></td><td></td><td></td><td class="text-blue-600 font-bold">600</td><td></td></tr>
+                <tr><td>3</td><td class="text-right">שכירות בשיק דחוי</td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">120</td><td></td><td></td><td class="text-rose-600 font-bold">(120)</td></tr>
+                <tr><td>4</td><td class="text-right">קבלת הלוואה</td><td class="text-emerald-600 font-bold">300</td><td></td><td></td><td></td><td class="text-rose-600 font-bold">300</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>5</td><td class="text-right">שכר יועצים במזומן</td><td class="text-rose-600 font-bold">(180)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(180)</td></tr>
+                <tr><td>6</td><td class="text-right">ריהוט בהקפה</td><td></td><td></td><td></td><td class="text-emerald-600 font-bold">150</td><td></td><td class="text-rose-600 font-bold">150</td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>7</td><td class="text-right">שיווק במזומן</td><td class="text-rose-600 font-bold">(25)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(25)</td></tr>
+                <tr><td>8</td><td class="text-right">הפקדת שיקים</td><td class="text-emerald-600 font-bold">200</td><td class="text-rose-600 font-bold">(200)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>9</td><td class="text-right">ארנונה במזומן</td><td class="text-rose-600 font-bold">(30)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(30)</td></tr>
+                <tr><td>10</td><td class="text-right">גבייה מלקוחות</td><td class="text-emerald-600 font-bold">50</td><td></td><td class="text-rose-600 font-bold">(50)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>11</td><td class="text-right">שכר מנהלה במזומן</td><td class="text-rose-600 font-bold">(100)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(100)</td></tr>
+                <tr><td>12</td><td class="text-right">תשלום לספק</td><td class="text-rose-600 font-bold">(40)</td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(40)</td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>13</td><td class="text-right">עמלות בנק</td><td class="text-rose-600 font-bold">(2.5)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(2.5)</td></tr>
+                <tr><td>14</td><td class="text-right">מיסים על הכנסה</td><td class="text-rose-600 font-bold">(8)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(8)</td></tr>
+            </tbody>
+            <tfoot class="font-bold text-lg">
+                <tr class="bg-slate-200">
+                    <td colspan="2" class="text-left py-4">יתרות סגירה (31.12):</td>
+                    <td class="bg-emerald-100 text-emerald-800">864.5</td><td class="bg-emerald-100 text-emerald-800">0</td>
+                    <td class="bg-emerald-100 text-emerald-800">150</td><td class="bg-emerald-100 text-emerald-800">150</td>
+                    <td class="bg-rose-100 text-rose-800">300</td><td class="bg-rose-100 text-rose-800">110</td>
+                    <td class="bg-rose-100 text-rose-800">120</td>
+                    <td class="bg-blue-100 text-blue-800">500</td><td class="bg-blue-100 text-blue-800">600</td>
+                    <td class="bg-blue-100 text-blue-800">(465.5)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="bg-emerald-50 p-4 border-t border-emerald-200 text-center flex justify-center items-center gap-4 flex-wrap">
+        <strong class="text-emerald-800"><i class="fa-solid fa-check-double ml-1"></i> בדיקת בקרת איזון כוללת:</strong>
+        <span class="bg-white px-3 py-1 rounded border border-emerald-200 shadow-sm">סך הנכסים = <strong>1,164.5</strong></span>
+        <span class="text-slate-400">=</span>
+        <span class="bg-white px-3 py-1 rounded border border-emerald-200 shadow-sm">סך התחייבויות (530) + הון (634.5) = <strong>1,164.5</strong></span>
+    </div>
+</section>
 
-        <!-- Section 3: The Big Table (New Section) -->
-        <section class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
-            <div class="bg-slate-800 p-6 text-center">
-                <h2 class="text-3xl font-bold text-white"><i class="fa-solid fa-table-cells text-emerald-400 ml-2"></i>טבלת הרישום המרכזת (באלפי ש"ח)</h2>
-                <p class="text-slate-300 mt-2">כאן מתבצע הרישום בפועל. שימו לב כיצד כל שורה מאוזנת, וכיצד נוצרות יתרות הסגירה שירכיבו את הדוחות.</p>
-            </div>
-            
-            <div class="overflow-x-auto p-4 md:p-6">
-                <table class="w-full accounting-table text-sm text-slate-700">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="bg-slate-100 w-10">מס'</th>
-                            <th rowspan="2" class="bg-slate-100 min-w-[150px]">תיאור האירוע</th>
-                            <th colspan="4" class="col-asset text-lg border-b-4 border-emerald-500">נכסים (=)</th>
-                            <th colspan="3" class="col-liab text-lg border-b-4 border-rose-500">התחייבויות (+)</th>
-                            <th colspan="3" class="col-equity text-lg border-b-4 border-blue-500">הון עצמי</th>
-                        </tr>
-                        <tr class="text-xs md:text-sm">
-                            <th class="col-asset">מזומן</th>
-                            <th class="col-asset">שיקים לקבל</th>
-                            <th class="col-asset">לקוחות</th>
-                            <th class="col-asset">ריהוט וציוד</th>
-                            <th class="col-liab">הלוואות</th>
-                            <th class="col-liab">ספקים</th>
-                            <th class="col-liab">שיקים לפירעון</th>
-                            <th class="col-equity">הון מניות</th>
-                            <th class="col-equity">הכנסות</th>
-                            <th class="col-equity">הוצאות (-)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="font-mono text-base">
-                        <tr><td>1</td><td class="text-right">הנפקת מניות למזומן</td><td class="text-emerald-600 font-bold">500</td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-blue-600 font-bold">500</td><td></td><td></td></tr>
-                        <tr><td>2</td><td class="text-right">הכנסות מייעוץ</td><td class="text-emerald-600 font-bold">200</td><td class="text-emerald-600 font-bold">200</td><td class="text-emerald-600 font-bold">200</td><td></td><td></td><td></td><td></td><td></td><td class="text-blue-600 font-bold">600</td><td></td></tr>
-                        <tr><td>3</td><td class="text-right">שכירות בשיק דחוי</td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">120</td><td></td><td></td><td class="text-rose-600 font-bold">(120)</td></tr>
-                        <tr><td>4</td><td class="text-right">קבלת הלוואה</td><td class="text-emerald-600 font-bold">300</td><td></td><td></td><td></td><td class="text-rose-600 font-bold">300</td><td></td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>5</td><td class="text-right">שכר יועצים במזומן</td><td class="text-rose-600 font-bold">(180)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(180)</td></tr>
-                        <tr><td>6</td><td class="text-right">ריהוט בהקפה</td><td></td><td></td><td></td><td class="text-emerald-600 font-bold">150</td><td></td><td class="text-rose-600 font-bold">150</td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>7</td><td class="text-right">שיווק במזומן</td><td class="text-rose-600 font-bold">(25)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(25)</td></tr>
-                        <tr><td>8</td><td class="text-right">הפקדת שיקים</td><td class="text-emerald-600 font-bold">200</td><td class="text-rose-600 font-bold">(200)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>9</td><td class="text-right">ארנונה במזומן</td><td class="text-rose-600 font-bold">(30)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(30)</td></tr>
-                        <tr><td>10</td><td class="text-right">גבייה מלקוחות</td><td class="text-emerald-600 font-bold">50</td><td></td><td class="text-rose-600 font-bold">(50)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>11</td><td class="text-right">שכר מנהלה במזומן</td><td class="text-rose-600 font-bold">(100)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(100)</td></tr>
-                        <tr><td>12</td><td class="text-right">תשלום לספק</td><td class="text-rose-600 font-bold">(40)</td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(40)</td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>13</td><td class="text-right">עמלות בנק</td><td class="text-rose-600 font-bold">(2.5)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(2.5)</td></tr>
-                        <tr><td>14</td><td class="text-right">מיסים על הכנסה</td><td class="text-rose-600 font-bold">(8)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="text-rose-600 font-bold">(8)</td></tr>
-                    </tbody>
-                    <tfoot class="font-bold text-lg">
-                        <tr class="bg-slate-200">
-                            <td colspan="2" class="text-left py-4">יתרות סגירה (31.12):</td>
-                            <td class="bg-emerald-100 text-emerald-800">864.5</td>
-                            <td class="bg-emerald-100 text-emerald-800">0</td>
-                            <td class="bg-emerald-100 text-emerald-800">150</td>
-                            <td class="bg-emerald-100 text-emerald-800">150</td>
-                            <td class="bg-rose-100 text-rose-800">300</td>
-                            <td class="bg-rose-100 text-rose-800">110</td>
-                            <td class="bg-rose-100 text-rose-800">120</td>
-                            <td class="bg-blue-100 text-blue-800">500</td>
-                            <td class="bg-blue-100 text-blue-800">600</td>
-                            <td class="bg-blue-100 text-blue-800">(465.5)</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            
-            <div class="bg-emerald-50 p-4 border-t border-emerald-200 text-center flex justify-center items-center gap-4 flex-wrap">
-                <strong class="text-emerald-800"><i class="fa-solid fa-check-double ml-1"></i> בדיקת בקרת איזון כוללת:</strong>
-                <span class="bg-white px-3 py-1 rounded border border-emerald-200 shadow-sm">סך הנכסים = <strong>1,164.5</strong></span>
-                <span class="text-slate-400">=</span>
-                <span class="bg-white px-3 py-1 rounded border border-emerald-200 shadow-sm">סך התחייבויות (530) + הון (634.5) = <strong>1,164.5</strong></span>
-            </div>
-        </section>
-
-        <!-- Section 4: Detailed Financial Statements -->
-        <section class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
-            <div class="bg-indigo-900 p-8 text-center text-white relative overflow-hidden">
-                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-400 to-transparent"></div>
-                <h2 class="text-3xl font-bold relative z-10"><i class="fa-solid fa-file-invoice-dollar text-emerald-400 ml-2"></i>עריכת הדוחות הכספיים והרציונל</h2>
-                <p class="text-indigo-200 mt-2 text-lg relative z-10">איך לוקחים את יתרות הסגירה מהטבלה והופכים אותן לדוחות? צעד אחר צעד.</p>
-            </div>
-            
-            <div class="flex flex-wrap border-b border-slate-200 bg-slate-50">
-                <button onclick="switchTab('tab-income')" id="btn-tab-income" class="flex-1 py-5 px-6 text-center font-bold text-indigo-800 bg-white border-b-4 border-indigo-600 smooth-transition focus:outline-none text-lg">1. דוח רווח והפסד</button>
-                <button onclick="switchTab('tab-retained')" id="btn-tab-retained" class="flex-1 py-5 px-6 text-center font-bold text-slate-500 hover:text-slate-800 border-b-4 border-transparent smooth-transition focus:outline-none text-lg">2. דוח על השינויים בהון (עודפים)</button>
-                <button onclick="switchTab('tab-balance')" id="btn-tab-balance" class="flex-1 py-5 px-6 text-center font-bold text-slate-500 hover:text-slate-800 border-b-4 border-transparent smooth-transition focus:outline-none text-lg">3. מאזן (מצב כספי)</button>
-            </div>
-
-            <div class="p-4 md:p-8">
-                
-                <!-- Income Statement -->
-                <div id="tab-income" class="tab-content block animate-fade-in">
-                    <div class="flex flex-col lg:flex-row gap-8">
-                        <div class="lg:w-1/2">
-                            <h3 class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-200 pb-2">הדוח בפועל (לשנת 2026)</h3>
-                            <div class="bg-white rounded-xl font-mono text-base md:text-lg border border-slate-300 shadow-md overflow-hidden">
-                                <div class="flex justify-between p-3 bg-slate-50 border-b border-slate-200"><span class="font-bold">הכנסות ממתן שירות</span><span class="text-emerald-700 font-bold">600,000</span></div>
-                                <div class="flex justify-between p-3 text-slate-700"><span>הוצאות תפעול (הנהלה וכלליות)</span><span class="text-rose-600">(455,000)</span></div>
-                                <div class="flex justify-between p-3 border-t border-slate-300 font-bold bg-slate-100"><span>רווח תפעולי</span><span>145,000</span></div>
-                                <div class="flex justify-between p-3 text-slate-700"><span>הוצאות מימון</span><span class="text-rose-600">(2,500)</span></div>
-                                <div class="flex justify-between p-3 border-t border-slate-300 font-bold bg-slate-100"><span>רווח לפני מס</span><span>142,500</span></div>
-                                <div class="flex justify-between p-3 text-slate-700"><span>מיסים על ההכנסה</span><span class="text-rose-600">(8,000)</span></div>
-                                <div class="flex justify-between p-4 border-t-4 border-double border-indigo-500 font-bold text-indigo-900 bg-indigo-50 text-xl"><span>רווח נקי</span><span>134,500</span></div>
-                            </div>
-                        </div>
-                        <div class="lg:w-1/2 space-y-4">
-                            <h3 class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-200 pb-2">אופן החישוב והרציונל</h3>
-                            <div class="bg-slate-50 p-4 rounded-lg border-r-4 border-emerald-500 shadow-sm">
-                                <h4 class="font-bold text-emerald-800 mb-1">הכנסות (600,000)</h4>
-                                <p class="text-sm text-slate-600"><strong>רציונל:</strong> חברה נותנת שירות רושמת את כל המכירות שלה בסעיף אחד עליון. נלקח מעמודת "הכנסות" בטבלה (עסקה 2).</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg border-r-4 border-rose-500 shadow-sm">
-                                <h4 class="font-bold text-rose-800 mb-1">הוצאות תפעול (455,000)</h4>
-                                <p class="text-sm text-slate-600"><strong>חישוב:</strong> שכר יועצים (180) + שכר מנהלה (100) + שכירות (120) + שיווק (25) + ארנונה (30) = 455.</p>
-                                <p class="text-sm text-slate-600 mt-1"><strong>רציונל:</strong> מרכז את כל עלויות הליבה הדרושות לתפעול העסק, שיווקו והנהלתו השוטפת. לא כולל עלות כסף או מסים.</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg border-r-4 border-orange-500 shadow-sm">
-                                <h4 class="font-bold text-orange-800 mb-1">הוצאות מימון (2,500)</h4>
-                                <p class="text-sm text-slate-600"><strong>רציונל:</strong> עמלות בנק (או ריבית על הלוואה) אינן הוצאה "תפעולית". הן המחיר על שימוש בשירותים פיננסיים והלוואות, ולכן מוצגות מתחת לרווח התפעולי.</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg border-r-4 border-slate-500 shadow-sm">
-                                <h4 class="font-bold text-slate-800 mb-1">מיסים על ההכנסה (8,000)</h4>
-                                <p class="text-sm text-slate-600"><strong>רציונל:</strong> המס משולם למדינה בגין "הרווח לפני מס" שהחברה ייצרה. זוהי ההוצאה האחרונה בדרך לרווח הנקי.</p>
-                            </div>
-                        </div>
+<!-- SECTION 4 – FINANCIAL STATEMENTS -->
+<section class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+    <div class="bg-indigo-900 p-8 text-center text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-400 to-transparent"></div>
+        <h2 class="text-3xl font-bold relative z-10">
+            <i class="fa-solid fa-file-invoice-dollar text-emerald-400 ml-2"></i>עריכת הדוחות הכספיים
+        </h2>
+        <p class="text-indigo-200 mt-3 text-base relative z-10 max-w-2xl mx-auto leading-relaxed">
+            לחץ על <strong class="text-white bg-indigo-700 px-2 py-0.5 rounded">"1"</strong> כדי לראות את אופן יצירת דוח רווח והפסד,
+            על <strong class="text-white bg-indigo-700 px-2 py-0.5 rounded">"2"</strong> כדי לראות את אופן חישוב יתרת הרווח / עודפים לתום השנה,
+            ועל <strong class="text-white bg-indigo-700 px-2 py-0.5 rounded">"3"</strong> כדי לראות את המאזן.
+        </p>
+    </div>
+    <div class="flex flex-wrap border-b border-slate-200 bg-slate-50">
+        <button onclick="switchTab('tab-income')"   id="btn-tab-income"   class="tab-btn flex-1 py-5 px-4 text-center font-bold smooth-transition focus:outline-none text-base active">1. דוח רווח והפסד</button>
+        <button onclick="switchTab('tab-retained')" id="btn-tab-retained" class="tab-btn flex-1 py-5 px-4 text-center font-bold text-slate-500 smooth-transition focus:outline-none text-base">2. דוח עודפים</button>
+        <button onclick="switchTab('tab-balance')"  id="btn-tab-balance"  class="tab-btn flex-1 py-5 px-4 text-center font-bold text-slate-500 smooth-transition focus:outline-none text-base">3. מאזן</button>
+    </div>
+    <div class="p-4 md:p-8">
+        <!-- Income -->
+        <div id="tab-income" class="tab-content block fade-in">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="lg:w-1/2">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-200 pb-2">הדוח בפועל (לשנת 2026)</h3>
+                    <div class="bg-white rounded-xl font-mono text-base md:text-lg border border-slate-300 shadow-md overflow-hidden">
+                        <div class="flex justify-between p-3 bg-slate-50 border-b"><span class="font-bold">הכנסות ממתן שירות</span><span class="text-emerald-700 font-bold">600,000</span></div>
+                        <div class="flex justify-between p-3 text-slate-700"><span>הוצאות תפעוליות / הנ"וכ"</span><span class="text-rose-600">(455,000)</span></div>
+                        <div class="flex justify-between p-3 border-t font-bold bg-slate-100"><span>רווח תפעולי</span><span>145,000</span></div>
+                        <div class="flex justify-between p-3 text-slate-700"><span>הוצאות מימון</span><span class="text-rose-600">(2,500)</span></div>
+                        <div class="flex justify-between p-3 border-t font-bold bg-slate-100"><span>רווח לפני מס</span><span>142,500</span></div>
+                        <div class="flex justify-between p-3 text-slate-700"><span>מיסים על ההכנסה</span><span class="text-rose-600">(8,000)</span></div>
+                        <div class="flex justify-between p-4 border-t-4 border-double border-indigo-500 font-bold text-indigo-900 bg-indigo-50 text-xl"><span>רווח נקי</span><span>134,500</span></div>
                     </div>
                 </div>
-
-                <!-- Retained Earnings -->
-                <div id="tab-retained" class="tab-content hidden animate-fade-in">
-                    <div class="max-w-3xl mx-auto">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-200 pb-2 text-center">חישוב העודפים (הגשר למאזן)</h3>
-                        <p class="text-center text-slate-600 mb-8 text-lg">הרווח הנקי מהדוח הקודם לא נעלם. הוא "עובר" לדוח המאזן אל תוך סעיף 'עודפים' בתוך ההון העצמי.</p>
-                        
-                        <div class="bg-white rounded-xl border border-slate-300 shadow-lg p-6 font-mono text-lg">
-                            <div class="flex justify-between py-3 border-b border-dashed border-slate-300">
-                                <span class="text-slate-600">עודפים לתחילת השנה (1.1.2026)</span>
-                                <span class="font-bold">0</span>
-                                <span class="text-xs text-slate-400 absolute mt-8">החברה הוקמה השנה, ולכן היתרה ההתחלתית אפס.</span>
-                            </div>
-                            <div class="flex justify-between py-3 border-b border-dashed border-slate-300 mt-6">
-                                <span class="text-emerald-700">הוסף: רווח נקי השנה (מרווח והפסד)</span>
-                                <span class="font-bold text-emerald-700">134,500</span>
-                            </div>
-                            <div class="flex justify-between py-3 border-b border-slate-400">
-                                <span class="text-rose-600">הפחת: דיבידנד (אם הוכרז)</span>
-                                <span class="font-bold text-rose-600">(0)</span>
-                            </div>
-                            <div class="flex justify-between py-4 bg-indigo-50 mt-2 px-2 rounded font-bold text-xl text-indigo-900 border border-indigo-200">
-                                <span>עודפים לתום השנה (31.12.2026)</span>
-                                <span>134,500</span>
-                            </div>
-                        </div>
-                        <p class="text-center text-indigo-600 font-bold mt-4"><i class="fa-solid fa-arrow-down mr-2"></i> סכום זה יופיע במאזן תחת ההון העצמי <i class="fa-solid fa-arrow-down ml-2"></i></p>
-                    </div>
-                </div>
-
-                <!-- Balance Sheet -->
-                <div id="tab-balance" class="tab-content hidden animate-fade-in">
-                    <h3 class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-200 pb-2 text-center">המאזן המלא ליום 31.12.2026</h3>
-                    <p class="text-center text-slate-600 mb-8 text-lg">צילום מצב של יתרות החברה בהתבסס על השורה התחתונה בטבלה. צד ימין חייב להיות שווה לצד שמאל.</p>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 border-4 border-slate-800 rounded-xl overflow-hidden shadow-2xl bg-white">
-                        
-                        <!-- Assets Side -->
-                        <div class="p-6 border-b lg:border-b-0 lg:border-l-4 border-slate-800">
-                            <h4 class="font-bold text-2xl text-slate-800 mb-6 text-center border-b-2 border-slate-200 pb-2 bg-slate-50 p-2">נכסים (צד ימין)</h4>
-                            
-                            <h5 class="font-bold text-emerald-700 text-lg border-b border-emerald-200 mb-3">נכסים שוטפים (עד שנה)</h5>
-                            <div class="flex justify-between mb-1 text-slate-700 font-mono"><span>מזומן</span><span>864,500</span></div>
-                            <div class="flex justify-between mb-1 text-slate-700 font-mono"><span>לקוחות</span><span>150,000</span></div>
-                            <div class="flex justify-between mb-4 text-slate-700 font-mono"><span>שיקים לקבל</span><span class="text-slate-400">0</span></div>
-                            <div class="flex justify-between mb-6 font-bold text-emerald-900 bg-emerald-50 px-2 py-1 rounded"><span>סך נכסים שוטפים:</span><span>1,014,500</span></div>
-
-                            <h5 class="font-bold text-emerald-700 text-lg border-b border-emerald-200 mb-3">נכסים לא שוטפים (מעל שנה)</h5>
-                            <div class="flex justify-between mb-4 text-slate-700 font-mono"><span>ריהוט וציוד (רכוש קבוע)</span><span>150,000</span></div>
-                            <div class="flex justify-between mb-6 font-bold text-emerald-900 bg-emerald-50 px-2 py-1 rounded"><span>סך נכסים לא שוטפים:</span><span>150,000</span></div>
-                            
-                            <div class="mt-auto pt-4 flex justify-between font-bold text-xl text-white bg-slate-800 px-4 py-3 rounded">
-                                <span>סך הנכסים</span>
-                                <span>1,164,500</span>
-                            </div>
-                        </div>
-
-                        <!-- Liabilities & Equity Side -->
-                        <div class="p-6">
-                            <h4 class="font-bold text-2xl text-slate-800 mb-6 text-center border-b-2 border-slate-200 pb-2 bg-slate-50 p-2">התחייבויות והון עצמי (צד שמאל)</h4>
-                            
-                            <h5 class="font-bold text-rose-700 text-lg border-b border-rose-200 mb-3">התחייבויות שוטפות</h5>
-                            <div class="flex justify-between mb-1 text-slate-700 font-mono"><span>ספקים</span><span>110,000</span></div>
-                            <div class="flex justify-between mb-4 text-slate-700 font-mono"><span>שיקים לפירעון</span><span>120,000</span></div>
-                            <div class="flex justify-between mb-6 font-bold text-rose-900 bg-rose-50 px-2 py-1 rounded"><span>סך התחייבויות שוטפות:</span><span>230,000</span></div>
-
-                            <h5 class="font-bold text-rose-700 text-lg border-b border-rose-200 mb-3">התחייבויות לא שוטפות</h5>
-                            <div class="flex justify-between mb-4 text-slate-700 font-mono"><span>הלוואות לזמן ארוך</span><span>300,000</span></div>
-                            <div class="flex justify-between mb-6 font-bold text-rose-900 bg-rose-50 px-2 py-1 rounded"><span>סך התחייבויות לא שוטפות:</span><span>300,000</span></div>
-                            
-                            <h5 class="font-bold text-blue-700 text-lg border-b border-blue-200 mb-3">הון עצמי</h5>
-                            <div class="flex justify-between mb-1 text-slate-700 font-mono"><span>הון מניות</span><span>500,000</span></div>
-                            <div class="flex justify-between mb-4 text-indigo-700 font-mono font-bold bg-indigo-50 px-1"><span title="מתוך חישוב העודפים">יתרת רווח (עודפים) *</span><span>134,500</span></div>
-                            <div class="flex justify-between mb-6 font-bold text-blue-900 bg-blue-50 px-2 py-1 rounded"><span>סך הון עצמי:</span><span>634,500</span></div>
-
-                            <div class="mt-auto pt-4 flex justify-between font-bold text-xl text-white bg-slate-800 px-4 py-3 rounded">
-                                <span>סך התחייבויות והון</span>
-                                <span>1,164,500</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="lg:w-1/2 space-y-3">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4 border-b-2 border-indigo-200 pb-2">רציונל וחישוב</h3>
+                    <div class="bg-emerald-50 p-4 rounded-lg border-r-4 border-emerald-500"><h4 class="font-bold text-emerald-800 mb-1">הכנסות (600,000 ש"ח)</h4><p class="text-sm text-slate-600">נלקח מעמודת "הכנסות" בטבלה (עסקה 2). נרשמות כל ההכנסות ממתן שירות.</p></div>
+                    <div class="bg-rose-50 p-4 rounded-lg border-r-4 border-rose-500"><h4 class="font-bold text-rose-800 mb-1">הוצאות תפעוליות (455,000 ש"ח)</h4><p class="text-sm text-slate-600">יועצים (180) + מנהלה (100) + שכירות (120) + שיווק (25) + ארנונה (30) = 455.</p></div>
+                    <div class="bg-orange-50 p-4 rounded-lg border-r-4 border-orange-500"><h4 class="font-bold text-orange-800 mb-1">הוצאות מימון (2,500 ש"ח)</h4><p class="text-sm text-slate-600">עמלות בנק — הוצאה פיננסית, לא תפעולית, מוצגת בנפרד מתחת לרווח התפעולי.</p></div>
+                    <div class="bg-slate-50 p-4 rounded-lg border-r-4 border-slate-400"><h4 class="font-bold text-slate-800 mb-1">מיסים (8,000 ש"ח)</h4><p class="text-sm text-slate-600">מס על הרווח לפני מס — ההוצאה האחרונה בדרך לרווח הנקי.</p></div>
                 </div>
             </div>
-        </section>
+        </div>
+        <!-- Retained -->
+        <div id="tab-retained" class="tab-content hidden">
+            <div class="max-w-2xl mx-auto">
+                <h3 class="text-2xl font-bold text-center mb-2">חישוב יתרת הרווח / עודפים</h3>
+                <p class="text-center text-slate-500 mb-6">הרווח הנקי "עובר" מדוח רווח והפסד אל תוך ההון העצמי במאזן תחת "עודפים".</p>
+                <div class="bg-white rounded-xl border border-slate-300 shadow-lg p-6 font-mono text-lg space-y-3">
+                    <div class="flex justify-between py-2 border-b border-dashed"><span>עודפים פתיחה (1.1.2026)</span><span class="font-bold">0</span></div>
+                    <div class="flex justify-between py-2 border-b border-dashed text-emerald-700"><span>+ רווח נקי</span><span class="font-bold">134,500</span></div>
+                    <div class="flex justify-between py-2 border-b text-rose-600"><span>דיבידנד</span><span class="font-bold">(0)</span></div>
+                    <div class="flex justify-between py-3 px-2 bg-indigo-50 rounded font-bold text-xl text-indigo-900 border border-indigo-200"><span>עודפים לתום השנה (31.12.2026)</span><span>134,500</span></div>
+                </div>
+                <p class="text-center text-indigo-600 font-bold mt-4"><i class="fa-solid fa-arrow-down ml-1"></i> סכום זה יופיע במאזן תחת הון עצמי</p>
+            </div>
+        </div>
+        <!-- Balance -->
+        <div id="tab-balance" class="tab-content hidden">
+            <h3 class="text-2xl font-bold text-center mb-2">המאזן ליום 31.12.2026</h3>
+            <p class="text-center text-slate-500 mb-6">צילום מצב של יתרות החברה על פי שורת הסגירה בטבלה.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 border-4 border-slate-800 rounded-xl overflow-hidden shadow-2xl bg-white">
+                <div class="p-6 border-b lg:border-b-0 lg:border-l-4 border-slate-800">
+                    <h4 class="font-bold text-2xl text-center mb-5 bg-slate-50 p-2 border-b-2 border-slate-200">נכסים</h4>
+                    <h5 class="font-bold text-emerald-700 text-lg border-b border-emerald-200 mb-3">נכסים שוטפים</h5>
+                    <div class="flex justify-between mb-1 font-mono"><span>מזומן</span><span>864,500</span></div>
+                    <div class="flex justify-between mb-1 font-mono"><span>לקוחות</span><span>150,000</span></div>
+                    <div class="flex justify-between mb-4 font-mono text-slate-400"><span>שיקים לקבל</span><span>0</span></div>
+                    <div class="flex justify-between mb-5 font-bold bg-emerald-50 px-2 py-1 rounded text-emerald-900"><span>סך שוטפים:</span><span>1,014,500</span></div>
+                    <h5 class="font-bold text-emerald-700 text-lg border-b border-emerald-200 mb-3">נכסים לא שוטפים</h5>
+                    <div class="flex justify-between mb-4 font-mono"><span>ריהוט וציוד</span><span>150,000</span></div>
+                    <div class="flex justify-between mb-5 font-bold bg-emerald-50 px-2 py-1 rounded text-emerald-900"><span>סך לא שוטפים:</span><span>150,000</span></div>
+                    <div class="flex justify-between font-bold text-xl text-white bg-slate-800 px-4 py-3 rounded"><span>סך הנכסים</span><span>1,164,500</span></div>
+                </div>
+                <div class="p-6">
+                    <h4 class="font-bold text-2xl text-center mb-5 bg-slate-50 p-2 border-b-2 border-slate-200">התחייבויות והון</h4>
+                    <h5 class="font-bold text-rose-700 text-lg border-b border-rose-200 mb-3">התחייבויות שוטפות</h5>
+                    <div class="flex justify-between mb-1 font-mono"><span>ספקים</span><span>110,000</span></div>
+                    <div class="flex justify-between mb-4 font-mono"><span>שיקים לפירעון</span><span>120,000</span></div>
+                    <div class="flex justify-between mb-5 font-bold bg-rose-50 px-2 py-1 rounded text-rose-900"><span>סך שוטפות:</span><span>230,000</span></div>
+                    <h5 class="font-bold text-rose-700 text-lg border-b border-rose-200 mb-3">התחייבויות לא שוטפות</h5>
+                    <div class="flex justify-between mb-4 font-mono"><span>הלוואות לזמן ארוך</span><span>300,000</span></div>
+                    <div class="flex justify-between mb-5 font-bold bg-rose-50 px-2 py-1 rounded text-rose-900"><span>סך לא שוטפות:</span><span>300,000</span></div>
+                    <h5 class="font-bold text-blue-700 text-lg border-b border-blue-200 mb-3">הון עצמי</h5>
+                    <div class="flex justify-between mb-1 font-mono"><span>הון מניות</span><span>500,000</span></div>
+                    <div class="flex justify-between mb-4 font-mono font-bold text-indigo-700 bg-indigo-50 px-1"><span>עודפים (יתרת רווח)</span><span>134,500</span></div>
+                    <div class="flex justify-between mb-5 font-bold bg-blue-50 px-2 py-1 rounded text-blue-900"><span>סך הון עצמי:</span><span>634,500</span></div>
+                    <div class="flex justify-between font-bold text-xl text-white bg-slate-800 px-4 py-3 rounded"><span>סך התחייבויות והון</span><span>1,164,500</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    </main>
+</main>
 
-    <footer class="bg-slate-900 text-slate-400 text-center py-8 border-t border-slate-800">
-        <p>המדריך המלא לפתרון תרגילי חשבונאות <span class="mx-2 text-emerald-500">|</span> עריכה ופיתוח דינמי <span class="mx-2 text-emerald-500">|</span> 2026</p>
-    </footer>
+<footer class="bg-slate-900 text-slate-400 text-center py-8 border-t border-slate-800">
+    <p class="text-base">
+        פתרון מלא לתרגיל שיעור 4 — התהליך החשבונאי
+        <span class="mx-2 text-emerald-500">|</span>
+        נבנה למענכם דינמית באדיבות <strong class="text-white">ד"ר שי צבאן</strong>
+    </p>
+</footer>
 
-    <script>
-        // Data for Transactions Accordion (Keeping it concise)
-        const transactions = [
-            { id: 1, title: 'הנפקת מניות למזומן (500k)', rationale: 'כסף נכנס פנימה, ובתמורה נוצרת התחייבות לבעלים (הון). נכס המזומן עולה מול עלייה בהון המניות.'},
-            { id: 2, title: 'הכנסות מייעוץ (600k)', rationale: 'ההכנסה כולה נרשמת מיד, אך התקבול מפוצל: מזומן גדל ב-200, שיקים לקבל ב-200 ולקוחות ב-200.'},
-            { id: 3, title: 'תשלום שכירות בשיק דחוי (120k)', rationale: 'השכירות נרשמת כהוצאה. מאחר והשיק דחוי (הכסף טרם יצא), נוצרת התחייבות בסעיף שיקים לפירעון.'},
-            { id: 4, title: 'קבלת הלוואה (300k)', rationale: 'מזומן נכנס לעסק, אך זהו כסף של הבנק שצריך להחזיר, ולכן נרשמת התחייבות תואמת.'},
-            { id: 5, title: 'שכר יועצים (180k)', rationale: 'שכר הוא הוצאה תפעולית. התשלום בוצע במזומן ולכן הנכס קטן מול רישום ההוצאה.'},
-            { id: 6, title: 'רכישת ריהוט בהקפה (150k)', rationale: 'ריהוט הוא רכוש קבוע (נכס חדש). הרכישה באשראי ולכן המזומן לא נפגע, אלא נוצר חוב לספקים (התחייבות).'},
-            { id: 7, title: 'קמפיין שיווק (25k)', rationale: 'שיווק הוא הוצאה שוטפת המשולמת מקופת המזומן.'},
-            { id: 8, title: 'הפקדת שיקים (200k)', rationale: 'המרת נכס בנכס. שיקים הופכים למזומן. צד הנכסים משנה צורה אך הסך הכל נשאר ללא שינוי.'},
-            { id: 9, title: 'ארנונה (30k)', rationale: 'תשלום מסים עירוניים הוא הוצאה תפעולית השוטפת של העסק.'},
-            { id: 10, title: 'גבייה מלקוחות (50k)', rationale: 'המרת נכס בנכס. החוב של הלקוח מצטמצם, והמזומן גדל. לא רושמים הכנסה כיוון שכבר נרשמה בעסקה 2.'},
-            { id: 11, title: 'שכר מנהלה (100k)', rationale: 'הוצאת שכר בגין הפעילות האדמיניסטרטיבית המקטינה את המזומן.'},
-            { id: 12, title: 'תשלום לספק (40k)', rationale: 'החברה מקטינה את החוב שלה לספק. גם המזומן יורד (נכס קטן) וגם החוב לספק יורד (התחייבות קטנה).'},
-            { id: 13, title: 'עמלות בנק (2.5k)', rationale: 'הוצאת מימון. הבנק גובה עמלה מתוך קופת המזומן.'},
-            { id: 14, title: 'מיסים על ההכנסה (8k)', rationale: 'תשלום המס למדינה מתוך הרווחים שיצרנו השנה.'}
-        ];
+<script>
+const transactions = [
+  {
+    id: 1,
+    title: 'הונפקו מניות בתמורה למזומן בסך 500,000 ש"ח',
+    tags: ['נכס ↑','הון ↑'], tagStyles: ['tag-asset','tag-equity'],
+    summary: 'החברה גייסה הון ראשוני — הבעלים / משקיעים הזרימו כסף ובתמורה קיבלו מניות.',
+    steps: [
+      { icon:'fa-coins', color:'text-emerald-600', label:'מזומן עולה ב-500,000 ש"ח', detail:'כסף פיזי נכנס לחשבון הבנק של החברה — זהו נכס שוטף.' },
+      { icon:'fa-building-columns', color:'text-blue-600', label:'הון מניות עולה ב-500,000 ש"ח', detail:'בתמורה לכסף הונפקו מניות. הסכום מיוחס להון העצמי בסעיף "הון מניות".' },
+      { icon:'fa-scale-balanced', color:'text-slate-500', label:'האיזון: נכס חדש = הון חדש', detail:'נכסים עלו ב-500,000 ש"ח, הון עצמי עלה ב-500,000 ש"ח — המשוואה מאוזנת.' }
+    ],
+    cells: [500,null,null,null,null,null,null,500,null,null],
+    equationNote: 'נכסים 500 = התחייבויות 0 + הון 500 ✓',
+    why: 'יש לזכור שהכנסה משקפת פעילות עסקית יוצרת ערך, כגון מכר או מתן שירות. גיוס הון מבעלים אינו יוצר ערך מסחרי — אלא מהווה מקור מימון. לכן אין לרשום הכנסה, אלא הון עצמי.'
+  },
+  {
+    id: 2,
+    title: 'נרשמו הכנסות ייעוץ בסך 600,000 ש"ח (פיצול תקבולים)',
+    tags: ['נכס ↑','הכנסה ↑'], tagStyles: ['tag-asset','tag-equity'],
+    summary: 'ניתנו שירותי ייעוץ בסך 600,000 ש"ח — ההכנסה נרשמת מיד, אך התקבול פוצל לשלושה אופנים שונים.',
+    steps: [
+      { icon:'fa-money-bill-wave', color:'text-emerald-600', label:'200,000 ש"ח התקבלו במזומן', detail:'תשלום מיידי בכסף — ישירות לחשבון הבנק.' },
+      { icon:'fa-file-invoice', color:'text-emerald-600', label:'200,000 ש"ח בשיק דחוי (שיקים לקבל)', detail:'הלקוח מסר שיק שמועד פירעונו טרם הגיע. זהו נכס שוטף — יש לנו זכות לגבייה בעתיד הקרוב.' },
+      { icon:'fa-user-clock', color:'text-emerald-600', label:'200,000 ש"ח על חשבון פתוח (לקוחות)', detail:'חלק שלישי ניתן באשראי — הלקוח טרם שילם ולא מסר שיק. גם זהו נכס שוטף.' },
+      { icon:'fa-scale-balanced', color:'text-slate-500', label:'הכנסה כוללת: 600,000 ש"ח', detail:'ההכנסה נרשמת במלואה בעת מתן השירות — בהתאם לעיקרון הצבירה (Accrual Basis).' }
+    ],
+    cells: [200,200,200,null,null,null,null,null,600,null],
+    equationNote: 'נכסים 600 = התחייבויות 0 + הון 600 (הכנסה) ✓',
+    why: 'עיקרון הצבירה: הכנסה נרשמת ברגע שהשירות ניתן — ללא קשר לאופן ועיתוי גביית התמורה. כך מוצגת התמונה הכלכלית האמיתית של הפעילות.'
+  },
+  {
+    id: 3,
+    title: 'נרשמה הוצאת שכירות בשיק דחוי בסך 120,000 ש"ח',
+    tags: ['התחייבות ↑','הוצאה ↑'], tagStyles: ['tag-liab','tag-neutral'],
+    summary: 'שירות השכירות כבר נוצל ולכן ההוצאה נרשמת — אך השיק טרם נפרע ולכן קיימת התחייבות בגינו.',
+    steps: [
+      { icon:'fa-home', color:'text-slate-600', label:'שירות השכירות כבר נוצל', detail:'המבנה שמש את החברה בפועל — לכן ההוצאה נרשמת עכשיו בהתאם לעיקרון הצבירה.' },
+      { icon:'fa-file-signature', color:'text-rose-600', label:'השיק טרם נפרע', detail:'מועד פירעון השיק טרם הגיע — לפיכך הכסף עוד לא "יצא" ואין הקטנה של המזומן.' },
+      { icon:'fa-hand-holding-dollar', color:'text-rose-600', label:'שיקים לפירעון עולה ב-120,000 ש"ח', detail:'השיק שנמסר מהווה התחייבות — נרשמת כהתחייבות שוטפת בסעיף "שיקים לפירעון".' }
+    ],
+    cells: [null,null,null,null,null,null,120,null,null,-120],
+    equationNote: 'נכסים 0 = התחייבויות 120 + הון (120) ✓',
+    why: 'השיק טרם נפרע ולכן קיימת התחייבות בגינו. אין הקטנה של מזומן — יש יצירת התחייבות. ההוצאה נרשמת מיד מפני שהשירות כבר נצרך.'
+  },
+  {
+    id: 4,
+    title: 'התקבלה הלוואה מהבנק בסך 300,000 ש"ח',
+    tags: ['נכס ↑','התחייבות ↑'], tagStyles: ['tag-asset','tag-liab'],
+    summary: 'כסף נכנס לחשבון, אך אינו שייך לחברה — הוא חייב להיות מוחזר לבנק.',
+    steps: [
+      { icon:'fa-building-columns', color:'text-emerald-600', label:'מזומן עולה ב-300,000 ש"ח', detail:'הבנק העביר כסף לחשבון החברה — זהו נכס.' },
+      { icon:'fa-file-contract', color:'text-rose-600', label:'הלוואות (התחייבות) עולה ב-300,000 ש"ח', detail:'כסף זה אינו של החברה — יש להחזירו. לפיכך נרשם כהתחייבות ולא כהון.' }
+    ],
+    cells: [300,null,null,null,300,null,null,null,null,null],
+    equationNote: 'נכסים 300 = התחייבויות 300 + הון 0 ✓',
+    why: 'הכנסה מייצגת מקור מפעילות כגון מכר או מתן שירות. הלוואה לעומת זאת היא כסף שקיבלנו מגורם חיצוני ויש להחזירו — לכן ההון העצמי אינו משתנה כלל.'
+  },
+  {
+    id: 5,
+    title: 'שולם שכר יועצים במזומן בסך 180,000 ש"ח',
+    tags: ['נכס ↓','הוצאה ↑'], tagStyles: ['tag-asset','tag-neutral'],
+    summary: 'נצרכו שירותי ייעוץ חיצוניים — הוצאה תפעולית ישירה ששולמה במזומן.',
+    steps: [
+      { icon:'fa-people-group', color:'text-slate-600', label:'נצרכו שירותים מיועצים חיצוניים', detail:'היועצים סיפקו את שירותם לחברה — נוצר חוב שסולק מיידית.' },
+      { icon:'fa-money-bill-transfer', color:'text-rose-600', label:'מזומן יורד ב-180,000 ש"ח', detail:'שולם ישירות מחשבון הבנק — הנכס מצטמצם.' },
+      { icon:'fa-chart-line', color:'text-rose-600', label:'הוצאת שכר נרשמת: (180,000) ש"ח', detail:'ההוצאה מקטינה את ההון העצמי דרך עמודת "הוצאות" בטבלה.' }
+    ],
+    cells: [-180,null,null,null,null,null,null,null,null,-180],
+    equationNote: 'נכסים (180) = התחייבויות 0 + הון (180) ✓',
+    why: 'שכר יועצים מסווג כהוצאה תפעולית — הוצאה הנחוצה לניהול הפעילות השוטפת. נצרכו שירותים, ולכן ההוצאה נרשמת ומקטינה את ההון העצמי.'
+  },
+  {
+    id: 6,
+    title: 'נרכש ריהוט וציוד בהקפה (אשראי) בסך 150,000 ש"ח',
+    tags: ['נכס ↑','התחייבות ↑'], tagStyles: ['tag-asset','tag-liab'],
+    summary: 'נרכש רכוש קבוע מהספק על חשבון פתוח — נכס נוסף לחברה, אך גם חוב מסחרי חדש.',
+    steps: [
+      { icon:'fa-couch', color:'text-emerald-600', label:'ריהוט וציוד עולה ב-150,000 ש"ח', detail:'פריט ריהוט / ציוד מתווסף לחברה — זהו נכס לא שוטף (רכוש קבוע) שישמש מעל שנה.' },
+      { icon:'fa-store', color:'text-rose-600', label:'ספקים (התחייבות) עולה ב-150,000 ש"ח', detail:'לא שולם כסף — הספק העניק אשראי. נוצר חוב מסחרי המסווג כהתחייבות שוטפת.' }
+    ],
+    cells: [null,null,null,150,null,150,null,null,null,null],
+    equationNote: 'נכסים 150 = התחייבויות 150 + הון 0 ✓',
+    why: 'ריהוט הוא נכס קבוע, לא הוצאה מיידית. הוצאה תיווצר בעתיד בדרך פחת שנתי. בשלב הרכישה, החברה פשוט קיבלה נכס פיזי בתמורה ליצירת חוב לספק.'
+  },
+  {
+    id: 7,
+    title: 'שולמו הוצאות שיווק במזומן בסך 25,000 ש"ח',
+    tags: ['נכס ↓','הוצאה ↑'], tagStyles: ['tag-asset','tag-neutral'],
+    summary: 'הוצאה שיווקית ישירה — נצרך שירות פרסומי ושולם מיידית מקופת המזומן.',
+    steps: [
+      { icon:'fa-bullhorn', color:'text-slate-600', label:'שירות שיווקי נוצל', detail:'קמפיין פרסום בוצע — נוצלו שירותים חיצוניים ולכן ההוצאה נרשמת מיד.' },
+      { icon:'fa-money-bill-wave', color:'text-rose-600', label:'מזומן יורד ב-25,000 ש"ח', detail:'שולם מיידית — נכס המזומן מצטמצם.' },
+      { icon:'fa-arrow-trend-down', color:'text-rose-600', label:'הוצאת שיווק (25,000) ש"ח', detail:'ההוצאה מקטינה את ההון העצמי.' }
+    ],
+    cells: [-25,null,null,null,null,null,null,null,null,-25],
+    equationNote: 'נכסים (25) = התחייבויות 0 + הון (25) ✓',
+    why: 'הוצאות שיווק מסווגות בדרך כלל ב"הוצאות מכירה ושיווק" — נפרדות מהוצאות מנהלה. יחד עם זאת, בתרגיל הנוכחי העוסק בחברה פשוטה מאוד שרק מעניקה שירותים ואינה מוכרת או מייצרת מוצרים, ניתן לאגד את כלל ההוצאות תחת "הוצאות הנהלה וכלליות / הוצאות תפעוליות".'
+  },
+  {
+    id: 8,
+    title: 'הופקדו שיקים לקבל בבנק בסך 200,000 ש"ח',
+    tags: ['נכס ↔ נכס'], tagStyles: ['tag-neutral'],
+    summary: 'פעולה פנימית בלבד: המרת סוג נכס (שיקים) לסוג נכס אחר (מזומן). סך הנכסים אינו משתנה.',
+    steps: [
+      { icon:'fa-file-invoice', color:'text-rose-600', label:'שיקים לקבל יורד ב-200,000 ש"ח', detail:'השיקים הוגשו לבנק — אינם עוד ברשות החברה כנכס נפרד.' },
+      { icon:'fa-coins', color:'text-emerald-600', label:'מזומן עולה ב-200,000 ש"ח', detail:'הבנק קיבל את השיקים וזיכה את חשבון החברה.' },
+      { icon:'fa-equals', color:'text-slate-500', label:'סך הנכסים: ללא שינוי נטו', detail:'200,000 ש"ח עברו ממדור "שיקים לקבל" למדור "מזומן" — שני צדדי המשוואה אינם משתנים.' }
+    ],
+    cells: [200,-200,null,null,null,null,null,null,null,null],
+    equationNote: 'נכסים 0 (שינוי פנימי) = התחייבויות 0 + הון 0 ✓',
+    why: 'זוהי עסקת חילופין פנימית בתוך הנכסים — הסוג משתנה, לא הסכום הכולל. אין השפעה על ההתחייבויות, ההון העצמי, או דוח רווח והפסד.'
+  },
+  {
+    id: 9,
+    title: 'שולמה ארנונה במזומן בסך 30,000 ש"ח',
+    tags: ['נכס ↓','הוצאה ↑'], tagStyles: ['tag-asset','tag-neutral'],
+    summary: 'תשלום חובה לרשות המקומית בגין שימוש במבנה — ארנונה היא הוצאה לכל דבר ועניין, ומאחר ושולמה במזומן מקטינה את נכס המזומן.',
+    steps: [
+      { icon:'fa-city', color:'text-slate-600', label:'חובת ארנונה קמה בגין ניצול המבנה', detail:'השימוש במבנה מחייב תשלום ארנונה לעירייה — נצרך שירות שלטוני.' },
+      { icon:'fa-money-bill-wave', color:'text-rose-600', label:'מזומן יורד ב-30,000 ש"ח', detail:'ארנונה שולמה מיידית לרשות המקומית — נכס המזומן מצטמצם.' },
+      { icon:'fa-arrow-trend-down', color:'text-rose-600', label:'הוצאת ארנונה (30,000) ש"ח', detail:'הפחתה נוספת מהרווח התפעולי.' }
+    ],
+    cells: [-30,null,null,null,null,null,null,null,null,-30],
+    equationNote: 'נכסים (30) = התחייבויות 0 + הון (30) ✓',
+    why: 'ארנונה היא הוצאה לכל דבר ועניין — נוצרת בגין ניצול שירות (מקום עסק), ובמקביל הואיל וגם שולמה במזומן מקטינה את נכס המזומן. ממוינת תחת הוצאות תפעוליות.'
+  },
+  {
+    id: 10,
+    title: 'נגבה חוב מלקוחות במזומן בסך 50,000 ש"ח',
+    tags: ['נכס ↔ נכס'], tagStyles: ['tag-neutral'],
+    summary: 'לקוח פרע את חובו — הנכס "לקוחות" הופך ל"מזומן". לא נוצרת כל הכנסה חדשה!',
+    steps: [
+      { icon:'fa-user-check', color:'text-emerald-600', label:'לקוח שילם את חובו', detail:'הלקוח פרע את החוב שנוצר בעסקה מס\' 2.' },
+      { icon:'fa-coins', color:'text-emerald-600', label:'מזומן עולה ב-50,000 ש"ח', detail:'הכסף נכנס לחשבון הבנק.' },
+      { icon:'fa-user-minus', color:'text-rose-600', label:'לקוחות יורד ב-50,000 ש"ח', detail:'החוב של הלקוח מבוטל — הוא כבר אינו חייב לחברה.' }
+    ],
+    cells: [50,null,-50,null,null,null,null,null,null,null],
+    equationNote: 'נכסים 0 (שינוי פנימי) = התחייבויות 0 + הון 0 ✓',
+    why: 'טעות נפוצה: אין לרשום הכנסה חוזרת! ההכנסה כבר נרשמה בעסקה מס\' 2 ברגע מתן השירות — בהתאם לעיקרון הצבירה. הגבייה היא המרת נכס בלבד ואינה יוצרת ערך חדש.'
+  },
+  {
+    id: 11,
+    title: 'שולם שכר מנהלה במזומן בסך 100,000 ש"ח',
+    tags: ['נכס ↓','הוצאה ↑'], tagStyles: ['tag-asset','tag-neutral'],
+    summary: 'שכר לעובדי הנהלה — הוצאה עקיפה (כלל-ארגונית) שנצרכה ושולמה במזומן.',
+    steps: [
+      { icon:'fa-user-tie', color:'text-slate-600', label:'נצרכו שירותי ניהול שוטפים', detail:'עובדי המנהלה ביצעו את תפקידם — נוצר חוב שכר שסולק מיידית.' },
+      { icon:'fa-money-bill-transfer', color:'text-rose-600', label:'מזומן יורד ב-100,000 ש"ח', detail:'השכר שולם ישירות לעובדים מחשבון הבנק.' },
+      { icon:'fa-arrow-trend-down', color:'text-rose-600', label:'הוצאת שכר (100,000) ש"ח', detail:'מקטינה את הרווח הנקי.' }
+    ],
+    cells: [-100,null,null,null,null,null,null,null,null,-100],
+    equationNote: 'נכסים (100) = התחייבויות 0 + הון (100) ✓',
+    why: 'שכר מנהלה הוא הוצאה "עקיפה" — לא קשורה ישירות לייצור שירות ספציפי, אלא לניהול הכללי של הארגון. בדוח רווח והפסד היא מסווגת תחת "הוצאות הנהלה וכלליות" (G&A).'
+  },
+  {
+    id: 12,
+    title: 'בוצע תשלום חלקי לספק בסך 40,000 ש"ח',
+    tags: ['נכס ↓','התחייבות ↓'], tagStyles: ['tag-asset','tag-liab'],
+    summary: 'פירעון חלקי של חוב לספק הריהוט (עסקה מס\' 6) — מקטין גם נכס וגם התחייבות בסכום זהה.',
+    steps: [
+      { icon:'fa-store', color:'text-rose-600', label:'ספקים (התחייבות) יורד ב-40,000 ש"ח', detail:'חלק מחוב הספקים (מעסקה 6: 150,000 ש"ח) נפרע — יתרת החוב יורדת ל-110,000 ש"ח.' },
+      { icon:'fa-money-bill-wave', color:'text-rose-600', label:'מזומן יורד ב-40,000 ש"ח', detail:'הכסף יוצא מחשבון הבנק אל הספק.' }
+    ],
+    cells: [-40,null,null,null,null,-40,null,null,null,null],
+    equationNote: 'נכסים (40) = התחייבויות (40) + הון 0 ✓',
+    why: 'זוהי עסקת "סילוק חוב" — הנכס (מזומן) ירד, ובמקביל ירדה ההתחייבות (ספקים) באותו סכום. אין כל השפעה על ההון העצמי ואין רישום בדוח רווח והפסד.'
+  },
+  {
+    id: 13,
+    title: 'נגבו עמלות בנק בסך 2,500 ש"ח',
+    tags: ['נכס ↓','הוצ\' מימון ↑'], tagStyles: ['tag-asset','tag-neutral'],
+    summary: 'הבנק גבה עמלה אוטומטית מהחשבון — הוצאת מימון (לא הוצאה תפעולית).',
+    steps: [
+      { icon:'fa-building-columns', color:'text-slate-600', label:'הבנק גובה עמלה מהחשבון', detail:'הגבייה מבוצעת ישירות ללא פעולה אקטיבית מצד החברה.' },
+      { icon:'fa-coins', color:'text-rose-600', label:'מזומן יורד ב-2,500 ש"ח', detail:'יתרת חשבון הבנק מצטמצמת בסכום העמלה.' },
+      { icon:'fa-arrow-trend-down', color:'text-rose-600', label:'הוצאת מימון (2,500) ש"ח', detail:'מסווגת בנפרד מהוצאות תפעוליות בדוח רווח והפסד.' }
+    ],
+    cells: [-2.5,null,null,null,null,null,null,null,null,-2.5],
+    equationNote: 'נכסים (2.5) = התחייבויות 0 + הון (2.5) ✓',
+    why: 'עמלות בנק וריבית הן הוצאות מימון, לא הוצאות תפעוליות. בדוח רווח והפסד הן מוצגות מתחת לרווח התפעולי, כי הן קשורות לאופן המימון ולא לפעילות העסקית עצמה.'
+  },
+  {
+    id: 14,
+    title: 'שולמו מיסים על הכנסה בסך 8,000 ש"ח',
+    tags: ['נכס ↓','הוצ\' מס ↑'], tagStyles: ['tag-asset','tag-neutral'],
+    summary: 'תשלום מס חברות בגין הרווחים שנוצרו — ההוצאה האחרונה בדרך לרווח הנקי הסופי.',
+    steps: [
+      { icon:'fa-landmark', color:'text-slate-600', label:'חבות מס נוצרת בגין הרווח', detail:'החברה הרוויחה — היא חייבת מס לרשות המסים. המס מחושב על "הרווח לפני מס".' },
+      { icon:'fa-money-bill-wave', color:'text-rose-600', label:'מזומן יורד ב-8,000 ש"ח', detail:'שולם ישירות לרשות המסים.' },
+      { icon:'fa-percent', color:'text-rose-600', label:'הוצאת מס (8,000) ש"ח', detail:'מקטינה את הרווח הנקי הסופי.' }
+    ],
+    cells: [-8,null,null,null,null,null,null,null,null,-8],
+    equationNote: 'נכסים (8) = התחייבויות 0 + הון (8) ✓',
+    why: 'המס מוצג כשורה נפרדת בדוח רווח והפסד לאחר "רווח לפני מס" — כי הוא תלוי בתוצאה הכלכלית הכוללת ואינו חלק מהפעילות התפעולית. הוא "השורה האחרונה" לפני הרווח הנקי.'
+  }
+];
 
-        const container = document.getElementById('transactions-container');
-        
-        transactions.forEach(t => {
-            const html = `
-                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-indigo-300 smooth-transition">
-                    <button onclick="toggleAcc(${t.id})" class="w-full text-right px-6 py-4 flex items-center justify-between focus:outline-none bg-slate-50 hover:bg-indigo-50 smooth-transition">
-                        <span class="font-bold text-slate-800 text-lg"><span class="bg-indigo-100 text-indigo-800 px-2 rounded ml-2">${t.id}</span> ${t.title}</span>
-                        <i id="icon-${t.id}" class="fa-solid fa-chevron-down text-slate-400 smooth-transition"></i>
-                    </button>
-                    <div id="content-${t.id}" class="hidden px-6 pb-6 pt-2 bg-white border-t border-slate-100 text-slate-700">
-                        ${t.rationale}
+// ══ RENDER ══
+const container = document.getElementById('transactions-container');
+
+transactions.forEach(t => {
+    const colLabels = ['מזומן','שיקים לקבל','לקוחות','ריהוט','הלוואות','ספקים','שיקים לפיר\'','הון מניות','הכנסות','הוצאות'];
+    const headerRow = `<tr>
+        ${colLabels.slice(0,4).map(c=>`<th class="col-asset-h">${c}</th>`).join('')}
+        ${colLabels.slice(4,7).map(c=>`<th class="col-liab-h">${c}</th>`).join('')}
+        ${colLabels.slice(7).map(c=>`<th class="col-equity-h">${c}</th>`).join('')}
+    </tr>`;
+    const valueRow = `<tr>${t.cells.map(v=>cellHtml(v)).join('')}</tr>`;
+    const tagsHtml = t.tags.map((tag,i)=>`<span class="tag ${t.tagStyles[i]}">${tag}</span>`).join('');
+    const stepsHtml = t.steps.map(s=>`
+        <div class="flex gap-3 items-start">
+            <div class="mt-0.5 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid ${s.icon} ${s.color} text-sm"></i>
+            </div>
+            <div>
+                <p class="font-semibold text-slate-800 text-sm">${s.label}</p>
+                <p class="text-slate-500 text-sm mt-0.5">${s.detail}</p>
+            </div>
+        </div>`).join('');
+
+    container.insertAdjacentHTML('beforeend', `
+    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-indigo-300 smooth-transition">
+        <button onclick="toggleAcc(${t.id})" class="w-full text-right px-5 py-4 flex items-center justify-between focus:outline-none bg-slate-50 hover:bg-indigo-50 smooth-transition">
+            <div class="flex items-center gap-3 flex-wrap">
+                <span class="bg-indigo-600 text-white text-sm font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0">${t.id}</span>
+                <span class="font-bold text-slate-800 text-base">${t.title}</span>
+                <div class="flex gap-1 flex-wrap">${tagsHtml}</div>
+            </div>
+            <i id="icon-${t.id}" class="fa-solid fa-chevron-down text-slate-400 acc-icon flex-shrink-0 mr-2"></i>
+        </button>
+        <div id="content-${t.id}" class="acc-content">
+            <div class="px-5 pb-6 pt-4 space-y-5 border-t border-slate-100">
+                <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
+                    <p class="text-indigo-900 font-semibold text-sm"><i class="fa-solid fa-circle-info text-indigo-500 ml-1"></i>${t.summary}</p>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-6">
+                    <div class="lg:w-1/2 space-y-4">
+                        <h4 class="font-bold text-slate-700 text-sm uppercase tracking-wide border-b pb-1"><i class="fa-solid fa-list-ol text-indigo-400 ml-1"></i>שלבי הרישום</h4>
+                        ${stepsHtml}
+                    </div>
+                    <div class="lg:w-1/2 space-y-4">
+                        <h4 class="font-bold text-slate-700 text-sm uppercase tracking-wide border-b pb-1"><i class="fa-solid fa-table text-emerald-500 ml-1"></i>שורת הרישום בטבלה</h4>
+                        <div class="overflow-x-auto">
+                            <table class="entry-table rounded-lg overflow-hidden text-center w-full">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4" class="col-asset-h text-xs py-1">נכסים</th>
+                                        <th colspan="3" class="col-liab-h text-xs py-1">התחייבויות</th>
+                                        <th colspan="3" class="col-equity-h text-xs py-1">הון עצמי</th>
+                                    </tr>
+                                    ${headerRow}
+                                </thead>
+                                <tbody>${valueRow}</tbody>
+                            </table>
+                        </div>
+                        <div class="balance-box"><i class="fa-solid fa-check-circle text-emerald-500"></i><span>${t.equationNote}</span></div>
                     </div>
                 </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
-        });
+                <div class="bg-amber-50 border-r-4 border-amber-400 rounded-xl p-4">
+                    <p class="text-sm font-bold text-amber-800 mb-1"><i class="fa-solid fa-lightbulb ml-1"></i>למה ככה?</p>
+                    <p class="text-sm text-amber-900">${t.why}</p>
+                </div>
+            </div>
+        </div>
+    </div>`);
+});
 
-        function toggleAcc(id) {
-            const content = document.getElementById(`content-${id}`);
-            const icon = document.getElementById(`icon-${id}`);
-            if(content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                icon.classList.add('rotate-180');
-            } else {
-                content.classList.add('hidden');
-                icon.classList.remove('rotate-180');
-            }
-        }
+function cellHtml(v) {
+    if (v === null) return `<td class="cell-neutral">—</td>`;
+    // Positive: plain. Negative: in parentheses (accounting convention).
+    const fmt = v > 0 ? `${v}` : `(${Math.abs(v)})`;
+    return `<td class="${v > 0 ? 'cell-pos' : 'cell-neg'}">${fmt}</td>`;
+}
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => {
-                el.classList.add('hidden');
-                el.classList.remove('block');
-            });
-            document.querySelectorAll('[id^="btn-tab-"]').forEach(el => {
-                el.classList.remove('border-indigo-600', 'text-indigo-800', 'bg-white');
-                el.classList.add('border-transparent', 'text-slate-500');
-            });
-            document.getElementById(tabId).classList.remove('hidden');
-            document.getElementById(tabId).classList.add('block');
-            
-            const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.remove('border-transparent', 'text-slate-500');
-            activeBtn.classList.add('border-indigo-600', 'text-indigo-800', 'bg-white');
-        }
-    </script>
-    <style>
-        .animate-fade-in { animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+function toggleAcc(id) {
+    const content = document.getElementById(`content-${id}`);
+    const icon    = document.getElementById(`icon-${id}`);
+    const isOpen  = content.classList.contains('open');
+    document.querySelectorAll('.acc-content').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.acc-icon').forEach(el => el.classList.remove('rotated'));
+    if (!isOpen) {
+        content.classList.add('open');
+        icon.classList.add('rotated');
+        setTimeout(()=>content.scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
+    }
+}
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => { el.classList.add('hidden'); el.classList.remove('block'); });
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active','text-indigo-800'));
+    const el = document.getElementById(tabId);
+    el.classList.remove('hidden');
+    el.classList.add('block','fade-in');
+    document.getElementById('btn-' + tabId).classList.add('active','text-indigo-800');
+}
+</script>
 </body>
 </html>
