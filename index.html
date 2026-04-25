@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Principles of Financial Accounting - 2026B</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Principles of Financial Accounting — 2026B</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
+            letter-spacing: -0.01em;
         }
 
         .hero-gradient {
@@ -31,7 +33,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .notes-card::before {
             content: 'LIVE';
             position: absolute;
@@ -44,7 +45,6 @@
             font-weight: 800;
             transform: rotate(45deg);
         }
-
         .notes-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
@@ -68,7 +68,6 @@
             font-size: 0.875rem;
             transition: all 0.2s;
         }
-
         .exercise-btn:hover {
             background-color: #dbeafe;
             transform: scale(1.02);
@@ -77,15 +76,541 @@
         .pulse {
             animation: pulse-animation 2s infinite;
         }
-
         @keyframes pulse-animation {
-            0% { box-shadow: 0 0 0 0px rgba(59, 130, 246, 0.4); }
-            100% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            0% {
+                box-shadow: 0 0 0 0px rgba(59, 130, 246, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+            }
+        }
+
+        /* ── QUIZ MODAL (RTL inside) ── */
+        #quiz-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+        #quiz-overlay.open {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        #quiz-box {
+            background: #fff;
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 720px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, .25);
+            overflow: hidden;
+            direction: rtl;   /* <-- Quiz remains RTL */
+            font-family: 'Inter', 'Arial', sans-serif;
+        }
+        .quiz-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+        }
+        .quiz-progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 99px;
+            margin-top: 0.75rem;
+        }
+        .quiz-progress-fill {
+            height: 100%;
+            background: #fff;
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+        .quiz-body {
+            padding: 2rem;
+        }
+        .option-btn {
+            width: 100%;
+            text-align: right;
+            padding: 0.85rem 1.1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.85rem;
+            background: #f8fafc;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.18s;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            color: #1e293b;
+            font-family: inherit;
+        }
+        .option-btn:hover:not(:disabled) {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: translateX(-3px);
+        }
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.75;
+        }
+        .option-btn.correct {
+            border-color: #16a34a;
+            background: #dcfce7;
+            color: #14532d;
+            opacity: 1;
+            pointer-events: none;
+        }
+        .option-btn.wrong {
+            border-color: #dc2626;
+            background: #fee2e2;
+            color: #7f1d1d;
+            pointer-events: none;
+        }
+        .option-btn.wrong-strikethrough {
+            border-color: #fca5a5;
+            background: #fef2f2;
+            color: #b91c1c;
+            text-decoration: line-through;
+            pointer-events: none;
+        }
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            color: #475569;
+            transition: all 0.2s;
+        }
+        .option-btn.correct .option-letter {
+            background: #16a34a;
+            color: white;
+        }
+        .option-btn.wrong .option-letter,
+        .option-btn.wrong-strikethrough .option-letter {
+            background: #dc2626;
+            color: white;
+        }
+
+        .hint-box {
+            background: #fefce8;
+            border: 1px solid #fde68a;
+            border-radius: 0.75rem;
+            padding: 0.85rem 1rem;
+            font-size: 0.875rem;
+            color: #713f12;
+            margin-top: 0.75rem;
+            display: none;
+            direction: rtl;
+            line-height: 1.5;
+        }
+        .hint-box.visible {
+            display: block;
+        }
+
+        .feedback-box {
+            border-radius: 0.75rem;
+            padding: 0.85rem 1rem;
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+            display: none;
+            direction: rtl;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .feedback-box.visible {
+            display: block;
+        }
+        .feedback-box.correct-fb {
+            background: #dcfce7;
+            color: #14532d;
+            border: 1px solid #bbf7d0;
+        }
+        .feedback-box.wrong-fb {
+            background: #fee2e2;
+            color: #7f1d1d;
+            border: 1px solid #fecaca;
+        }
+        .feedback-box.info-fb {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .attempts-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-top: 0.4rem;
+            direction: rtl;
+        }
+        .attempts-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            transition: background 0.3s;
+        }
+        .attempts-dot.used {
+            background: #ef4444;
+        }
+        .attempts-dot.remaining {
+            background: #3b82f6;
+            animation: dot-pulse 1.5s infinite;
+        }
+        @keyframes dot-pulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 0 6px rgba(59, 130, 246, 0);
+            }
+        }
+
+        /* Results tables */
+        .calc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+        .calc-table thead th {
+            background: #1e3a8a;
+            color: white;
+            padding: 0.7rem 1rem;
+            font-weight: 700;
+            text-align: right;
+            font-size: 0.8rem;
+            letter-spacing: 0.02em;
+        }
+        .calc-table tbody td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: white;
+        }
+        .calc-table tbody tr:last-child td {
+            border-bottom: none;
+            font-weight: 700;
+            background: #f1f5f9;
+        }
+        .calc-table tbody tr.total-row td {
+            background: #dbeafe;
+            font-weight: 800;
+            color: #1e3a8a;
+            font-size: 0.9rem;
+        }
+        .calc-table .note-row td {
+            background: #fffbeb;
+            color: #92400e;
+            font-size: 0.78rem;
+            font-style: italic;
+            border-top: 2px dashed #fcd34d;
+        }
+        .calc-table .col-num {
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            direction: ltr;
+            unicode-bidi: plaintext;
+        }
+
+        .results-section {
+            display: none;
+            padding: 2rem;
+            direction: rtl;
+        }
+        .results-section.visible {
+            display: block;
+        }
+
+        .calc-block {
+            background: #f8fafc;
+            border-radius: 0.85rem;
+            padding: 1.1rem 1.25rem;
+            margin-bottom: 1rem;
+            border-right: 4px solid #3b82f6;
+            font-size: 0.875rem;
+            color: #334155;
+            direction: rtl;
+        }
+        .calc-block h4 {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+        .calc-formula {
+            font-family: 'Courier New', monospace;
+            background: white;
+            border-radius: 0.4rem;
+            padding: 0.35rem 0.6rem;
+            margin-top: 0.4rem;
+            display: inline-block;
+            font-size: 0.82rem;
+            direction: ltr;
+            unicode-bidi: plaintext;
+        }
+
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-weight: 800;
+        }
+
+        .quiz-btn-primary {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+        .quiz-btn-primary:hover {
+            background: #1d4ed8;
+        }
+        .quiz-btn-secondary {
+            background: transparent;
+            color: #64748b;
+            border: 1.5px solid #e2e8f0;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .quiz-btn-secondary:hover {
+            border-color: #94a3b8;
+            color: #334155;
+        }
+
+        .open-quiz-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.65rem 1.25rem;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: white;
+            border: none;
+            border-radius: 0.9rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+            font-family: inherit;
+        }
+        .open-quiz-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+        }
+
+        /* Main page LTR */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        .summary-item {
+            background: #f1f5f9;
+            border-radius: 0.6rem;
+            padding: 0.7rem 0.9rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: #334155;
+        }
+        .summary-item span {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1e3a8a;
         }
     </style>
 </head>
 <body class="text-slate-800">
 
+    <!-- ═══════════════════════════ QUIZ MODAL ═══════════════════════════ -->
+    <div id="quiz-overlay">
+        <div id="quiz-box">
+            <div class="quiz-header">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <p style="font-size:0.75rem;opacity:0.75;text-transform:uppercase;letter-spacing:.05em;">בחינה
+                            עצמית</p>
+                        <h2 style="font-size:1.2rem;font-weight:800;margin-top:0.2rem;">רכוש קבוע — הגדרות ומדידה</h2>
+                    </div>
+                    <button onclick="closeQuiz()"
+                    style="background:rgba(255,255,255,0.15);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;">✕</button>
+                </div>
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" id="progress-fill" style="width:0%"></div>
+                </div>
+                <p id="progress-label" style="font-size:0.75rem;opacity:0.7;margin-top:0.4rem;">שאלה 1 מתוך 7</p>
+            </div>
+
+            <!-- QUESTION PANEL -->
+            <div class="quiz-body" id="quiz-question-panel">
+                <p id="q-number"
+                style="font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:0.5rem;direction:rtl;">
+                שאלה 1</p>
+                <p id="q-text"
+                style="font-size:1.05rem;font-weight:700;color:#0f172a;margin-bottom:1.2rem;line-height:1.55;direction:rtl;"></p>
+
+                <div id="options-container"></div>
+                <div class="attempts-indicator" id="attempts-indicator">
+                    <span>נסיונות:</span>
+                    <span class="attempts-dot remaining" id="dot1"></span>
+                    <span class="attempts-dot" id="dot2"></span>
+                    <span style="font-size:0.7rem;color:#94a3b8;" id="attempts-label">2 נסיונות נותרו</span>
+                </div>
+
+                <div class="hint-box" id="hint-box"></div>
+                <div class="feedback-box" id="feedback-box"></div>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;flex-direction:row-reverse;">
+                    <button class="quiz-btn-primary" id="next-btn" onclick="nextQuestion()" style="display:none;">שאלה הבאה
+                    ←</button>
+                    <button class="quiz-btn-secondary" id="hint-btn" onclick="toggleHint()">💡 רמז</button>
+                </div>
+            </div>
+
+            <!-- RESULTS PANEL -->
+            <div class="results-section" id="results-panel">
+                <div class="score-circle" id="score-circle"></div>
+                <h3 style="text-align:center;font-size:1.15rem;font-weight:800;color:#1e293b;margin-bottom:0.3rem;">סיכום
+                ביצועים</h3>
+                <p id="score-msg" style="text-align:center;font-size:0.875rem;color:#64748b;margin-bottom:1.5rem;"></p>
+
+                <div class="summary-grid" id="summary-grid"></div>
+
+                <h4
+                style="font-size:0.95rem;font-weight:700;color:#1e3a8a;margin-bottom:1rem;border-bottom:2px solid #e2e8f0;padding-bottom:0.5rem;">
+                📐 פירוט חישובים מלא</h4>
+
+                <!-- Question 2 Table -->
+                <div class="calc-block">
+                    <h4>שאלה 2 — עלות מכונת נקניק (חברת עמית)</h4>
+                    <table class="calc-table">
+                        <thead>
+                            <tr><th>רכיב עלות</th><th class="col-num">סכום (₪)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>מחיר רכישה</td><td class="col-num">400,000</td></tr>
+                            <tr><td>הובלה</td><td class="col-num">10,000</td></tr>
+                            <tr><td>התקנה</td><td class="col-num">20,000</td></tr>
+                            <tr><td>בדיקה תברואתית חד-פעמית</td><td class="col-num">5,000</td></tr>
+                            <tr class="total-row"><td><strong>סה"כ עלות הנכס</strong></td><td class="col-num"><strong>435,000</strong></td></tr>
+                            <tr class="note-row"><td colspan="2">⚠️ אחזקה שנתית (3,000 ₪) <strong>אינה כלולה</strong> — זו הוצאה שוטפת בדו"ח רווח והפסד.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Question 4 Table -->
+                <div class="calc-block">
+                    <h4>שאלה 4 — הוצאת פחת שנתית (חברת עמית)</h4>
+                    <table class="calc-table">
+                        <thead>
+                            <tr><th>פרמטר</th><th class="col-num">ערך</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>עלות הנכס</td><td class="col-num">435,000 ₪</td></tr>
+                            <tr><td>ערך שייר (גרט)</td><td class="col-num">40,000 ₪</td></tr>
+                            <tr><td>בסיס להפחתה</td><td class="col-num">435,000 − 40,000 = 395,000 ₪</td></tr>
+                            <tr><td>תקופת הפחתה (n)</td><td class="col-num">10 שנים</td></tr>
+                            <tr class="total-row"><td><strong>פחת שנתי = (עלות − שייר) ÷ n</strong></td><td class="col-num"><strong>39,500 ₪ לשנה</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Question 5 Table -->
+                <div class="calc-block">
+                    <h4>שאלה 5 — פחת יחסי בשנת 2022</h4>
+                    <table class="calc-table">
+                        <thead>
+                            <tr><th>נתון</th><th class="col-num">ערך</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>מועד זמינות לשימוש</td><td class="col-num">1.3.2022</td></tr>
+                            <tr><td>חודשים עד 31.12.2022</td><td class="col-num">10 חודשים</td></tr>
+                            <tr><td>פחת שנתי מלא</td><td class="col-num">39,500 ₪</td></tr>
+                            <tr class="total-row"><td><strong>פחת 2022 = 39,500 × (10/12)</strong></td><td class="col-num"><strong>32,917 ₪</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Question 6 Table -->
+                <div class="calc-block">
+                    <h4>שאלה 6 — עלות מופחתת ב-31.12.2025 (מכונת כרבולות, חברת נתן)</h4>
+                    <table class="calc-table">
+                        <thead>
+                            <tr><th>שלב</th><th class="col-num">חישוב</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>פחת שנתי = (200,000 − 40,000) ÷ 8</td><td class="col-num">20,000 ₪</td></tr>
+                            <tr><td>תקופה: 1.4.2020 עד 31.12.2025</td><td class="col-num">5 שנים + 9 חודשים = 5.75 שנים</td></tr>
+                            <tr><td>פחת נצבר = 20,000 × 5.75</td><td class="col-num">115,000 ₪</td></tr>
+                            <tr class="total-row"><td><strong>עלות מופחתת = 200,000 − 115,000</strong></td><td class="col-num"><strong>85,000 ₪</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Question 7 Table -->
+                <div class="calc-block">
+                    <h4>שאלה 7 — חילוץ תקופת הפחתה (מכונת פופיקים, חברת נתן)</h4>
+                    <table class="calc-table">
+                        <thead>
+                            <tr><th>שלב</th><th class="col-num">חישוב</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>עלות מקורית</td><td class="col-num">100,000 ₪</td></tr>
+                            <tr><td>עלות מופחתת ב-31.12.2020</td><td class="col-num">75,000 ₪</td></tr>
+                            <tr><td>פחת נצבר = 100,000 − 75,000</td><td class="col-num">25,000 ₪</td></tr>
+                            <tr><td>תקופה: 1.7.2018 עד 31.12.2020</td><td class="col-num">2.5 שנים</td></tr>
+                            <tr><td>פחת שנתי = 25,000 ÷ 2.5</td><td class="col-num">10,000 ₪</td></tr>
+                            <tr class="total-row"><td><strong>n = 100,000 ÷ 10,000 = 10 שנים</strong></td><td class="col-num"><strong>10 שנים</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display:flex;gap:0.75rem;margin-top:1.75rem;flex-direction:row-reverse;">
+                    <button class="quiz-btn-primary" onclick="restartQuiz()">🔁 נסה שוב</button>
+                    <button class="quiz-btn-secondary" onclick="closeQuiz()">סגור</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════ PAGE (LTR) ═══════════════════════════ -->
     <header class="hero-gradient text-white py-16 px-6">
         <div class="max-w-5xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
@@ -138,6 +663,54 @@
                 <section>
                     <h2 class="text-2xl font-bold mb-6 text-blue-900">Course Roadmap</h2>
 
+                    <!-- LECTURE 6 -->
+                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-violet-600 border-slate-200 mb-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter" style="background:#ede9fe;color:#5b21b6;">Lecture 6</span>
+                                <h3 class="text-xl font-bold mt-2 text-blue-900">Inventory Recovery & Property, Plant and Equipment — Definitions and Measurement</h3>
+                            </div>
+                            <span class="text-slate-500 font-medium"><i class="far fa-calendar-alt"></i> 23.04.2026</span>
+                        </div>
+
+                        <div class="prose prose-slate max-w-none">
+                            <p class="text-slate-600 italic mb-4">"Reconstructing opening inventory using gross profit rates, and mastering the foundational concepts of PP&amp;E: what enters the cost of an asset, how depreciation is measured, and how book value evolves over time."</p>
+
+                            <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
+                                <div class="aspect-video">
+                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/llpbh2zI-0o" title="Lecture 6: Inventory Recovery & PP&E" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                </div>
+                                <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
+                                    <span class="flex items-center gap-2 font-semibold"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
+                                    <span>Duration: 2 hours</span>
+                                </div>
+                            </div>
+
+                            <!-- Quiz invite now in English -->
+                            <div class="mb-6 p-5 rounded-xl border-2 border-violet-200 bg-violet-50 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                <div style="flex:1">
+                                    <p class="font-bold text-violet-900 mb-1">📝 Self‑Assessment Quiz</p>
+                                    <p class="text-sm text-violet-700">7 Hebrew multiple‑choice questions on PP&amp;E — with hints, retry attempts, and full calculation breakdowns at the end.</p>
+                                </div>
+                                <button class="open-quiz-btn" onclick="openQuiz()">
+                                    <i class="fas fa-brain"></i> Start Quiz
+                                </button>
+                            </div>
+
+                            <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
+                                <li>• Inventory Recovery (Opening Inventory Reconstruction)</li>
+                                <li>• Gross Profit Rate Method</li>
+                                <li>• Definition of PP&amp;E Cost Components</li>
+                                <li>• Depreciation Parameters (n, salvage value)</li>
+                                <li>• Book Value &amp; Accumulated Depreciation</li>
+                                <li>• Partial-Year Depreciation</li>
+                                <li>• Extracting Unknown Values from Given Data</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- LECTURE 5 (unchanged English) -->
                     <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-emerald-600 border-slate-200 mb-8">
                         <div class="flex justify-between items-start mb-4">
                             <div>
@@ -148,27 +721,15 @@
                         </div>
                         <div class="prose prose-slate max-w-none">
                             <p class="text-slate-600 italic mb-4">"Mastering the flow of costs through the FIFO method and the essential principle of valuing inventory at the lower of Cost or Net Realizable Value (NRV)."</p>
-                            
                             <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
                                 <div class="aspect-video">
-                                    <iframe 
-                                        class="w-full h-full"
-                                        src="https://www.youtube.com/embed/2iD6w7Sud6k"
-                                        title="Lecture 5: Inventory Valuation"
-                                        frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        allowfullscreen>
-                                    </iframe>
+                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/2iD6w7Sud6k" title="Lecture 5: Inventory Valuation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                                 </div>
                                 <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2 font-semibold">
-                                        <i class="fab fa-youtube text-red-600"></i>
-                                        Lecture Recording
-                                    </span>
+                                    <span class="flex items-center gap-2 font-semibold"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
                                     <span>Duration: 1.5 hours</span>
                                 </div>
                             </div>
-
                             <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
                             <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
                                 <li>• FIFO Cost Flow Assumption</li>
@@ -180,7 +741,8 @@
                             </ul>
                         </div>
                     </div>
-                    
+
+                    <!-- LECTURE 4 (unchanged) -->
                     <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-700 border-slate-200 mb-8">
                         <div class="flex justify-between items-start mb-4">
                             <div>
@@ -191,52 +753,29 @@
                         </div>
                         <div class="prose prose-slate max-w-none">
                             <p class="text-slate-600 italic mb-4">"Dive into the systematic recording of business transactions, understand the full accounting cycle, and explore how inventory ties into COGS and gross profit."</p>
-                            
                             <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
                                 <div class="aspect-video">
-                                    <iframe 
-                                        class="w-full h-full"
-                                        src="https://www.youtube.com/embed/bWS3G_yMbVE"
-                                        title="Lecture 4: Recording Transactions & Inventory"
-                                        frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        allowfullscreen>
-                                    </iframe>
+                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/bWS3G_yMbVE" title="Lecture 4: Recording Transactions & Inventory" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                                 </div>
                                 <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2 font-semibold">
-                                        <i class="fab fa-youtube text-red-600"></i>
-                                        Lecture Recording
-                                    </span>
+                                    <span class="flex items-center gap-2 font-semibold"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
                                     <span>Duration: 2 hours</span>
                                 </div>
                             </div>
-
                             <div class="mb-6">
                                 <h4 class="font-semibold text-blue-800 mb-3">Resources:</h4>
                                 <div class="flex flex-wrap gap-2 mb-3">
-                                    <a href="lecture4.html" target="_blank" class="exercise-btn">
-                                        <i class="fas fa-file-code"></i> Exercise: Accounting Cycle (No Answers)
-                                    </a>
-                                    <a href="lecture4_ans.html" target="_blank" class="exercise-btn">
-                                        <i class="fas fa-file-check"></i> Solution: Accounting Cycle
-                                    </a>
-                                    <a href="lecture4_inv.html" target="_blank" class="exercise-btn">
-                                        <i class="fas fa-box-open"></i> Exercise: Inventory & COGS (With Answers)
-                                    </a>
-                                    <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQAsqQBlPFKkS52zvjxR3PXTAeTHkPgsxwThpGKiufddx-Y?e=gu5kIW" target="_blank" class="exercise-btn">
-                                        <i class="fas fa-home"></i> Home Exercise #4 - The Accounting Cycle
-                                    </a>
-                                    <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQDdUM7-MyvhSZWC-314-mZTAV_1bsp3lStP_WFfLI3blzk?e=EZLuJp" target="_blank" class="exercise-btn">
-                                        <i class="fas fa-home"></i> Home Exercise #5 - Basics of Inventory
-                                    </a>
+                                    <a href="lecture4.html" target="_blank" class="exercise-btn"><i class="fas fa-file-code"></i> Exercise: Accounting Cycle (No Answers)</a>
+                                    <a href="lecture4_ans.html" target="_blank" class="exercise-btn"><i class="fas fa-file-check"></i> Solution: Accounting Cycle</a>
+                                    <a href="lecture4_inv.html" target="_blank" class="exercise-btn"><i class="fas fa-box-open"></i> Exercise: Inventory & COGS (With Answers)</a>
+                                    <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQAsqQBlPFKkS52zvjxR3PXTAeTHkPgsxwThpGKiufddx-Y?e=gu5kIW" target="_blank" class="exercise-btn"><i class="fas fa-home"></i> Home Exercise #4 - The Accounting Cycle</a>
+                                    <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQDdUM7-MyvhSZWC-314-mZTAV_1bsp3lStP_WFfLI3blzk?e=EZLuJp" target="_blank" class="exercise-btn"><i class="fas fa-home"></i> Home Exercise #5 - Basics of Inventory</a>
                                 </div>
                                 <div class="bg-amber-50 text-amber-800 p-3 rounded-lg text-sm border border-amber-200 shadow-sm flex items-start gap-2">
-                                    <i class="fas fa-exclamation-circle mt-0.5 mt-1 text-amber-600"></i>
+                                    <i class="fas fa-exclamation-circle mt-0.5 text-amber-600"></i>
                                     <p><strong>Note:</strong> You DO NOT need to submit the home exercises. Also, you DO NOT need to solve question number 5 in Home Exercise #5.</p>
                                 </div>
                             </div>
-
                             <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
                             <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
                                 <li>• Transaction Journaling</li>
@@ -249,6 +788,7 @@
                         </div>
                     </div>
 
+                    <!-- LECTURES 3, 2, 1 unchanged (all English) -->
                     <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-600 border-slate-200 mb-8">
                         <div class="flex justify-between items-start mb-4">
                             <div>
@@ -259,42 +799,22 @@
                         </div>
                         <div class="prose prose-slate max-w-none">
                             <p class="text-slate-600 italic mb-4">"Mastering the flow from a complete set of accounts to the final Balance Sheet and Profit & Loss statements."</p>
-                            
                             <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
                                 <div class="aspect-video">
-                                    <iframe 
-                                        class="w-full h-full"
-                                        src="https://www.youtube.com/embed/jiHJqqP2eoY" 
-                                        title="Lecture 3: Constructing Complete Financial Statements" 
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                        allowfullscreen>
-                                    </iframe>
+                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/jiHJqqP2eoY" title="Lecture 3: Constructing Complete Financial Statements" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                                 </div>
                                 <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2 font-semibold">
-                                        <i class="fab fa-youtube text-red-600"></i>
-                                        Lecture Recording
-                                    </span>
+                                    <span class="flex items-center gap-2 font-semibold"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
                                     <span>Duration: 2 hours</span>
                                 </div>
                             </div>
-
                             <div class="mb-6">
                                 <h4 class="font-semibold text-blue-800 mb-3">Resources:</h4>
-                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQDUn3cRjCdkT4FxnCu28plTAZ-yV9gmQOuZQN6U14mV5iA?e=J7g3j2" 
-                                   target="_blank" 
-                                   class="exercise-btn">
-                                    <i class="fas fa-file-word"></i> Exercise 3 - Comprehensive Statements
-                                </a>
+                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQDUn3cRjCdkT4FxnCu28plTAZ-yV9gmQOuZQN6U14mV5iA?e=J7g3j2" target="_blank" class="exercise-btn"><i class="fas fa-file-word"></i> Exercise 3 - Comprehensive Statements</a>
                                 <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
-                                    <p class="text-sm text-yellow-800 flex items-center gap-2">
-                                        <i class="fas fa-info-circle"></i>
-                                        <strong>Instructions:</strong> You do NOT need to submit this. It will be solved together during the exercise on 27.03.
-                                    </p>
+                                    <p class="text-sm text-yellow-800 flex items-center gap-2"><i class="fas fa-info-circle"></i><strong>Instructions:</strong> You do NOT need to submit this. It will be solved together during the exercise on 27.03.</p>
                                 </div>
                             </div>
-
                             <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
                             <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
                                 <li>• Trial Balance Construction</li>
@@ -317,40 +837,20 @@
                         </div>
                         <div class="prose prose-slate max-w-none">
                             <p class="text-slate-600 italic mb-4">"Understanding how transactions flow through the accounting identity is the key to mastering financial reporting."</p>
-                            
                             <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
                                 <div class="aspect-video">
-                                    <iframe 
-                                        class="w-full h-full"
-                                        src="https://www.youtube.com/embed/czoHDAt5YmE" 
-                                        title="Lecture 2: Deep Dive into Financial Statements" 
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                        allowfullscreen>
-                                    </iframe>
+                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/czoHDAt5YmE" title="Lecture 2: Deep Dive into Financial Statements" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                                 </div>
                                 <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2">
-                                        <i class="fab fa-youtube text-red-600"></i>
-                                        Lecture Recording
-                                    </span>
+                                    <span class="flex items-center gap-2"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
                                     <span>Duration: ~30 minutes</span>
                                 </div>
                             </div>
-
                             <div class="mb-6">
                                 <h4 class="font-semibold text-blue-800 mb-3">Resources & Assignments:</h4>
-                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQC-vyPGVnzFQLZT9y_lEYDJAb-ufIoyPDKIsm-NKhCaxcE?e=MmkEiH" 
-                                   target="_blank" 
-                                   class="exercise-btn">
-                                    <i class="fas fa-file-word"></i> Exercise 2 - Profit and Loss
-                                </a>
-                                <p class="mt-3 text-sm text-red-600 font-medium flex items-center gap-2">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    Mandatory: Submit on Moodle by Friday, 27.3, 8:00 AM
-                                </p>
+                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQC-vyPGVnzFQLZT9y_lEYDJAb-ufIoyPDKIsm-NKhCaxcE?e=MmkEiH" target="_blank" class="exercise-btn"><i class="fas fa-file-word"></i> Exercise 2 - Profit and Loss</a>
+                                <p class="mt-3 text-sm text-red-600 font-medium flex items-center gap-2"><i class="fas fa-exclamation-triangle"></i> Mandatory: Submit on Moodle by Friday, 27.3, 8:00 AM</p>
                             </div>
-
                             <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
                             <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
                                 <li>• The Accounting Identity</li>
@@ -372,36 +872,19 @@
                         </div>
                         <div class="prose prose-slate max-w-none">
                             <p class="text-slate-600 italic mb-4">"The purpose of accounting is to provide relevant information for decision-makers."</p>
-                            
                             <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
                                 <div class="aspect-video">
-                                    <iframe 
-                                        class="w-full h-full"
-                                        src="https://www.youtube.com/embed/HCNQEkOh3DY" 
-                                        title="Lecture 1: Basics of Financial Statements" 
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                        allowfullscreen>
-                                    </iframe>
+                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/HCNQEkOh3DY" title="Lecture 1: Basics of Financial Statements" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                                 </div>
                                 <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2">
-                                        <i class="fab fa-youtube text-red-600"></i>
-                                        Lecture Recording
-                                    </span>
+                                    <span class="flex items-center gap-2"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
                                     <span>Duration: ~2 hours</span>
                                 </div>
                             </div>
-
                             <div class="mb-6">
                                 <h4 class="font-semibold text-blue-800 mb-3">Resources:</h4>
-                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQCrpERLalsoSoWRONHXrn3dAVFyYKbMHtk0nW1-NJB4PHg" 
-                                   target="_blank" 
-                                   class="exercise-btn">
-                                    <i class="fas fa-file-word"></i> Exercise 1 - Financial Position
-                                </a>
+                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQCrpERLalsoSoWRONHXrn3dAVFyYKbMHtk0nW1-NJB4PHg" target="_blank" class="exercise-btn"><i class="fas fa-file-word"></i> Exercise 1 - Financial Position</a>
                             </div>
-
                             <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
                             <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
                                 <li>• Structured Financial Data</li>
@@ -422,54 +905,286 @@
 
             <div class="space-y-6">
                 <section class="glass-card p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-blue-900">
-                        <i class="fas fa-book-open"></i> Course Info
-                    </h2>
-                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                        A robust foundation in financial reporting for managerial decision-making. We explore the full cycle from fundamental logic to statement interpretation.
-                    </p>
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-blue-900"><i class="fas fa-book-open"></i> Course Info</h2>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">A robust foundation in financial reporting for managerial decision-making. We explore the full cycle from fundamental logic to statement interpretation.</p>
                 </section>
 
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                     <h4 class="font-bold text-lg mb-4 text-blue-900">Logistics</h4>
                     <div class="space-y-4 text-sm">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-slate-800">Location</p>
-                                <p class="text-slate-500">MTA Campus / Online</p>
-                            </div>
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="fas fa-map-marker-alt"></i></div>
+                            <div><p class="font-semibold text-slate-800">Location</p><p class="text-slate-500">MTA Campus / Online</p></div>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                                <i class="fas fa-graduation-cap"></i>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-slate-800">Credits</p>
-                                <p class="text-slate-500">3.0 Academic Points</p>
-                            </div>
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="fas fa-graduation-cap"></i></div>
+                            <div><p class="font-semibold text-slate-800">Credits</p><p class="text-slate-500">3.0 Academic Points</p></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
                     <h4 class="font-bold text-lg mb-2 text-blue-900">Need help?</h4>
-                    <p class="text-sm text-blue-800 mb-4 leading-relaxed">
-                        For questions regarding curriculum or notes, reach out via email.
-                    </p>
-                    <a href="mailto:shay.tsaban@gmail.com" class="block text-center py-2 px-4 bg-white border border-blue-200 text-blue-700 rounded-xl font-semibold hover:bg-blue-100 transition">
-                        Contact Instructor
-                    </a>
+                    <p class="text-sm text-blue-800 mb-4 leading-relaxed">For questions regarding curriculum or notes, reach out via email.</p>
+                    <a href="mailto:shay.tsaban@gmail.com" class="block text-center py-2 px-4 bg-white border border-blue-200 text-blue-700 rounded-xl font-semibold hover:bg-blue-100 transition">Contact Instructor</a>
+                </div>
+
+                <!-- Sidebar quiz widget in English -->
+                <div class="rounded-2xl border-2 border-violet-200 bg-violet-50 p-5">
+                    <h4 class="font-bold text-violet-900 mb-2 flex items-center gap-2"><i class="fas fa-brain text-violet-600"></i> Self-Assessment Quiz</h4>
+                    <p class="text-xs text-violet-700 mb-3 leading-relaxed">Test your understanding of PP&amp;E — 7 Hebrew multiple‑choice questions with hints, retry attempts, and full calculation breakdowns.</p>
+                    <button class="open-quiz-btn w-full justify-center" onclick="openQuiz()"><i class="fas fa-play-circle"></i> Start Quiz</button>
                 </div>
             </div>
         </div>
     </main>
 
     <footer class="py-10 text-center text-slate-400 text-sm border-t border-slate-200">
-        <p>&copy; 2026 Tel-Aviv Yafo Academic College | School of Economics & Management</p>
+        <p>&copy; 2026 Tel-Aviv Yafo Academic College | School of Economics &amp; Management</p>
     </footer>
 
+    <!-- Quiz logic (unchanged) -->
+    <script>
+    const questions = [{
+        text: "מהי ההגדרה הנכונה של עלות פריט רכוש קבוע?",
+        options: [
+            "מחיר הרכישה בלבד, ללא כל הוצאה נוספת",
+            "כל ההוצאות הדרושות להבאת הנכס למיקום ולמצב שמיש",
+            "מחיר הרכישה בתוספת עלויות אחזקה שנתיות",
+            "השווי ההוגן של הנכס במועד הרכישה"
+        ],
+        correct: 1,
+        hint: "חשבו על מה שנדרש כדי שהנכס יהיה מוכן לפעולה — מרגע ההזמנה ועד להפעלה ראשונה.",
+        correctFeedback: "✅ נכון! עלות הנכס כוללת את כל ההוצאות החיוניות להבאתו למיקום ולמצב שמיש — רכישה, הובלה, התקנה ובדיקות חד-פעמיות. עלויות שוטפות ומחזוריות אינן נכללות.",
+        wrongFeedback: "❌ לא מדויק. חשבו על כל ההוצאות ההכרחיות כדי שהנכס יהיה מוכן לשימוש — לא רק מחיר הרכישה. עלויות אחזקה שוטפות אינן חלק מעלות הנכס. נסו שנית."
+    }, {
+        text: "חברת עמית רכשה מכונה תמורת 400,000 ₪, שילמה 10,000 ₪ הובלה, 20,000 ₪ התקנה, 5,000 ₪ בדיקה תברואתית חד-פעמית, ו-3,000 ₪ לשנה אחזקה שוטפת. מהי עלות המכונה?",
+        options: [
+            "438,000 ₪",
+            "432,000 ₪",
+            "435,000 ₪",
+            "400,000 ₪"
+        ],
+        correct: 2,
+        hint: "זכרו: אחזקה שוטפת היא הוצאה תפעולית — היא אינה חלק מעלות הנכס. סכמו רק את ההוצאות החד-פעמיות הקשורות ישירות להכשרת הנכס.",
+        correctFeedback: "✅ נכון! 400,000 + 10,000 + 20,000 + 5,000 = 435,000 ₪. האחזקה השנתית (3,000 ₪) נרשמת כהוצאה בדו\"ח רווח והפסד בכל שנה — היא אינה מגדילה את עלות הנכס.",
+        wrongFeedback: "❌ לא נכון. בדקו אילו הוצאות הן חד-פעמיות והכרחיות להפעלת הנכס, ואילו הן הוצאות שוטפות. האחזקה השנתית אינה חלק מעלות הנכס. חשבו שוב."
+    }, {
+        text: "מאיזה מועד מתחילים לרשום הוצאות פחת עבור נכס רכוש קבוע?",
+        options: [
+            "ממועד רכישת הנכס",
+            "ממועד תחילת ההפעלה בפועל",
+            "מתחילת השנה הקלנדרית שבה נרכש הנכס",
+            "ממועד שהנכס זמין לשימוש"
+        ],
+        correct: 3,
+        hint: "שאלו את עצמכם: האם חשוב שהנכס אכן יופעל בפועל, או שמספיק שהוא מוכן ויכול לפעול?",
+        correctFeedback: "✅ נכון! הפחת מתחיל מהמועד שבו הנכס זמין לשימוש — גם אם בפועל טרם הופעל. בשאלת חברת עמית, הנכס נרכש ב-1.1.2022, אבל הפחת מתחיל רק מ-1.3.2022 (מועד הזמינות).",
+        wrongFeedback: "❌ לא מדויק. שאלו את עצמכם: מתי הנכס מוכן להפיק תועלת כלכלית? לא משנה מתי רכשתם אותו או מתי התחלתם להשתמש בו בפועל. נסו שנית."
+    }, {
+        text: "מכונה עלותה 435,000 ₪, ערך שייר 40,000 ₪, תקופת הפחתה 10 שנים. מהי הוצאת הפחת השנתית?",
+        options: [
+            "43,500 ₪",
+            "39,500 ₪",
+            "40,000 ₪",
+            "35,000 ₪"
+        ],
+        correct: 1,
+        hint: "נוסחת הפחת הקווי: D = (עלות − ערך שייר) ÷ n. הנכס לא מופחת עד לאפס — הוא מופחת עד לערך השייר.",
+        correctFeedback: "✅ נכון! D = (435,000 − 40,000) ÷ 10 = 395,000 ÷ 10 = 39,500 ₪ לשנה. זכרו: ערך השייר (גרט) מנוכה לפני חלוקה.",
+        wrongFeedback: "❌ לא נכון. זכרו את נוסחת הפחת: (עלות − ערך שייר) ÷ תקופת הפחתה. ערך השייר מופחת לפני החלוקה. חשבו שוב."
+    }, {
+        text: "מכונה זמינה לשימוש מ-1.3.2022. הוצאת הפחת לשנה שלמה היא 39,500 ₪. כמה פחת יירשם בשנת 2022?",
+        options: [
+            "39,500 ₪ — שנה קלנדרית מלאה",
+            "32,917 ₪ — עשרה חודשים",
+            "29,625 ₪ — תשעה חודשים",
+            "26,333 ₪ — שמונה חודשים"
+        ],
+        correct: 1,
+        hint: "ספרו כמה חודשים חלפו מאז שהנכס היה זמין לשימוש ועד לסוף שנת 2022 (31.12.2022). הפחת הוא יחסי!",
+        correctFeedback: "✅ נכון! מ-1.3.2022 עד 31.12.2022 = 10 חודשים. פחת = 39,500 × (10/12) = 32,917 ₪. בכל שנה הבאה (2023 ואילך) יירשמו 39,500 ₪ מלאים.",
+        wrongFeedback: "❌ לא מדויק. בדקו כמה חודשים בדיוק חלפו מהמועד שהנכס זמין לשימוש ועד סוף השנה. הפחת הוא יחסי לשנה חלקית. ספרו שוב."
+    }, {
+        text: "חברת נתן: מכונת כרבולות עלות 200,000 ₪, ערך שייר 40,000 ₪, n=8 שנים, זמינה לשימוש ב-1.4.2020. מהי העלות המופחתת ב-31.12.2025?",
+        options: [
+            "90,000 ₪",
+            "95,000 ₪",
+            "80,000 ₪",
+            "85,000 ₪"
+        ],
+        correct: 3,
+        hint: "חשבו בשלבים: 1) פחת שנתי, 2) כמה זמן עבר (שנים + חודשים), 3) פחת נצבר = פחת שנתי × תקופה, 4) עלות מופחתת = עלות − פחת נצבר.",
+        correctFeedback: "✅ נכון! פחת שנתי = (200,000−40,000)÷8 = 20,000. מ-1.4.2020 עד 31.12.2025 = 5 שנים ו-9 חודשים = 5.75 שנים. פחת נצבר = 20,000 × 5.75 = 115,000. עלות מופחתת = 200,000 − 115,000 = 85,000 ₪.",
+        wrongFeedback: "❌ לא נכון. חשבו בשלבים: 1) פחת שנתי, 2) כמה זמן עבר (בשנים), 3) פחת נצבר, 4) עלות מופחתת = עלות − פחת נצבר. נסו שנית."
+    }, {
+        text: "חברת נתן: מכונת פופיקים עלות 100,000 ₪, ללא ערך שייר, זמינה ב-1.7.2018. העלות המופחתת ב-31.12.2020 היא 75,000 ₪. מהי תקופת ההפחתה?",
+        options: [
+            "8 שנים",
+            "6 שנים",
+            "10 שנים",
+            "12 שנים"
+        ],
+        correct: 2,
+        hint: "עבדו מהסוף להתחלה: 1) כמה פחת נצבר? (100,000 − 75,000), 2) כמה זמן עבר? (מ-1.7.2018 עד 31.12.2020), 3) מהו הפחת השנתי? 4) מהי n?",
+        correctFeedback: "✅ נכון! מ-1.7.2018 עד 31.12.2020 = 2.5 שנים. פחת נצבר = 100,000 − 75,000 = 25,000. פחת שנתי = 25,000 ÷ 2.5 = 10,000. n = 100,000 ÷ 10,000 = 10 שנים.",
+        wrongFeedback: "❌ לא מדויק. עבדו מהסוף להתחלה: 1) כמה פחת נצבר? 2) כמה זמן עבר? 3) מהו הפחת השנתי? 4) מהי תקופת ההפחתה? נסו שנית."
+    }];
+
+    let currentQ = 0;
+    let score = 0;
+    let attempts = 0;
+    let answered = false;
+    let hintVisible = false;
+    let previousWrongIndex = -1;
+    let maxAttempts = 2;
+    let questionAttempts = [];
+
+    function openQuiz() {
+        currentQ = 0; score = 0; attempts = 0; answered = false; hintVisible = false; previousWrongIndex = -1;
+        questionAttempts = new Array(questions.length).fill(0);
+        document.getElementById('quiz-overlay').classList.add('open');
+        document.getElementById('results-panel').classList.remove('visible');
+        document.getElementById('quiz-question-panel').style.display = 'block';
+        document.getElementById('progress-fill').style.width = '0%';
+        document.getElementById('progress-label').textContent = 'שאלה 1 מתוך 7';
+        renderQuestion();
+    }
+
+    function closeQuiz() { document.getElementById('quiz-overlay').classList.remove('open'); }
+    function restartQuiz() { openQuiz(); }
+
+    function renderQuestion() {
+        const q = questions[currentQ];
+        answered = false; attempts = 0; hintVisible = false; previousWrongIndex = -1;
+        document.getElementById('q-number').textContent = `שאלה ${currentQ + 1} מתוך ${questions.length}`;
+        document.getElementById('q-text').textContent = q.text;
+        document.getElementById('progress-label').textContent = `שאלה ${currentQ + 1} מתוך ${questions.length}`;
+        document.getElementById('progress-fill').style.width = `${(currentQ / questions.length) * 100}%`;
+        document.getElementById('hint-box').textContent = `💡 ${q.hint}`;
+        document.getElementById('hint-box').classList.remove('visible');
+        document.getElementById('feedback-box').textContent = '';
+        document.getElementById('feedback-box').className = 'feedback-box';
+        document.getElementById('next-btn').style.display = 'none';
+        document.getElementById('hint-btn').style.display = 'inline-block';
+        updateAttemptsIndicator();
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        const letters = ['א', 'ב', 'ג', 'ד'];
+        q.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
+            btn.onclick = () => selectAnswer(i);
+            btn.id = `option-${i}`;
+            container.appendChild(btn);
+        });
+    }
+
+    function updateAttemptsIndicator() {
+        const dot1 = document.getElementById('dot1'), dot2 = document.getElementById('dot2'), label = document.getElementById('attempts-label');
+        document.getElementById('attempts-indicator').style.display = 'flex';
+        if (attempts === 0) { dot1.className = 'attempts-dot remaining'; dot2.className = 'attempts-dot'; label.textContent = '2 נסיונות נותרו'; }
+        else if (attempts === 1) { dot1.className = 'attempts-dot used'; dot2.className = 'attempts-dot remaining'; label.textContent = 'נסיון 1 נוסף'; }
+        else { dot1.className = 'attempts-dot used'; dot2.className = 'attempts-dot used'; label.textContent = 'אין נסיונות נוספים'; }
+    }
+
+    function selectAnswer(idx) {
+        if (answered) return;
+        if (attempts >= maxAttempts) return;
+        if (attempts === 1 && idx === previousWrongIndex) return;
+        const q = questions[currentQ];
+        const btns = document.querySelectorAll('.option-btn');
+
+        if (idx === q.correct) {
+            answered = true;
+            questionAttempts[currentQ] = attempts + 1;
+            if (attempts === 0) score += 1;
+            else score += 0.5;
+            btns.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.correct) btn.classList.add('correct');
+                if (i === previousWrongIndex && i !== q.correct) btn.classList.add('wrong-strikethrough');
+            });
+            const fb = document.getElementById('feedback-box');
+            fb.textContent = `${q.correctFeedback}${attempts === 1 ? ' (בנסיון השני — חצי ניקוד)' : ''}`;
+            fb.className = 'feedback-box correct-fb visible';
+            document.getElementById('attempts-indicator').style.display = 'none';
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.style.display = 'inline-block';
+            nextBtn.textContent = currentQ < questions.length - 1 ? 'שאלה הבאה ←' : 'סיום וצפה בחישובים ←';
+            document.getElementById('hint-btn').style.display = 'none';
+        } else {
+            attempts++;
+            previousWrongIndex = idx;
+            updateAttemptsIndicator();
+            if (attempts === 1) {
+                questionAttempts[currentQ] = 1;
+                btns[idx].classList.add('wrong');
+                btns[idx].disabled = true;
+                const fb = document.getElementById('feedback-box');
+                fb.textContent = q.wrongFeedback;
+                fb.className = 'feedback-box wrong-fb visible';
+                btns.forEach((btn, i) => { if (i !== idx && i !== q.correct && !btn.classList.contains('wrong')) btn.disabled = false; });
+                document.getElementById('next-btn').style.display = 'none';
+            } else {
+                answered = true;
+                questionAttempts[currentQ] = 2;
+                btns.forEach((btn, i) => {
+                    btn.disabled = true;
+                    if (i === q.correct) btn.classList.add('correct');
+                });
+                btns[idx].classList.add('wrong');
+                if (previousWrongIndex !== idx && previousWrongIndex >= 0) btns[previousWrongIndex].classList.add('wrong-strikethrough');
+                const fb = document.getElementById('feedback-box');
+                fb.textContent = `❌ לא נכון גם בנסיון השני. ${q.correctFeedback}`;
+                fb.className = 'feedback-box info-fb visible';
+                document.getElementById('attempts-indicator').style.display = 'none';
+                const nextBtn = document.getElementById('next-btn');
+                nextBtn.style.display = 'inline-block';
+                nextBtn.textContent = currentQ < questions.length - 1 ? 'שאלה הבאה ←' : 'סיום וצפה בחישובים ←';
+                document.getElementById('hint-btn').style.display = 'none';
+            }
+        }
+    }
+
+    function nextQuestion() {
+        currentQ++;
+        if (currentQ >= questions.length) showResults();
+        else renderQuestion();
+    }
+
+    function showResults() {
+        document.getElementById('quiz-question-panel').style.display = 'none';
+        document.getElementById('results-panel').classList.add('visible');
+        const pct = Math.round((score / questions.length) * 100);
+        const circle = document.getElementById('score-circle');
+        let color, emoji;
+        if (pct >= 85) { color = '#16a34a'; emoji = '🏆'; }
+        else if (pct >= 57) { color = '#d97706'; emoji = '💪'; }
+        else { color = '#dc2626'; emoji = '📚'; }
+        circle.style.background = `${color}18`;
+        circle.style.border = `3px solid ${color}`;
+        circle.innerHTML = `<span style="font-size:1.6rem;">${emoji}</span><span style="font-size:1.1rem;font-weight:800;color:${color};">${score}/${questions.length}</span>`;
+        const msgs = ['המשיכו לתרגל — הנושא מצריך עוד תרגול 💪','ביצוע טוב! כמה עקרונות עדיין צריכים חיזוק.','מצוין! שלטתם היטב בחומר הרכוש הקבוע! 🎉'];
+        document.getElementById('score-msg').textContent = pct >= 85 ? msgs[2] : pct >= 57 ? msgs[1] : msgs[0];
+        let firstTry = 0, secondTry = 0;
+        questionAttempts.forEach(a => { if (a === 1) firstTry++; else if (a === 2) secondTry++; });
+        document.getElementById('summary-grid').innerHTML = `
+            <div class="summary-item">✅ נכון בנסיון ראשון<span>${firstTry}</span></div>
+            <div class="summary-item">🔄 נכון בנסיון שני<span>${secondTry}</span></div>
+            <div class="summary-item">📊 סה"כ ניקוד<span>${score} / ${questions.length}</span></div>
+            <div class="summary-item">🎯 אחוז הצלחה<span>${pct}%</span></div>`;
+        document.getElementById('progress-fill').style.width = '100%';
+        document.getElementById('progress-label').textContent = 'הסתיים ✓';
+    }
+
+    function toggleHint() {
+        hintVisible = !hintVisible;
+        document.getElementById('hint-box').classList.toggle('visible', hintVisible);
+    }
+    document.getElementById('quiz-overlay').addEventListener('click', function(e) { if (e.target === this) closeQuiz(); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && document.getElementById('quiz-overlay').classList.contains('open')) closeQuiz(); });
+    </script>
 </body>
 </html>
