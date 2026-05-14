@@ -1,473 +1,1080 @@
-<h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
-<ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
-    <li>• Opening Inventory Reconstruction</li>
-    <li>• Gross Profit Rate Method</li>
-    <li>• PP&E Cost Components</li>
-    <li>• Depreciation (n, salvage value)</li>
-    <li>• Book Value & Acc. Depreciation</li>
-    <li>• Partial‑Year Depreciation</li>
-    <li>• Extracting Unknown Values</li>
-</ul>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Principles of Financial Accounting — 2026B</title>
-    <script src="https://cdn.tailwindcss.com">
+    <meta name="description" content="Principles of Financial Accounting — Tel-Aviv Yafo Academic College, Semester 2026B">
+    <title>Principles of Financial Accounting — 2026B | Dr. Shay Tsaban</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        accent: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'gradient-shift': 'gradient-shift 8s ease infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'gradient-shift': {
+                            '0%': { 'background-position': '0% 50%' },
+                            '100%': { 'background-position': '100% 50%' },
+                        }
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.35)',
+                        'glow-lg': '0 0 40px rgba(59, 130, 246, 0.45)',
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+                        'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
     </script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
-
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            background-attachment: fixed;
             letter-spacing: -0.01em;
+            color: #1e293b;
         }
-
+        
         .hero-gradient {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .notes-card {
-            background: white;
-            border: 2px solid #3b82f6;
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+            background-size: 200% 200%;
+            animation: gradient-shift 15s ease infinite;
             position: relative;
             overflow: hidden;
         }
+        
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .notes-card {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border: 2px solid #3b82f6;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+        }
+        
         .notes-card::before {
             content: 'LIVE';
             position: absolute;
-            top: 10px;
-            right: -30px;
-            background: #ef4444;
+            top: 12px;
+            right: -35px;
+            background: linear-gradient(45deg, #ef4444, #f97316);
             color: white;
-            padding: 2px 40px;
-            font-size: 0.65rem;
+            padding: 3px 45px;
+            font-size: 0.7rem;
             font-weight: 800;
             transform: rotate(45deg);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            letter-spacing: 0.05em;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
+        
         .notes-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.25);
+            border-color: #2563eb;
         }
-
+        
+        .lecture-card {
+            background: white;
+            border-radius: 1.25rem;
+            border-left: 4px solid;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .lecture-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .lecture-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .lecture-card:hover::after {
+            opacity: 1;
+        }
+        
+        .lecture-card.violet { border-left-color: #7c3aed; }
+        .lecture-card.emerald { border-left-color: #10b981; }
+        .lecture-card.blue { border-left-color: #3b82f6; }
+        .lecture-card.indigo { border-left-color: #6366f1; }
+        .lecture-card.rose { border-left-color: #f43f5e; }
+        .lecture-card.amber { border-left-color: #f59e0b; }
+        
         .lecture-badge {
-            background-color: #dcfce7;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            letter-spacing: 0.025em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .lecture-badge.violet {
+            background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+            color: #5b21b6;
+        }
+        
+        .lecture-badge.emerald {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
             color: #166534;
         }
-
+        
+        .lecture-badge.amber {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+        }
+        
         .exercise-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background-color: #eff6ff;
+            padding: 0.55rem 1.1rem;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
             color: #1e40af;
             border: 1px solid #bfdbfe;
-            border-radius: 0.75rem;
+            border-radius: 0.85rem;
             font-weight: 600;
-            font-size: 0.875rem;
-            transition: all 0.2s;
+            font-size: 0.85rem;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
+        
         .exercise-btn:hover {
-            background-color: #dbeafe;
-            transform: scale(1.02);
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #93c5fd;
         }
-
+        
+        .exercise-btn i {
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+        }
+        
+        .exercise-btn:hover i {
+            transform: scale(1.1);
+        }
+        
         .pulse {
-            animation: pulse-animation 2s infinite;
+            animation: pulse-slow 3s infinite;
         }
-        @keyframes pulse-animation {
-            0% {
-                box-shadow: 0 0 0 0px rgba(59, 130, 246, 0.4);
-            }
-            100% {
-                box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
-            }
+        
+        @keyframes pulse-slow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 0 12px rgba(59, 130, 246, 0); }
         }
-
-        /* ── QUIZ MODAL (RTL inside) ── */
+        
+        /* Quiz Modal Styles */
         #quiz-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(6px);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
             z-index: 9999;
             overflow-y: auto;
-            padding: 2rem 1rem;
+            padding: 1.5rem;
+            animation: fadeIn 0.25s ease-out;
         }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
         #quiz-overlay.open {
             display: flex;
             align-items: flex-start;
             justify-content: center;
         }
+        
         #quiz-box {
-            background: #fff;
-            border-radius: 1.5rem;
+            background: white;
+            border-radius: 1.75rem;
             width: 100%;
-            max-width: 720px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, .25);
+            max-width: 760px;
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.35);
             overflow: hidden;
-            direction: rtl;   /* <-- Quiz remains RTL */
+            direction: rtl;
             font-family: 'Inter', 'Arial', sans-serif;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            margin: 1.5rem auto;
         }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.98);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+        
         .quiz-header {
             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             color: white;
-            padding: 1.5rem 2rem;
+            padding: 1.75rem 2.25rem;
+            position: relative;
         }
+        
+        .quiz-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        }
+        
         .quiz-progress-bar {
-            height: 6px;
+            height: 7px;
             background: rgba(255, 255, 255, 0.25);
             border-radius: 99px;
-            margin-top: 0.75rem;
+            margin-top: 1rem;
+            overflow: hidden;
         }
+        
         .quiz-progress-fill {
             height: 100%;
-            background: #fff;
+            background: linear-gradient(90deg, #60a5fa, #3b82f6, #2563eb);
             border-radius: 99px;
-            transition: width 0.4s ease;
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
         }
+        
         .quiz-body {
-            padding: 2rem;
+            padding: 2.25rem;
         }
+        
         .option-btn {
             width: 100%;
             text-align: right;
-            padding: 0.85rem 1.1rem;
+            padding: 0.95rem 1.25rem;
             border: 2px solid #e2e8f0;
-            border-radius: 0.85rem;
-            background: #f8fafc;
+            border-radius: 1rem;
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.975rem;
             font-weight: 500;
-            transition: all 0.18s;
-            margin-bottom: 0.6rem;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
-            gap: 0.65rem;
+            gap: 0.85rem;
             color: #1e293b;
             font-family: inherit;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
         }
+        
         .option-btn:hover:not(:disabled) {
             border-color: #3b82f6;
-            background: #eff6ff;
-            transform: translateX(-3px);
+            background: linear-gradient(145deg, #eff6ff, #dbeafe);
+            transform: translateX(-4px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
         }
+        
         .option-btn:disabled {
             cursor: default;
-            opacity: 0.75;
+            opacity: 0.85;
+            transform: none !important;
         }
+        
         .option-btn.correct {
             border-color: #16a34a;
-            background: #dcfce7;
+            background: linear-gradient(145deg, #dcfce7, #bbf7d0);
             color: #14532d;
             opacity: 1;
             pointer-events: none;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
         }
+        
         .option-btn.wrong {
             border-color: #dc2626;
-            background: #fee2e2;
+            background: linear-gradient(145deg, #fee2e2, #fecaca);
             color: #7f1d1d;
             pointer-events: none;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
         }
+        
         .option-btn.wrong-strikethrough {
             border-color: #fca5a5;
-            background: #fef2f2;
+            background: linear-gradient(145deg, #fef2f2, #fee2e2);
             color: #b91c1c;
             text-decoration: line-through;
             pointer-events: none;
+            opacity: 0.85;
         }
+        
         .option-letter {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            background: #e2e8f0;
+            background: linear-gradient(145deg, #e2e8f0, #cbd5e1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 700;
             flex-shrink: 0;
             color: #475569;
-            transition: all 0.2s;
+            transition: all 0.25s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
         .option-btn.correct .option-letter {
-            background: #16a34a;
+            background: linear-gradient(145deg, #16a34a, #15803d);
             color: white;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3);
         }
+        
         .option-btn.wrong .option-letter,
         .option-btn.wrong-strikethrough .option-letter {
-            background: #dc2626;
+            background: linear-gradient(145deg, #dc2626, #b91c1c);
             color: white;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.3);
         }
-
+        
         .hint-box {
-            background: #fefce8;
+            background: linear-gradient(145deg, #fefce8, #fef3c7);
             border: 1px solid #fde68a;
-            border-radius: 0.75rem;
-            padding: 0.85rem 1rem;
-            font-size: 0.875rem;
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            font-size: 0.9rem;
             color: #713f12;
-            margin-top: 0.75rem;
+            margin-top: 1rem;
             display: none;
             direction: rtl;
-            line-height: 1.5;
+            line-height: 1.6;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            position: relative;
         }
+        
+        .hint-box::before {
+            content: '💡';
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+        }
+        
         .hint-box.visible {
             display: block;
+            animation: slideIn 0.3s ease-out;
         }
-
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         .feedback-box {
-            border-radius: 0.75rem;
-            padding: 0.85rem 1rem;
-            font-size: 0.875rem;
-            margin-top: 0.75rem;
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            font-size: 0.925rem;
+            margin-top: 1rem;
             display: none;
             direction: rtl;
             font-weight: 500;
-            line-height: 1.5;
+            line-height: 1.6;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
         }
+        
         .feedback-box.visible {
             display: block;
+            animation: slideIn 0.3s ease-out;
         }
+        
         .feedback-box.correct-fb {
-            background: #dcfce7;
+            background: linear-gradient(145deg, #dcfce7, #bbf7d0);
             color: #14532d;
             border: 1px solid #bbf7d0;
         }
+        
         .feedback-box.wrong-fb {
-            background: #fee2e2;
+            background: linear-gradient(145deg, #fee2e2, #fecaca);
             color: #7f1d1d;
             border: 1px solid #fecaca;
         }
+        
         .feedback-box.info-fb {
-            background: #eff6ff;
+            background: linear-gradient(145deg, #eff6ff, #dbeafe);
             color: #1e40af;
             border: 1px solid #bfdbfe;
         }
-
+        
         .attempts-indicator {
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
-            font-size: 0.78rem;
+            gap: 0.45rem;
+            font-size: 0.825rem;
             font-weight: 600;
             color: #64748b;
-            margin-top: 0.4rem;
+            margin-top: 0.6rem;
             direction: rtl;
+            background: #f8fafc;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            border: 1px solid #e2e8f0;
         }
+        
         .attempts-dot {
-            width: 8px;
-            height: 8px;
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
             background: #cbd5e1;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
         }
+        
         .attempts-dot.used {
             background: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
         }
+        
         .attempts-dot.remaining {
             background: #3b82f6;
-            animation: dot-pulse 1.5s infinite;
+            animation: dot-pulse 1.8s infinite;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
         }
+        
         @keyframes dot-pulse {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 0 6px rgba(59, 130, 246, 0);
-            }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 0 7px rgba(59, 130, 246, 0); }
         }
-
+        
         /* Results tables */
         .calc-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 1.25rem;
-            font-size: 0.85rem;
-            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 1rem;
             overflow: hidden;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
         }
+        
         .calc-table thead th {
-            background: #1e3a8a;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
-            padding: 0.7rem 1rem;
+            padding: 0.85rem 1.25rem;
             font-weight: 700;
             text-align: right;
-            font-size: 0.8rem;
+            font-size: 0.825rem;
             letter-spacing: 0.02em;
+            position: relative;
         }
+        
+        .calc-table thead th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        }
+        
         .calc-table tbody td {
-            padding: 0.6rem 1rem;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
             background: white;
+            transition: background 0.2s;
         }
+        
+        .calc-table tbody tr:hover td {
+            background: #f8fafc;
+        }
+        
         .calc-table tbody tr:last-child td {
             border-bottom: none;
             font-weight: 700;
-            background: #f1f5f9;
+            background: #f8fafc;
         }
+        
         .calc-table tbody tr.total-row td {
-            background: #dbeafe;
+            background: linear-gradient(145deg, #dbeafe, #bfdbfe);
             font-weight: 800;
             color: #1e3a8a;
-            font-size: 0.9rem;
+            font-size: 0.925rem;
+            border-top: 2px solid #93c5fd;
         }
+        
         .calc-table .note-row td {
-            background: #fffbeb;
+            background: linear-gradient(145deg, #fffbeb, #fef3c7);
             color: #92400e;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             font-style: italic;
             border-top: 2px dashed #fcd34d;
+            padding: 0.85rem 1.25rem;
         }
+        
         .calc-table .col-num {
             text-align: left;
-            font-family: 'Courier New', monospace;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
             font-weight: 600;
             direction: ltr;
             unicode-bidi: plaintext;
+            color: #1e293b;
         }
-
+        
         .results-section {
             display: none;
-            padding: 2rem;
+            padding: 2.25rem;
             direction: rtl;
+            animation: fadeIn 0.4s ease-out;
         }
+        
         .results-section.visible {
             display: block;
         }
-
+        
         .calc-block {
-            background: #f8fafc;
-            border-radius: 0.85rem;
-            padding: 1.1rem 1.25rem;
-            margin-bottom: 1rem;
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+            border-radius: 1.1rem;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.25rem;
             border-right: 4px solid #3b82f6;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             color: #334155;
             direction: rtl;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+        
+        .calc-block:hover {
+            transform: translateX(-3px);
+            box-shadow: 0 5px 18px rgba(0,0,0,0.1);
+        }
+        
         .calc-block h4 {
             font-weight: 700;
             color: #1e3a8a;
-            margin-bottom: 0.4rem;
-            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+        
+        .calc-block h4::before {
+            content: '📊';
+            font-size: 1.1rem;
+        }
+        
         .calc-formula {
-            font-family: 'Courier New', monospace;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
             background: white;
-            border-radius: 0.4rem;
-            padding: 0.35rem 0.6rem;
-            margin-top: 0.4rem;
+            border-radius: 0.5rem;
+            padding: 0.4rem 0.75rem;
+            margin-top: 0.5rem;
             display: inline-block;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             direction: ltr;
             unicode-bidi: plaintext;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-
+        
         .score-circle {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 1.75rem;
             font-weight: 800;
+            background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+            border: 4px solid white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
         }
-
+        
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+            z-index: -1;
+        }
+        
         .quiz-btn-primary {
-            background: #2563eb;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: white;
             border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 0.75rem;
+            padding: 0.75rem 1.75rem;
+            border-radius: 1rem;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.925rem;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             font-family: inherit;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+        
         .quiz-btn-primary:hover {
-            background: #1d4ed8;
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
         }
+        
+        .quiz-btn-primary:active {
+            transform: translateY(0);
+        }
+        
         .quiz-btn-secondary {
             background: transparent;
             color: #64748b;
             border: 1.5px solid #e2e8f0;
-            padding: 0.6rem 1.2rem;
-            border-radius: 0.75rem;
+            padding: 0.65rem 1.35rem;
+            border-radius: 1rem;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
         }
+        
         .quiz-btn-secondary:hover {
             border-color: #94a3b8;
             color: #334155;
+            background: #f8fafc;
+            transform: translateY(-1px);
         }
-
+        
         .open-quiz-btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.6rem;
-            padding: 0.65rem 1.25rem;
-            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            gap: 0.65rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
             color: white;
             border: none;
-            border-radius: 0.9rem;
+            border-radius: 1.1rem;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.925rem;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.4);
             font-family: inherit;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .open-quiz-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #6d28d9, #5b21b6);
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 1.1rem;
+        }
+        
         .open-quiz-btn:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 28px rgba(124, 58, 237, 0.55);
         }
-
+        
+        .open-quiz-btn:hover::before {
+            opacity: 1;
+        }
+        
+        .open-quiz-btn i {
+            transition: transform 0.3s;
+        }
+        
+        .open-quiz-btn:hover i {
+            transform: scale(1.15) rotate(5deg);
+        }
+        
         /* Main page LTR */
         .summary-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-            margin: 1rem 0;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.85rem;
+            margin: 1.25rem 0;
         }
+        
         .summary-item {
-            background: #f1f5f9;
-            border-radius: 0.6rem;
-            padding: 0.7rem 0.9rem;
+            background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+            border-radius: 0.85rem;
+            padding: 0.85rem 1.1rem;
             text-align: center;
             font-weight: 600;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             color: #334155;
+            border: 1px solid #e2e8f0;
+            transition: all 0.25s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
+        
+        .summary-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #cbd5e1;
+        }
+        
         .summary-item span {
             display: block;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 800;
             color: #1e3a8a;
+            margin-top: 0.25rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Enhanced header styles */
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 1.25rem;
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .hero-title {
+            font-size: clamp(2.25rem, 5vw, 3.5rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+            color: rgba(255, 255, 255, 0.92);
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+        }
+        
+        .instructor-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+        
+        .instructor-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.4rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.25s;
+        }
+        
+        .instructor-chip:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+        
+        .instructor-chip a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(255,255,255,0.6);
+            transition: all 0.2s;
+        }
+        
+        .instructor-chip a:hover {
+            border-bottom-color: white;
+        }
+        
+        /* Video container enhancements */
+        .video-container {
+            border-radius: 1.25rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+        
+        .video-container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .video-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1.25rem;
+            padding: 1px;
+            background: linear-gradient(45deg, transparent, rgba(59,130,246,0.4), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .video-container:hover::after {
+            opacity: 1;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent 70%);
+            display: flex;
+            align-items: flex-end;
+            padding: 1.25rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .video-container:hover .video-overlay {
+            opacity: 1;
+        }
+        
+        .video-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e3a8a;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.25);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0.9;
+            pointer-events: none;
+        }
+        
+        .video-container:hover .video-play-btn {
+            transform: translate(-50%, -50%) scale(1.1);
+            opacity: 1;
+            box-shadow: 0 8px 35px rgba(0,0,0,0.35);
+        }
+        
+        /* Topic list enhancements */
+        .topic-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0.65rem;
+            margin-top: 0.75rem;
+        }
+        
+        .topic-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.75rem;
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+            border-radius: 0.65rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        
+        .topic-item:hover {
+            background: linear-gradient(145deg, #eff6ff, #dbeafe);
+            border-color: #bfdbfe;
+            transform: translateX(3px);
+            color: #1e40af;
+        }
+        
+        .topic-item::before {
+            content: '•';
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 0.8;
+        }
+        
+        /* Footer enhancements */
+        footer {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: rgba(255,255,255,0.85);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .quiz-body, .results-section {
+                padding: 1.75rem;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .topic-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Accessibility & focus states */
+        button:focus-visible, 
+        a:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+            border-radius: 0.5rem;
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+            border-radius: 10px;
+            border: 2px solid #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #64748b, #475569);
         }
     </style>
 </head>
-<body class="text-slate-800">
+<body class="text-slate-800 antialiased">
 
     <!-- ═══════════════════════════ QUIZ MODAL ═══════════════════════════ -->
     <div id="quiz-overlay">
@@ -475,57 +1082,70 @@
             <div class="quiz-header">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                     <div>
-                        <p style="font-size:0.75rem;opacity:0.75;text-transform:uppercase;letter-spacing:.05em;">בחינה
-                            עצמית</p>
-                        <h2 style="font-size:1.2rem;font-weight:800;margin-top:0.2rem;">רכוש קבוע — הגדרות ומדידה</h2>
+                        <p class="text-xs opacity-85 uppercase tracking-wider font-medium">בחינה עצמית</p>
+                        <h2 class="text-xl font-extrabold mt-1">רכוש קבוע — הגדרות ומדידה</h2>
                     </div>
                     <button onclick="closeQuiz()"
-                    style="background:rgba(255,255,255,0.15);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;">✕</button>
+                    class="w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white text-lg transition-colors" 
+                    aria-label="סגור את החידון">✕</button>
                 </div>
                 <div class="quiz-progress-bar">
                     <div class="quiz-progress-fill" id="progress-fill" style="width:0%"></div>
                 </div>
-                <p id="progress-label" style="font-size:0.75rem;opacity:0.7;margin-top:0.4rem;">שאלה 1 מתוך 7</p>
+                <p id="progress-label" class="text-xs opacity-80 mt-1.5">שאלה 1 מתוך 7</p>
             </div>
 
             <!-- QUESTION PANEL -->
             <div class="quiz-body" id="quiz-question-panel">
                 <p id="q-number"
-                style="font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:0.5rem;direction:rtl;">
+                class="text-xs font-bold text-slate-500 uppercase mb-1.5">
                 שאלה 1</p>
                 <p id="q-text"
-                style="font-size:1.05rem;font-weight:700;color:#0f172a;margin-bottom:1.2rem;line-height:1.55;direction:rtl;"></p>
+                class="text-lg font-bold text-slate-900 mb-4 leading-relaxed"></p>
 
                 <div id="options-container"></div>
                 <div class="attempts-indicator" id="attempts-indicator">
                     <span>נסיונות:</span>
                     <span class="attempts-dot remaining" id="dot1"></span>
                     <span class="attempts-dot" id="dot2"></span>
-                    <span style="font-size:0.7rem;color:#94a3b8;" id="attempts-label">2 נסיונות נותרו</span>
+                    <span class="text-xs text-slate-400" id="attempts-label">2 נסיונות נותרו</span>
                 </div>
 
                 <div class="hint-box" id="hint-box"></div>
                 <div class="feedback-box" id="feedback-box"></div>
 
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;flex-direction:row-reverse;">
-                    <button class="quiz-btn-primary" id="next-btn" onclick="nextQuestion()" style="display:none;">שאלה הבאה
-                    ←</button>
-                    <button class="quiz-btn-secondary" id="hint-btn" onclick="toggleHint()">💡 רמז</button>
+                <div class="flex justify-between items-center mt-6 flex-row-reverse">
+                    <button class="quiz-btn-primary" id="next-btn" onclick="nextQuestion()" style="display:none;">
+                        <span>שאלה הבאה</span>
+                        <i class="fas fa-arrow-left text-sm"></i>
+                    </button>
+                    <button class="quiz-btn-secondary" id="hint-btn" onclick="toggleHint()">
+                        <i class="fas fa-lightbulb text-amber-500"></i>
+                        <span>רמז</span>
+                    </button>
                 </div>
             </div>
 
             <!-- RESULTS PANEL -->
             <div class="results-section" id="results-panel">
-                <div class="score-circle" id="score-circle"></div>
-                <h3 style="text-align:center;font-size:1.15rem;font-weight:800;color:#1e293b;margin-bottom:0.3rem;">סיכום
-                ביצועים</h3>
-                <p id="score-msg" style="text-align:center;font-size:0.875rem;color:#64748b;margin-bottom:1.5rem;"></p>
+                <div class="score-circle" id="score-circle">
+                    <span class="text-2xl">🏆</span>
+                    <span class="text-xl font-extrabold mt-1 text-primary-800">7/7</span>
+                </div>
+                <h3 class="text-center text-xl font-extrabold text-slate-900 mb-1">סיכום ביצועים</h3>
+                <p id="score-msg" class="text-center text-sm text-slate-600 mb-5">מצוין! שלטתם היטב בחומר הרכוש הקבוע! 🎉</p>
 
-                <div class="summary-grid" id="summary-grid"></div>
+                <div class="summary-grid" id="summary-grid">
+                    <div class="summary-item">✅ נכון בנסיון ראשון<span>5</span></div>
+                    <div class="summary-item">🔄 נכון בנסיון שני<span>2</span></div>
+                    <div class="summary-item">📊 סה"כ ניקוד<span>6.0 / 7</span></div>
+                    <div class="summary-item">🎯 אחוז הצלחה<span>86%</span></div>
+                </div>
 
-                <h4
-                style="font-size:0.95rem;font-weight:700;color:#1e3a8a;margin-bottom:1rem;border-bottom:2px solid #e2e8f0;padding-bottom:0.5rem;">
-                📐 פירוט חישובים מלא</h4>
+                <h4 class="text-lg font-bold text-primary-800 mb-3 pb-2 border-b border-slate-200 flex items-center gap-2">
+                    <i class="fas fa-calculator text-primary-500"></i>
+                    פירוט חישובים מלא
+                </h4>
 
                 <!-- Question 2 Table -->
                 <div class="calc-block">
@@ -612,351 +1232,858 @@
                     </table>
                 </div>
 
-                <div style="display:flex;gap:0.75rem;margin-top:1.75rem;flex-direction:row-reverse;">
-                    <button class="quiz-btn-primary" onclick="restartQuiz()">🔁 נסה שוב</button>
-                    <button class="quiz-btn-secondary" onclick="closeQuiz()">סגור</button>
+                <div class="flex gap-2 mt-6 flex-row-reverse">
+                    <button class="quiz-btn-primary" onclick="restartQuiz()">
+                        <i class="fas fa-redo-alt"></i>
+                        <span>נסה שוב</span>
+                    </button>
+                    <button class="quiz-btn-secondary" onclick="closeQuiz()">
+                        <i class="fas fa-times"></i>
+                        <span>סגור</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ═══════════════════════════ PAGE (LTR) ═══════════════════════════ -->
-    <header class="hero-gradient text-white py-16 px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
-                <div>
-                    <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-sm font-medium mb-4 uppercase tracking-wider">Semester 2026B</span>
-                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Principles of Financial Accounting</h1>
-                    <p class="text-xl text-blue-100 mb-6">Tel-Aviv Yafo Academic College</p>
-                    <div class="flex flex-wrap gap-4 items-center text-sm">
-                        <span class="flex items-center gap-2">
-                            <i class="fas fa-user-tie"></i> Lecturer: Dr. Shay Tsaban
-                        </span>
-                        <span class="flex items-center gap-2">
+    <!-- ═══════════════════════════ PAGE CONTENT ═══════════════════════════ -->
+    <header class="hero-gradient text-white py-16 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse-slow"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-300 rounded-full mix-blend-overlay filter blur-3xl animate-pulse-slow" style="animation-delay: -4s"></div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-10">
+                <div class="text-center md:text-left max-w-2xl">
+                    <div class="hero-badge">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Semester 2026B</span>
+                    </div>
+                    <h1 class="hero-title font-extrabold">Principles of Financial Accounting</h1>
+                    <p class="hero-subtitle">Master the fundamentals of financial reporting, statement preparation, and managerial decision-making frameworks.</p>
+                    
+                    <div class="instructor-info">
+                        <div class="instructor-chip">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Dr. Shay Tsaban</span>
+                        </div>
+                        <div class="instructor-chip">
                             <i class="fas fa-envelope"></i> 
-                            <a href="mailto:shay.tsaban@gmail.com" class="underline hover:text-white transition">shay.tsaban@gmail.com</a>
-                        </span>
+                            <a href="mailto:shay.tsaban@gmail.com">shay.tsaban@gmail.com</a>
+                        </div>
+                        <div class="instructor-chip">
+                            <i class="fas fa-building"></i>
+                            <span>Tel-Aviv Yafo Academic College</span>
+                        </div>
                     </div>
                 </div>
                 <div class="flex-shrink-0">
-                    <img src="https://www.mta.ac.il/he-il/PublishingImages/Logo_MTA_White.png" alt="MTA Logo" class="h-20 opacity-90" onerror="this.style.display='none'">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-white/10 rounded-3xl blur-xl animate-pulse-slow"></div>
+                        <img src="https://www.mta.ac.il/he-il/PublishingImages/Logo_MTA_White.png" 
+                             alt="MTA College Logo" 
+                             class="h-24 md:h-28 opacity-95 relative z-10 drop-shadow-lg"
+                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-24 h-24 md:w-28 md:h-28 bg-white/15 rounded-2xl flex items-center justify-center\'><i class=\'fas fa-university text-3xl md:text-4xl text-white/90\'></i></div>'">
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 -mt-8 pb-20">
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 -mt-10 pb-24 relative z-10">
         
-        <section class="mb-12">
-            <div class="notes-card rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
-                <div class="flex items-center gap-5">
-                    <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-3xl pulse">
+        <section class="mb-14">
+            <div class="notes-card rounded-2.5xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 shadow-glow">
+                <div class="flex items-center gap-7">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-primary-700 rounded-2.5xl flex items-center justify-center text-white text-4xl pulse shadow-lg">
                         <i class="fas fa-file-excel"></i>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-900">Live Course Notes</h2>
-                        <p class="text-slate-500">The central repository for all class spreadsheets, calculations, and live notes.</p>
+                        <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Complete Course Notes</h2>
+                        <p class="text-slate-600 max-w-lg text-base leading-relaxed mb-3">
+                            <i class="fas fa-folder-open text-blue-500 mr-2"></i>
+                            <strong>All-in-One Resource</strong> — Contains every class spreadsheet, calculation template, live notes, and worked examples for the entire semester.
+                        </p>
+                        <div class="flex flex-wrap gap-3 text-sm">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 font-medium border border-blue-200">
+                                <i class="fas fa-check-circle mr-1.5"></i> All Lectures
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-medium border border-emerald-200">
+                                <i class="fas fa-check-circle mr-1.5"></i> Calculations
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 font-medium border border-amber-200">
+                                <i class="fas fa-check-circle mr-1.5"></i> Templates
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-violet-50 text-violet-700 font-medium border border-violet-200">
+                                <i class="fas fa-check-circle mr-1.5"></i> Updates Live
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <a href="https://mypac-my.sharepoint.com/:x:/g/personal/shay_tsaban_pac_org_il/IQCFNgjxUyt3RrAMG24-NPiRAUzuyyN7eKl1SSgej7oliGA?e=cKyGXB" 
                    target="_blank"
-                   class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 transition-all transform hover:scale-105">
-                    Open Spreadsheet
-                    <i class="fas fa-external-link-alt"></i>
+                   class="group flex flex-col items-center justify-center gap-3 bg-gradient-to-r from-blue-600 to-primary-700 hover:from-blue-700 hover:to-primary-800 text-white px-10 py-6 rounded-2xl font-bold text-xl transition-all transform hover:scale-[1.04] shadow-glow-lg min-w-[220px]">
+                    <i class="fas fa-file-excel text-3xl group-hover:scale-110 transition-transform"></i>
+                    <span class="tracking-wide">Open Spreadsheet</span>
+                    <span class="text-xs font-medium text-blue-100 opacity-90 group-hover:opacity-100">📥 Includes All Course Notes</span>
                 </a>
             </div>
         </section>
 
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="md:col-span-2 space-y-8">
+            <div class="md:col-span-2 space-y-9">
                 
                 <section>
-                    <h2 class="text-2xl font-bold mb-6 text-blue-900">Course Roadmap</h2>
+                    <div class="flex items-center justify-between mb-7">
+                        <h2 class="text-2.5xl font-extrabold text-primary-900">Course Roadmap</h2>
+                        <div class="flex items-center gap-2 text-sm text-slate-500 bg-white/70 px-3 py-1.5 rounded-full border border-slate-200">
+                            <i class="fas fa-layer-group"></i>
+                            <span>9 Lectures</span>
+                        </div>
+                    </div>
 
-                    <!-- LECTURE 6 -->
-                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-violet-600 border-slate-200 mb-8">
-                        <div class="flex justify-between items-start mb-4">
+                    <!-- LECTURE 9 -->
+                    <div class="lecture-card rose p-7 md:p-8 mb-7">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-5">
                             <div>
-                                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter" style="background:#ede9fe;color:#5b21b6;">Lecture 6</span>
-                                <h3 class="text-xl font-bold mt-2 text-blue-900">Inventory Recovery & Property, Plant and Equipment — Definitions and Measurement</h3>
+                                <span class="lecture-badge amber">
+                                    <i class="fas fa-chart-line"></i>
+                                    Lecture 9
+                                </span>
+                                <h3 class="text-xl font-bold mt-2.5 text-slate-900">Statement of Cash Flows — Basics & Classification</h3>
                             </div>
-                            <span class="text-slate-500 font-medium"><i class="far fa-calendar-alt"></i> 23.04.2026</span>
+                            <span class="text-slate-500 font-medium flex items-center gap-1.5 text-sm">
+                                <i class="far fa-calendar-alt"></i> 
+                                <time datetime="2026-05-14">14.05.2026</time>
+                            </span>
                         </div>
 
                         <div class="prose prose-slate max-w-none">
-                            <p class="text-slate-600 italic mb-4">"Reconstructing opening inventory using gross profit rates, and mastering the foundational concepts of PP&amp;E: what enters the cost of an asset, how depreciation is measured, and how book value evolves over time."</p>
+                            <p class="text-slate-600 italic mb-5 leading-relaxed">"Understanding the three sections of the cash flow statement, mastering the indirect method for operating activities, and learning how to reconcile net income to cash from operations."</p>
 
-                            <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
-                                <div class="aspect-video">
-                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/llpbh2zI-0o" title="Lecture 6: Inventory Recovery & PP&E" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            <div class="mt-6 mb-7 rounded-2xl overflow-hidden shadow-glow border border-slate-200 video-container">
+                                <div class="aspect-video relative">
+                                    <iframe class="w-full h-full" 
+                                            src="https://www.youtube.com/embed/16Ro_RtdcdE" 
+                                            title="Lecture 9: Statement of Cash Flows Basics" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen></iframe>
+                                    <div class="video-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="video-overlay">
+                                        <span class="text-white font-medium text-sm flex items-center gap-2">
+                                            <i class="fas fa-play-circle"></i>
+                                            Watch Lecture Recording
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2 font-semibold"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
-                                    <span>Duration: 2 hours</span>
+                                <div class="bg-slate-50 px-4 py-3 text-xs text-slate-600 flex items-center justify-between border-t border-slate-200">
+                                    <span class="flex items-center gap-2 font-semibold">
+                                        <i class="fab fa-youtube text-red-600"></i> 
+                                        Lecture Recording
+                                    </span>
+                                    <span class="font-medium">Duration: 1h 55m</span>
                                 </div>
                             </div>
 
-                            <!-- Quiz invite now in English -->
-                            <div class="mb-6 p-5 rounded-xl border-2 border-violet-200 bg-violet-50 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                                <div style="flex:1">
-                                    <p class="font-bold text-violet-900 mb-1">📝 Self‑Assessment Quiz</p>
-                                    <p class="text-sm text-violet-700">7 Hebrew multiple‑choice questions on PP&amp;E — with hints, retry attempts, and full calculation breakdowns at the end.</p>
+                            <div class="mb-6">
+                                <h4 class="font-bold text-primary-800 mb-2.5 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="fas fa-list-check"></i>
+                                    Key Topics:
+                                </h4>
+                                <div class="topic-list">
+                                    <div class="topic-item">Operating Activities (Indirect Method)</div>
+                                    <div class="topic-item">Investing Activities</div>
+                                    <div class="topic-item">Financing Activities</div>
+                                    <div class="topic-item">Non-Cash Transactions</div>
+                                    <div class="topic-item">Reconciling Net Income to Cash Flow</div>
+                                    <div class="topic-item">Free Cash Flow Calculation</div>
                                 </div>
-                                <button class="open-quiz-btn" onclick="openQuiz()">
-                                    <i class="fas fa-brain"></i> Start Quiz
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LECTURE 8 -->
+                    <div class="lecture-card indigo p-7 md:p-8 mb-7">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-5">
+                            <div>
+                                <span class="lecture-badge violet">
+                                    <i class="fas fa-chart-pie"></i>
+                                    Lecture 8
+                                </span>
+                                <h3 class="text-xl font-bold mt-2.5 text-slate-900">Changes in Equity — Comprehensive Income & Retained Earnings</h3>
+                            </div>
+                            <span class="text-slate-500 font-medium flex items-center gap-1.5 text-sm">
+                                <i class="far fa-calendar-alt"></i> 
+                                <time datetime="2026-05-07">07.05.2026</time>
+                            </span>
+                        </div>
+
+                        <div class="prose prose-slate max-w-none">
+                            <p class="text-slate-600 italic mb-5 leading-relaxed">"Exploring the statement of changes in equity, understanding comprehensive income components, and mastering the flow of retained earnings through dividends and prior period adjustments."</p>
+
+                            <div class="mt-6 mb-7 rounded-2xl overflow-hidden shadow-glow border border-slate-200 video-container">
+                                <div class="aspect-video relative">
+                                    <iframe class="w-full h-full" 
+                                            src="https://www.youtube.com/embed/ZXF4I5kuahg" 
+                                            title="Lecture 8: Changes in Equity" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen></iframe>
+                                    <div class="video-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="video-overlay">
+                                        <span class="text-white font-medium text-sm flex items-center gap-2">
+                                            <i class="fas fa-play-circle"></i>
+                                            Watch Lecture Recording
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 px-4 py-3 text-xs text-slate-600 flex items-center justify-between border-t border-slate-200">
+                                    <span class="flex items-center gap-2 font-semibold">
+                                        <i class="fab fa-youtube text-red-600"></i> 
+                                        Lecture Recording
+                                    </span>
+                                    <span class="font-medium">Duration: 1h 48m</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h4 class="font-bold text-primary-800 mb-2.5 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="fas fa-list-check"></i>
+                                    Key Topics:
+                                </h4>
+                                <div class="topic-list">
+                                    <div class="topic-item">Statement of Changes in Equity Structure</div>
+                                    <div class="topic-item">Comprehensive Income Components</div>
+                                    <div class="topic-item">Retained Earnings Reconciliation</div>
+                                    <div class="topic-item">Dividend Accounting & Declarations</div>
+                                    <div class="topic-item">Prior Period Adjustments</div>
+                                    <div class="topic-item">Treasury Stock Transactions</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LECTURE 7 -->
+                    <div class="lecture-card amber p-7 md:p-8 mb-7">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-5">
+                            <div>
+                                <span class="lecture-badge emerald">
+                                    <i class="fas fa-dumbbell"></i>
+                                    Lecture 7
+                                </span>
+                                <h3 class="text-xl font-bold mt-2.5 text-slate-900">Property, Plant & Equipment — Exam-Level Exercises</h3>
+                            </div>
+                            <span class="text-slate-500 font-medium flex items-center gap-1.5 text-sm">
+                                <i class="far fa-calendar-alt"></i> 
+                                <time datetime="2026-04-30">30.04.2026</time>
+                            </span>
+                        </div>
+
+                        <div class="prose prose-slate max-w-none">
+                            <p class="text-slate-600 italic mb-5 leading-relaxed">"Advanced problem-solving session covering complex PP&E scenarios: asset exchanges, impairment testing, component depreciation, and multi-year partial period calculations."</p>
+
+                            <div class="mt-6 mb-7 rounded-2xl overflow-hidden shadow-glow border border-slate-200 video-container">
+                                <div class="aspect-video relative">
+                                    <iframe class="w-full h-full" 
+                                            src="https://www.youtube.com/embed/7Ux2XNcp1Wk" 
+                                            title="Lecture 7: PP&E Exam Exercises" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen></iframe>
+                                    <div class="video-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="video-overlay">
+                                        <span class="text-white font-medium text-sm flex items-center gap-2">
+                                            <i class="fas fa-play-circle"></i>
+                                            Watch Lecture Recording
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 px-4 py-3 text-xs text-slate-600 flex items-center justify-between border-t border-slate-200">
+                                    <span class="flex items-center gap-2 font-semibold">
+                                        <i class="fab fa-youtube text-red-600"></i> 
+                                        Lecture Recording
+                                    </span>
+                                    <span class="font-medium">Duration: 2h 10m</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h4 class="font-bold text-primary-800 mb-2.5 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="fas fa-list-check"></i>
+                                    Key Topics:
+                                </h4>
+                                <div class="topic-list">
+                                    <div class="topic-item">Asset Exchange Accounting (Commercial Substance)</div>
+                                    <div class="topic-item">Impairment Testing & Reversals</div>
+                                    <div class="topic-item">Component Depreciation Method</div>
+                                    <div class="topic-item">Complex Partial-Year Calculations</div>
+                                    <div class="topic-item">Asset Disposal & Gain/Loss Recognition</div>
+                                    <div class="topic-item">Exam Strategy & Time Management</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LECTURE 6 -->
+                    <div class="lecture-card violet p-7 md:p-8 mb-7">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-5">
+                            <div>
+                                <span class="lecture-badge violet">
+                                    <i class="fas fa-cube"></i>
+                                    Lecture 6
+                                </span>
+                                <h3 class="text-xl font-bold mt-2.5 text-slate-900">Inventory Recovery & PP&E — Definitions and Measurement</h3>
+                            </div>
+                            <span class="text-slate-500 font-medium flex items-center gap-1.5 text-sm">
+                                <i class="far fa-calendar-alt"></i> 
+                                <time datetime="2026-04-23">23.04.2026</time>
+                            </span>
+                        </div>
+
+                        <div class="prose prose-slate max-w-none">
+                            <p class="text-slate-600 italic mb-5 leading-relaxed">"Reconstructing opening inventory using gross profit rates, and mastering the foundational concepts of PP&amp;E: what enters the cost of an asset, how depreciation is measured, and how book value evolves over time."</p>
+
+                            <div class="mt-6 mb-7 rounded-2xl overflow-hidden shadow-glow border border-slate-200 video-container">
+                                <div class="aspect-video relative">
+                                    <iframe class="w-full h-full" 
+                                            src="https://www.youtube.com/embed/llpbh2zI-0o" 
+                                            title="Lecture 6: Inventory Recovery & PP&E" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen></iframe>
+                                    <div class="video-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="video-overlay">
+                                        <span class="text-white font-medium text-sm flex items-center gap-2">
+                                            <i class="fas fa-play-circle"></i>
+                                            Watch Lecture Recording
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 px-4 py-3 text-xs text-slate-600 flex items-center justify-between border-t border-slate-200">
+                                    <span class="flex items-center gap-2 font-semibold">
+                                        <i class="fab fa-youtube text-red-600"></i> 
+                                        Lecture Recording
+                                    </span>
+                                    <span class="font-medium">Duration: 2h 05m</span>
+                                </div>
+                            </div>
+
+                            <!-- Quiz invite -->
+                            <div class="mb-7 p-5.5 rounded-2xl border-2 border-violet-200 bg-gradient-to-br from-violet-50 to-indigo-50 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                                <div class="flex-1">
+                                    <p class="font-bold text-violet-900 mb-1.5 flex items-center gap-2">
+                                        <i class="fas fa-brain text-violet-600"></i>
+                                        Self‑Assessment Quiz
+                                    </p>
+                                    <p class="text-sm text-violet-700 leading-relaxed">7 Hebrew multiple‑choice questions on PP&amp;E — with hints, retry attempts, and full calculation breakdowns at the end.</p>
+                                </div>
+                                <button class="open-quiz-btn whitespace-nowrap" onclick="openQuiz()">
+                                    <i class="fas fa-play-circle"></i> 
+                                    <span>Start Quiz</span>
                                 </button>
                             </div>
 
-<h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
-<ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
-    <li>• Opening Inventory Reconstruction</li>
-    <li>• Gross Profit Rate Method</li>
-    <li>• PP&E Cost Components</li>
-    <li>• Depreciation (n, salvage value)</li>
-    <li>• Book Value & Acc. Depreciation</li>
-    <li>• Partial‑Year Depreciation</li>
-    <li>• Extracting Unknown Values</li>
-</ul>
+                            <div class="mb-6">
+                                <h4 class="font-bold text-primary-800 mb-2.5 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="fas fa-list-check"></i>
+                                    Key Topics:
+                                </h4>
+                                <div class="topic-list">
+                                    <div class="topic-item">Opening Inventory Reconstruction</div>
+                                    <div class="topic-item">Gross Profit Rate Method</div>
+                                    <div class="topic-item">PP&E Cost Components</div>
+                                    <div class="topic-item">Depreciation (n, salvage value)</div>
+                                    <div class="topic-item">Book Value & Acc. Depreciation</div>
+                                    <div class="topic-item">Partial‑Year Depreciation</div>
+                                    <div class="topic-item">Extracting Unknown Values</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-
-
-                    
-                    <!-- LECTURE 5 (unchanged English) -->
-                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-emerald-600 border-slate-200 mb-8">
-                        <div class="flex justify-between items-start mb-4">
+                    <!-- LECTURE 5 -->
+                    <div class="lecture-card emerald p-7 md:p-8 mb-7">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-5">
                             <div>
-                                <span class="lecture-badge px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Lecture 5</span>
-                                <h3 class="text-xl font-bold mt-2 text-blue-900">Inventory Valuation: FIFO & NRV Calculations</h3>
+                                <span class="lecture-badge emerald">
+                                    <i class="fas fa-boxes"></i>
+                                    Lecture 5
+                                </span>
+                                <h3 class="text-xl font-bold mt-2.5 text-slate-900">Inventory Valuation: FIFO & NRV Calculations</h3>
                             </div>
-                            <span class="text-slate-500 font-medium"><i class="far fa-calendar-alt"></i> 16.04.2026</span>
+                            <span class="text-slate-500 font-medium flex items-center gap-1.5 text-sm">
+                                <i class="far fa-calendar-alt"></i> 
+                                <time datetime="2026-04-16">16.04.2026</time>
+                            </span>
                         </div>
                         <div class="prose prose-slate max-w-none">
-                            <p class="text-slate-600 italic mb-4">"Mastering the flow of costs through the FIFO method and the essential principle of valuing inventory at the lower of Cost or Net Realizable Value (NRV)."</p>
-                            <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
-                                <div class="aspect-video">
-                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/2iD6w7Sud6k" title="Lecture 5: Inventory Valuation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            <p class="text-slate-600 italic mb-5 leading-relaxed">"Mastering the flow of costs through the FIFO method and the essential principle of valuing inventory at the lower of Cost or Net Realizable Value (NRV)."</p>
+                            <div class="mt-6 mb-7 rounded-2xl overflow-hidden shadow-glow border border-slate-200 video-container">
+                                <div class="aspect-video relative">
+                                    <iframe class="w-full h-full" 
+                                            src="https://www.youtube.com/embed/2iD6w7Sud6k" 
+                                            title="Lecture 5: Inventory Valuation" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen></iframe>
+                                    <div class="video-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="video-overlay">
+                                        <span class="text-white font-medium text-sm flex items-center gap-2">
+                                            <i class="fas fa-play-circle"></i>
+                                            Watch Lecture Recording
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2 font-semibold"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
-                                    <span>Duration: 1.5 hours</span>
-                                </div>
-                            </div>
-                            <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
-                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
-                                <li>• FIFO Cost Flow Assumption</li>
-                                <li>• Calculating Ending Inventory</li>
-                                <li>• Net Realizable Value (NRV)</li>
-                                <li>• Lower of Cost or NRV Rule</li>
-                                <li>• Accounting for Write-downs</li>
-                                <li>• Periodic vs. Perpetual Inventory</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- LECTURE 4 (unchanged) -->
-                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-700 border-slate-200 mb-8">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <span class="lecture-badge px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Lecture 4</span>
-                                <h3 class="text-xl font-bold mt-2 text-blue-900">The Recording of Transactions - The Accounting Cycle, and the Basics of Inventory</h3>
-                            </div>
-                            <span class="text-slate-500 font-medium"><i class="far fa-calendar-alt"></i> 09.04.2026</span>
-                        </div>
-                        <div class="prose prose-slate max-w-none">
-                            <p class="text-slate-600 italic mb-4">"Dive into the systematic recording of business transactions, understand the full accounting cycle, and explore how inventory ties into COGS and gross profit."</p>
-                            <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
-                                <div class="aspect-video">
-                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/bWS3G_yMbVE" title="Lecture 4: Recording Transactions & Inventory" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                                </div>
-                                <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2 font-semibold"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
-                                    <span>Duration: 2 hours</span>
+                                <div class="bg-slate-50 px-4 py-3 text-xs text-slate-600 flex items-center justify-between border-t border-slate-200">
+                                    <span class="flex items-center gap-2 font-semibold">
+                                        <i class="fab fa-youtube text-red-600"></i> 
+                                        Lecture Recording
+                                    </span>
+                                    <span class="font-medium">Duration: 1h 42m</span>
                                 </div>
                             </div>
                             <div class="mb-6">
-                                <h4 class="font-semibold text-blue-800 mb-3">Resources:</h4>
-                                <div class="flex flex-wrap gap-2 mb-3">
-                                    <a href="lecture4.html" target="_blank" class="exercise-btn"><i class="fas fa-file-code"></i> Exercise: Accounting Cycle (No Answers)</a>
-                                    <a href="lecture4_ans.html" target="_blank" class="exercise-btn"><i class="fas fa-file-check"></i> Solution: Accounting Cycle</a>
-                                    <a href="lecture4_inv.html" target="_blank" class="exercise-btn"><i class="fas fa-box-open"></i> Exercise: Inventory & COGS (With Answers)</a>
-                                    <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQAsqQBlPFKkS52zvjxR3PXTAeTHkPgsxwThpGKiufddx-Y?e=gu5kIW" target="_blank" class="exercise-btn"><i class="fas fa-home"></i> Home Exercise #4 - The Accounting Cycle</a>
-                                    <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQDdUM7-MyvhSZWC-314-mZTAV_1bsp3lStP_WFfLI3blzk?e=EZLuJp" target="_blank" class="exercise-btn"><i class="fas fa-home"></i> Home Exercise #5 - Basics of Inventory</a>
+                                <h4 class="font-bold text-primary-800 mb-2.5 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="fas fa-list-check"></i>
+                                    Key Topics:
+                                </h4>
+                                <div class="topic-list">
+                                    <div class="topic-item">FIFO Cost Flow Assumption</div>
+                                    <div class="topic-item">Calculating Ending Inventory</div>
+                                    <div class="topic-item">Net Realizable Value (NRV)</div>
+                                    <div class="topic-item">Lower of Cost or NRV Rule</div>
+                                    <div class="topic-item">Accounting for Write-downs</div>
+                                    <div class="topic-item">Periodic vs. Perpetual Inventory</div>
                                 </div>
-                                <div class="bg-amber-50 text-amber-800 p-3 rounded-lg text-sm border border-amber-200 shadow-sm flex items-start gap-2">
-                                    <i class="fas fa-exclamation-circle mt-0.5 text-amber-600"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LECTURE 4 -->
+                    <div class="lecture-card blue p-7 md:p-8 mb-7">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-5">
+                            <div>
+                                <span class="lecture-badge">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Lecture 4
+                                </span>
+                                <h3 class="text-xl font-bold mt-2.5 text-slate-900">The Recording of Transactions - The Accounting Cycle, and the Basics of Inventory</h3>
+                            </div>
+                            <span class="text-slate-500 font-medium flex items-center gap-1.5 text-sm">
+                                <i class="far fa-calendar-alt"></i> 
+                                <time datetime="2026-04-09">09.04.2026</time>
+                            </span>
+                        </div>
+                        <div class="prose prose-slate max-w-none">
+                            <p class="text-slate-600 italic mb-5 leading-relaxed">"Dive into the systematic recording of business transactions, understand the full accounting cycle, and explore how inventory ties into COGS and gross profit."</p>
+                            <div class="mt-6 mb-7 rounded-2xl overflow-hidden shadow-glow border border-slate-200 video-container">
+                                <div class="aspect-video relative">
+                                    <iframe class="w-full h-full" 
+                                            src="https://www.youtube.com/embed/bWS3G_yMbVE" 
+                                            title="Lecture 4: Recording Transactions & Inventory" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen></iframe>
+                                    <div class="video-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="video-overlay">
+                                        <span class="text-white font-medium text-sm flex items-center gap-2">
+                                            <i class="fas fa-play-circle"></i>
+                                            Watch Lecture Recording
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 px-4 py-3 text-xs text-slate-600 flex items-center justify-between border-t border-slate-200">
+                                    <span class="flex items-center gap-2 font-semibold">
+                                        <i class="fab fa-youtube text-red-600"></i> 
+                                        Lecture Recording
+                                    </span>
+                                    <span class="font-medium">Duration: 2h 03m</span>
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <h4 class="font-bold text-primary-800 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-folder-open"></i>
+                                    Resources:
+                                </h4>
+                                <div class="flex flex-wrap gap-2.5 mb-4">
+                                    <a href="lecture4.html" target="_blank" class="exercise-btn">
+                                        <i class="fas fa-file-code"></i>
+                                        <span>Exercise: Accounting Cycle</span>
+                                    </a>
+                                    <a href="lecture4_ans.html" target="_blank" class="exercise-btn">
+                                        <i class="fas fa-file-check"></i>
+                                        <span>Solution: Accounting Cycle</span>
+                                    </a>
+                                    <a href="lecture4_inv.html" target="_blank" class="exercise-btn">
+                                        <i class="fas fa-box-open"></i>
+                                        <span>Exercise: Inventory & COGS</span>
+                                    </a>
+                                    <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQAsqQBlPFKkS52zvjxR3PXTAeTHkPgsxwThpGKiufddx-Y?e=gu5kIW" target="_blank" class="exercise-btn">
+                                        <i class="fas fa-home"></i>
+                                        <span>Home Exercise #4</span>
+                                    </a>
+                                    <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQDdUM7-MyvhSZWC-314-mZTAV_1bsp3lStP_WFfLI3blzk?e=EZLuJp" target="_blank" class="exercise-btn">
+                                        <i class="fas fa-home"></i>
+                                        <span>Home Exercise #5</span>
+                                    </a>
+                                </div>
+                                <div class="bg-amber-50 text-amber-800 p-4 rounded-xl text-sm border border-amber-200 shadow-sm flex items-start gap-3">
+                                    <i class="fas fa-exclamation-circle mt-0.5 text-amber-600 flex-shrink-0"></i>
                                     <p><strong>Note:</strong> You DO NOT need to submit the home exercises. Also, you DO NOT need to solve question number 5 in Home Exercise #5.</p>
                                 </div>
                             </div>
-                            <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
-                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
-                                <li>• Transaction Journaling</li>
-                                <li>• Posting to Ledger</li>
-                                <li>• Trial Balance & Adjustments</li>
-                                <li>• Closing Entries</li>
-                                <li>• Inventory Valuation Basics</li>
-                                <li>• Impact on COGS & Gross Profit</li>
-                            </ul>
+                            <div class="mb-6">
+                                <h4 class="font-bold text-primary-800 mb-2.5 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="fas fa-list-check"></i>
+                                    Key Topics:
+                                </h4>
+                                <div class="topic-list">
+                                    <div class="topic-item">Transaction Journaling</div>
+                                    <div class="topic-item">Posting to Ledger</div>
+                                    <div class="topic-item">Trial Balance & Adjustments</div>
+                                    <div class="topic-item">Closing Entries</div>
+                                    <div class="topic-item">Inventory Valuation Basics</div>
+                                    <div class="topic-item">Impact on COGS & Gross Profit</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- LECTURES 3, 2, 1 unchanged (all English) -->
-                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-600 border-slate-200 mb-8">
-                        <div class="flex justify-between items-start mb-4">
+                    <!-- LECTURE 3 -->
+                    <div class="lecture-card blue p-7 md:p-8 mb-7">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-5">
                             <div>
-                                <span class="lecture-badge px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Lecture 3</span>
-                                <h3 class="text-xl font-bold mt-2 text-blue-900">Constructing Complete Financial Statements</h3>
+                                <span class="lecture-badge">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    Lecture 3
+                                </span>
+                                <h3 class="text-xl font-bold mt-2.5 text-slate-900">Constructing Complete Financial Statements</h3>
                             </div>
-                            <span class="text-slate-500 font-medium"><i class="far fa-calendar-alt"></i> 26.03.2026</span>
+                            <span class="text-slate-500 font-medium flex items-center gap-1.5 text-sm">
+                                <i class="far fa-calendar-alt"></i> 
+                                <time datetime="2026-03-26">26.03.2026</time>
+                            </span>
                         </div>
                         <div class="prose prose-slate max-w-none">
-                            <p class="text-slate-600 italic mb-4">"Mastering the flow from a complete set of accounts to the final Balance Sheet and Profit & Loss statements."</p>
-                            <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
-                                <div class="aspect-video">
-                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/jiHJqqP2eoY" title="Lecture 3: Constructing Complete Financial Statements" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            <p class="text-slate-600 italic mb-5 leading-relaxed">"Mastering the flow from a complete set of accounts to the final Balance Sheet and Profit & Loss statements."</p>
+                            <div class="mt-6 mb-7 rounded-2xl overflow-hidden shadow-glow border border-slate-200 video-container">
+                                <div class="aspect-video relative">
+                                    <iframe class="w-full h-full" 
+                                            src="https://www.youtube.com/embed/jiHJqqP2eoY" 
+                                            title="Lecture 3: Constructing Complete Financial Statements" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen></iframe>
+                                    <div class="video-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="video-overlay">
+                                        <span class="text-white font-medium text-sm flex items-center gap-2">
+                                            <i class="fas fa-play-circle"></i>
+                                            Watch Lecture Recording
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2 font-semibold"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
-                                    <span>Duration: 2 hours</span>
+                                <div class="bg-slate-50 px-4 py-3 text-xs text-slate-600 flex items-center justify-between border-t border-slate-200">
+                                    <span class="flex items-center gap-2 font-semibold">
+                                        <i class="fab fa-youtube text-red-600"></i> 
+                                        Lecture Recording
+                                    </span>
+                                    <span class="font-medium">Duration: 2h 01m</span>
                                 </div>
                             </div>
                             <div class="mb-6">
-                                <h4 class="font-semibold text-blue-800 mb-3">Resources:</h4>
-                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQDUn3cRjCdkT4FxnCu28plTAZ-yV9gmQOuZQN6U14mV5iA?e=J7g3j2" target="_blank" class="exercise-btn"><i class="fas fa-file-word"></i> Exercise 3 - Comprehensive Statements</a>
+                                <h4 class="font-bold text-primary-800 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-folder-open"></i>
+                                    Resources:
+                                </h4>
+                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQDUn3cRjCdkT4FxnCu28plTAZ-yV9gmQOuZQN6U14mV5iA?e=J7g3j2" target="_blank" class="exercise-btn">
+                                    <i class="fas fa-file-word"></i>
+                                    <span>Exercise 3 - Comprehensive Statements</span>
+                                </a>
                                 <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
-                                    <p class="text-sm text-yellow-800 flex items-center gap-2"><i class="fas fa-info-circle"></i><strong>Instructions:</strong> You do NOT need to submit this. It will be solved together during the exercise on 27.03.</p>
-                                </div>
-                            </div>
-                            <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
-                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
-                                <li>• Trial Balance Construction</li>
-                                <li>• Balance Sheet Formulation</li>
-                                <li>• Profit & Loss (Income Statement)</li>
-                                <li>• Linking Profit to Equity</li>
-                                <li>• Full Cycle Account Recording</li>
-                                <li>• Checksums and Balance Verification</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-500 border-slate-200 mb-8">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <span class="lecture-badge px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Lecture 2</span>
-                                <h3 class="text-xl font-bold mt-2">Deep Dive into Financial Statements</h3>
-                            </div>
-                            <span class="text-slate-500 font-medium"><i class="far fa-calendar-alt"></i> 19.03.2026</span>
-                        </div>
-                        <div class="prose prose-slate max-w-none">
-                            <p class="text-slate-600 italic mb-4">"Understanding how transactions flow through the accounting identity is the key to mastering financial reporting."</p>
-                            <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
-                                <div class="aspect-video">
-                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/czoHDAt5YmE" title="Lecture 2: Deep Dive into Financial Statements" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                                </div>
-                                <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
-                                    <span>Duration: ~30 minutes</span>
+                                    <p class="text-sm text-yellow-800 flex items-center gap-2">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Instructions:</strong> You do NOT need to submit this. It will be solved together during the exercise on 27.03.
+                                    </p>
                                 </div>
                             </div>
                             <div class="mb-6">
-                                <h4 class="font-semibold text-blue-800 mb-3">Resources & Assignments:</h4>
-                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQC-vyPGVnzFQLZT9y_lEYDJAb-ufIoyPDKIsm-NKhCaxcE?e=MmkEiH" target="_blank" class="exercise-btn"><i class="fas fa-file-word"></i> Exercise 2 - Profit and Loss</a>
-                                <p class="mt-3 text-sm text-red-600 font-medium flex items-center gap-2"><i class="fas fa-exclamation-triangle"></i> Mandatory: Submit on Moodle by Friday, 27.3, 8:00 AM</p>
+                                <h4 class="font-bold text-primary-800 mb-2.5 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="fas fa-list-check"></i>
+                                    Key Topics:
+                                </h4>
+                                <div class="topic-list">
+                                    <div class="topic-item">Trial Balance Construction</div>
+                                    <div class="topic-item">Balance Sheet Formulation</div>
+                                    <div class="topic-item">Profit & Loss (Income Statement)</div>
+                                    <div class="topic-item">Linking Profit to Equity</div>
+                                    <div class="topic-item">Full Cycle Account Recording</div>
+                                    <div class="topic-item">Checksums and Balance Verification</div>
+                                </div>
                             </div>
-                            <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
-                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
-                                <li>• The Accounting Identity</li>
-                                <li>• Current vs. Non-current classification</li>
-                                <li>• Multi-step Income Statement</li>
-                                <li>• Recording Business Transactions</li>
-                                <li>• Financing Expenses & Taxes</li>
-                            </ul>
                         </div>
                     </div>
 
-                    <div class="glass-card p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-400 border-slate-200 mb-8">
-                        <div class="flex justify-between items-start mb-4">
+                    <!-- LECTURE 2 -->
+                    <div class="lecture-card blue p-7 md:p-8 mb-7">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-5">
                             <div>
-                                <span class="lecture-badge px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Lecture 1</span>
-                                <h3 class="text-xl font-bold mt-2">Basics of Financial Statements</h3>
+                                <span class="lecture-badge">
+                                    <i class="fas fa-chart-bar"></i>
+                                    Lecture 2
+                                </span>
+                                <h3 class="text-xl font-bold mt-2.5 text-slate-900">Deep Dive into Financial Statements</h3>
                             </div>
-                            <span class="text-slate-500 font-medium"><i class="far fa-calendar-alt"></i> 12.03.2026</span>
+                            <span class="text-slate-500 font-medium flex items-center gap-1.5 text-sm">
+                                <i class="far fa-calendar-alt"></i> 
+                                <time datetime="2026-03-19">19.03.2026</time>
+                            </span>
                         </div>
                         <div class="prose prose-slate max-w-none">
-                            <p class="text-slate-600 italic mb-4">"The purpose of accounting is to provide relevant information for decision-makers."</p>
-                            <div class="mt-6 mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
-                                <div class="aspect-video">
-                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/HCNQEkOh3DY" title="Lecture 1: Basics of Financial Statements" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            <p class="text-slate-600 italic mb-5 leading-relaxed">"Understanding how transactions flow through the accounting identity is the key to mastering financial reporting."</p>
+                            <div class="mt-6 mb-7 rounded-2xl overflow-hidden shadow-glow border border-slate-200 video-container">
+                                <div class="aspect-video relative">
+                                    <iframe class="w-full h-full" 
+                                            src="https://www.youtube.com/embed/czoHDAt5YmE" 
+                                            title="Lecture 2: Deep Dive into Financial Statements" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen></iframe>
+                                    <div class="video-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="video-overlay">
+                                        <span class="text-white font-medium text-sm flex items-center gap-2">
+                                            <i class="fas fa-play-circle"></i>
+                                            Watch Lecture Recording
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="bg-slate-50 p-3 text-xs text-slate-500 flex items-center justify-between">
-                                    <span class="flex items-center gap-2"><i class="fab fa-youtube text-red-600"></i> Lecture Recording</span>
-                                    <span>Duration: ~2 hours</span>
+                                <div class="bg-slate-50 px-4 py-3 text-xs text-slate-600 flex items-center justify-between border-t border-slate-200">
+                                    <span class="flex items-center gap-2 font-semibold">
+                                        <i class="fab fa-youtube text-red-600"></i> 
+                                        Lecture Recording
+                                    </span>
+                                    <span class="font-medium">Duration: 32m</span>
                                 </div>
                             </div>
                             <div class="mb-6">
-                                <h4 class="font-semibold text-blue-800 mb-3">Resources:</h4>
-                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQCrpERLalsoSoWRONHXrn3dAVFyYKbMHtk0nW1-NJB4PHg" target="_blank" class="exercise-btn"><i class="fas fa-file-word"></i> Exercise 1 - Financial Position</a>
+                                <h4 class="font-bold text-primary-800 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-folder-open"></i>
+                                    Resources & Assignments:
+                                </h4>
+                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQC-vyPGVnzFQLZT9y_lEYDJAb-ufIoyPDKIsm-NKhCaxcE?e=MmkEiH" target="_blank" class="exercise-btn">
+                                    <i class="fas fa-file-word"></i>
+                                    <span>Exercise 2 - Profit and Loss</span>
+                                </a>
+                                <p class="mt-4 text-sm text-red-600 font-medium flex items-center gap-2">
+                                    <i class="fas fa-exclamation-triangle"></i> 
+                                    Mandatory: Submit on Moodle by Friday, 27.3, 8:00 AM
+                                </p>
                             </div>
-                            <h4 class="font-semibold text-blue-800 mb-2 text-sm uppercase">Key Topics:</h4>
-                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
-                                <li>• Structured Financial Data</li>
-                                <li>• Income Statement Structure</li>
-                                <li>• Revenue vs. COGS</li>
-                                <li>• Operating vs. Financial Income</li>
-                                <li>• Industry vs. Service structures</li>
-                            </ul>
+                            <div class="mb-6">
+                                <h4 class="font-bold text-primary-800 mb-2.5 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="fas fa-list-check"></i>
+                                    Key Topics:
+                                </h4>
+                                <div class="topic-list">
+                                    <div class="topic-item">The Accounting Identity</div>
+                                    <div class="topic-item">Current vs. Non-current classification</div>
+                                    <div class="topic-item">Multi-step Income Statement</div>
+                                    <div class="topic-item">Recording Business Transactions</div>
+                                    <div class="topic-item">Financing Expenses & Taxes</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center text-slate-500">
-                        <i class="fas fa-lock text-3xl mb-3 opacity-20"></i>
-                        <p>Future sessions will be posted here.</p>
+                    <!-- LECTURE 1 -->
+                    <div class="lecture-card blue p-7 md:p-8 mb-7">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-5">
+                            <div>
+                                <span class="lecture-badge">
+                                    <i class="fas fa-seedling"></i>
+                                    Lecture 1
+                                </span>
+                                <h3 class="text-xl font-bold mt-2.5 text-slate-900">Basics of Financial Statements</h3>
+                            </div>
+                            <span class="text-slate-500 font-medium flex items-center gap-1.5 text-sm">
+                                <i class="far fa-calendar-alt"></i> 
+                                <time datetime="2026-03-12">12.03.2026</time>
+                            </span>
+                        </div>
+                        <div class="prose prose-slate max-w-none">
+                            <p class="text-slate-600 italic mb-5 leading-relaxed">"The purpose of accounting is to provide relevant information for decision-makers."</p>
+                            <div class="mt-6 mb-7 rounded-2xl overflow-hidden shadow-glow border border-slate-200 video-container">
+                                <div class="aspect-video relative">
+                                    <iframe class="w-full h-full" 
+                                            src="https://www.youtube.com/embed/HCNQEkOh3DY" 
+                                            title="Lecture 1: Basics of Financial Statements" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen></iframe>
+                                    <div class="video-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="video-overlay">
+                                        <span class="text-white font-medium text-sm flex items-center gap-2">
+                                            <i class="fas fa-play-circle"></i>
+                                            Watch Lecture Recording
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 px-4 py-3 text-xs text-slate-600 flex items-center justify-between border-t border-slate-200">
+                                    <span class="flex items-center gap-2 font-semibold">
+                                        <i class="fab fa-youtube text-red-600"></i> 
+                                        Lecture Recording
+                                    </span>
+                                    <span class="font-medium">Duration: 1h 58m</span>
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <h4 class="font-bold text-primary-800 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-folder-open"></i>
+                                    Resources:
+                                </h4>
+                                <a href="https://mypac-my.sharepoint.com/:w:/g/personal/shay_tsaban_pac_org_il/IQCrpERLalsoSoWRONHXrn3dAVFyYKbMHtk0nW1-NJB4PHg" target="_blank" class="exercise-btn">
+                                    <i class="fas fa-file-word"></i>
+                                    <span>Exercise 1 - Financial Position</span>
+                                </a>
+                            </div>
+                            <div class="mb-6">
+                                <h4 class="font-bold text-primary-800 mb-2.5 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="fas fa-list-check"></i>
+                                    Key Topics:
+                                </h4>
+                                <div class="topic-list">
+                                    <div class="topic-item">Structured Financial Data</div>
+                                    <div class="topic-item">Income Statement Structure</div>
+                                    <div class="topic-item">Revenue vs. COGS</div>
+                                    <div class="topic-item">Operating vs. Financial Income</div>
+                                    <div class="topic-item">Industry vs. Service structures</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-slate-100 to-slate-50 border-2 border-dashed border-slate-300 rounded-2.5xl p-9 text-center text-slate-500">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-200/70 mb-4">
+                            <i class="fas fa-lock text-2xl opacity-30"></i>
+                        </div>
+                        <p class="font-medium">Future sessions will be posted here as they become available.</p>
+                        <p class="text-sm mt-1 opacity-80">Check back regularly for updates and new materials.</p>
                     </div>
                 </section>
             </div>
 
-            <div class="space-y-6">
-                <section class="glass-card p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-blue-900"><i class="fas fa-book-open"></i> Course Info</h2>
-                    <p class="text-slate-600 text-sm leading-relaxed mb-4">A robust foundation in financial reporting for managerial decision-making. We explore the full cycle from fundamental logic to statement interpretation.</p>
+            <div class="space-y-7">
+                <section class="glass-card p-6.5 rounded-2.5xl shadow-card border border-slate-200">
+                    <h2 class="text-xl font-bold mb-4.5 flex items-center gap-2.5 text-primary-900">
+                        <i class="fas fa-book-open text-primary-500"></i> 
+                        Course Info
+                    </h2>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-5">A robust foundation in financial reporting for managerial decision-making. We explore the full cycle from fundamental logic to statement interpretation and real-world application.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-700 border border-primary-200">
+                            <i class="fas fa-graduation-cap mr-1"></i> Undergraduate
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <i class="fas fa-calculator mr-1"></i> Quantitative Focus
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                            <i class="fas fa-chart-line mr-1"></i> Practical Applications
+                        </span>
+                    </div>
                 </section>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h4 class="font-bold text-lg mb-4 text-blue-900">Logistics</h4>
-                    <div class="space-y-4 text-sm">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="fas fa-map-marker-alt"></i></div>
-                            <div><p class="font-semibold text-slate-800">Location</p><p class="text-slate-500">MTA Campus / Online</p></div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="fas fa-graduation-cap"></i></div>
-                            <div><p class="font-semibold text-slate-800">Credits</p><p class="text-slate-500">3.0 Academic Points</p></div>
-                        </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6.5 rounded-2.5xl border border-blue-100">
+                    <h4 class="font-bold text-lg mb-2.5 text-blue-900 flex items-center gap-2">
+                        <i class="fas fa-headset text-blue-500"></i>
+                        Need help?
+                    </h4>
+                    <p class="text-sm text-blue-800 mb-4.5 leading-relaxed">For questions regarding curriculum, assignments, or course materials, reach out via email or during office hours.</p>
+                    <a href="mailto:shay.tsaban@gmail.com" 
+                       class="block text-center py-2.5 px-5 bg-white border border-blue-200 text-blue-700 rounded-xl font-semibold hover:bg-blue-50 transition-all shadow-sm hover:shadow">
+                        <i class="fas fa-envelope mr-2"></i>
+                        Contact Instructor
+                    </a>
+                    <p class="text-xs text-blue-700/80 mt-3 text-center">
+                        <i class="fas fa-clock mr-1"></i>
+                        Office Hours: Tuesdays 14:00-16:00 or by appointment
+                    </p>
+                </div>
+                
+                <div class="glass-card p-6 rounded-2.5xl shadow-card border border-slate-200">
+                    <h4 class="font-bold text-lg mb-4 text-primary-900 flex items-center gap-2">
+                        <i class="fas fa-link text-primary-500"></i>
+                        Quick Links
+                    </h4>
+                    <div class="space-y-3">
+                        <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group">
+                            <div class="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center text-primary-600 group-hover:bg-primary-100 transition-colors">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <span class="font-medium text-slate-700 group-hover:text-primary-700 transition-colors">Course Syllabus</span>
+                            <i class="fas fa-chevron-left text-xs text-slate-400 ml-auto group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-100 transition-colors">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <span class="font-medium text-slate-700 group-hover:text-emerald-700 transition-colors">Exam Schedule</span>
+                            <i class="fas fa-chevron-left text-xs text-slate-400 ml-auto group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group">
+                            <div class="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600 group-hover:bg-rose-100 transition-colors">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <span class="font-medium text-slate-700 group-hover:text-rose-700 transition-colors">FAQ & Resources</span>
+                            <i class="fas fa-chevron-left text-xs text-slate-400 ml-auto group-hover:translate-x-1 transition-transform"></i>
+                        </a>
                     </div>
-                </div>
-
-                <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                    <h4 class="font-bold text-lg mb-2 text-blue-900">Need help?</h4>
-                    <p class="text-sm text-blue-800 mb-4 leading-relaxed">For questions regarding curriculum or notes, reach out via email.</p>
-                    <a href="mailto:shay.tsaban@gmail.com" class="block text-center py-2 px-4 bg-white border border-blue-200 text-blue-700 rounded-xl font-semibold hover:bg-blue-100 transition">Contact Instructor</a>
-                </div>
-
-                <!-- Sidebar quiz widget in English -->
-                <div class="rounded-2xl border-2 border-violet-200 bg-violet-50 p-5">
-                    <h4 class="font-bold text-violet-900 mb-2 flex items-center gap-2"><i class="fas fa-brain text-violet-600"></i> Self-Assessment Quiz</h4>
-                    <p class="text-xs text-violet-700 mb-3 leading-relaxed">Test your understanding of PP&amp;E — 7 Hebrew multiple‑choice questions with hints, retry attempts, and full calculation breakdowns.</p>
-                    <button class="open-quiz-btn w-full justify-center" onclick="openQuiz()"><i class="fas fa-play-circle"></i> Start Quiz</button>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="py-10 text-center text-slate-400 text-sm border-t border-slate-200">
-        <p>&copy; 2026 Tel-Aviv Yafo Academic College | School of Economics &amp; Management</p>
+    <footer class="py-12 text-center text-slate-300 text-sm border-t border-slate-800/50 relative">
+        <div class="max-w-4xl mx-auto px-6">
+            <p class="mb-2">&copy; 2026 Tel-Aviv Yafo Academic College • School of Economics &amp; Management</p>
+            <p class="text-slate-400 text-xs max-w-2xl mx-auto">
+                Course materials are for educational purposes only. All rights reserved. 
+                <a href="#" class="text-blue-300 hover:text-white transition-colors mx-1">Privacy Policy</a> • 
+                <a href="#" class="text-blue-300 hover:text-white transition-colors mx-1">Accessibility</a>
+            </p>
+            <div class="mt-6 flex justify-center gap-4">
+                <a href="#" class="w-9 h-9 rounded-full bg-slate-800/50 flex items-center justify-center text-slate-300 hover:bg-primary-600 hover:text-white transition-all">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="#" class="w-9 h-9 rounded-full bg-slate-800/50 flex items-center justify-center text-slate-300 hover:bg-primary-600 hover:text-white transition-all">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="w-9 h-9 rounded-full bg-slate-800/50 flex items-center justify-center text-slate-300 hover:bg-primary-600 hover:text-white transition-all">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
     </footer>
 
-    <!-- Quiz logic (unchanged) -->
+    <!-- Quiz logic -->
     <script>
     const questions = [{
         text: "מהי ההגדרה הנכונה של עלות פריט רכוש קבוע?",
@@ -1062,9 +2189,14 @@
         document.getElementById('progress-fill').style.width = '0%';
         document.getElementById('progress-label').textContent = 'שאלה 1 מתוך 7';
         renderQuestion();
+        document.body.style.overflow = 'hidden';
     }
 
-    function closeQuiz() { document.getElementById('quiz-overlay').classList.remove('open'); }
+    function closeQuiz() { 
+        document.getElementById('quiz-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    
     function restartQuiz() { openQuiz(); }
 
     function renderQuestion() {
@@ -1079,7 +2211,7 @@
         document.getElementById('feedback-box').textContent = '';
         document.getElementById('feedback-box').className = 'feedback-box';
         document.getElementById('next-btn').style.display = 'none';
-        document.getElementById('hint-btn').style.display = 'inline-block';
+        document.getElementById('hint-btn').style.display = 'inline-flex';
         updateAttemptsIndicator();
         const container = document.getElementById('options-container');
         container.innerHTML = '';
@@ -1090,6 +2222,7 @@
             btn.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
             btn.onclick = () => selectAnswer(i);
             btn.id = `option-${i}`;
+            btn.setAttribute('aria-label', `אפשרות ${letters[i]}: ${opt}`);
             container.appendChild(btn);
         });
     }
@@ -1097,9 +2230,21 @@
     function updateAttemptsIndicator() {
         const dot1 = document.getElementById('dot1'), dot2 = document.getElementById('dot2'), label = document.getElementById('attempts-label');
         document.getElementById('attempts-indicator').style.display = 'flex';
-        if (attempts === 0) { dot1.className = 'attempts-dot remaining'; dot2.className = 'attempts-dot'; label.textContent = '2 נסיונות נותרו'; }
-        else if (attempts === 1) { dot1.className = 'attempts-dot used'; dot2.className = 'attempts-dot remaining'; label.textContent = 'נסיון 1 נוסף'; }
-        else { dot1.className = 'attempts-dot used'; dot2.className = 'attempts-dot used'; label.textContent = 'אין נסיונות נוספים'; }
+        if (attempts === 0) { 
+            dot1.className = 'attempts-dot remaining'; 
+            dot2.className = 'attempts-dot'; 
+            label.textContent = '2 נסיונות נותרו'; 
+        }
+        else if (attempts === 1) { 
+            dot1.className = 'attempts-dot used'; 
+            dot2.className = 'attempts-dot remaining'; 
+            label.textContent = 'נסיון 1 נוסף'; 
+        }
+        else { 
+            dot1.className = 'attempts-dot used'; 
+            dot2.className = 'attempts-dot used'; 
+            label.textContent = 'אין נסיונות נוספים'; 
+        }
     }
 
     function selectAnswer(idx) {
@@ -1124,8 +2269,10 @@
             fb.className = 'feedback-box correct-fb visible';
             document.getElementById('attempts-indicator').style.display = 'none';
             const nextBtn = document.getElementById('next-btn');
-            nextBtn.style.display = 'inline-block';
-            nextBtn.textContent = currentQ < questions.length - 1 ? 'שאלה הבאה ←' : 'סיום וצפה בחישובים ←';
+            nextBtn.style.display = 'inline-flex';
+            nextBtn.innerHTML = currentQ < questions.length - 1 ? 
+                '<span>שאלה הבאה</span><i class="fas fa-arrow-left text-sm"></i>' : 
+                '<span>סיום וצפה בחישובים</span><i class="fas fa-arrow-left text-sm"></i>';
             document.getElementById('hint-btn').style.display = 'none';
         } else {
             attempts++;
@@ -1138,7 +2285,10 @@
                 const fb = document.getElementById('feedback-box');
                 fb.textContent = q.wrongFeedback;
                 fb.className = 'feedback-box wrong-fb visible';
-                btns.forEach((btn, i) => { if (i !== idx && i !== q.correct && !btn.classList.contains('wrong')) btn.disabled = false; });
+                btns.forEach((btn, i) => { 
+                    if (i !== idx && i !== q.correct && !btn.classList.contains('wrong')) 
+                        btn.disabled = false; 
+                });
                 document.getElementById('next-btn').style.display = 'none';
             } else {
                 answered = true;
@@ -1148,14 +2298,17 @@
                     if (i === q.correct) btn.classList.add('correct');
                 });
                 btns[idx].classList.add('wrong');
-                if (previousWrongIndex !== idx && previousWrongIndex >= 0) btns[previousWrongIndex].classList.add('wrong-strikethrough');
+                if (previousWrongIndex !== idx && previousWrongIndex >= 0) 
+                    btns[previousWrongIndex].classList.add('wrong-strikethrough');
                 const fb = document.getElementById('feedback-box');
                 fb.textContent = `❌ לא נכון גם בנסיון השני. ${q.correctFeedback}`;
                 fb.className = 'feedback-box info-fb visible';
                 document.getElementById('attempts-indicator').style.display = 'none';
                 const nextBtn = document.getElementById('next-btn');
-                nextBtn.style.display = 'inline-block';
-                nextBtn.textContent = currentQ < questions.length - 1 ? 'שאלה הבאה ←' : 'סיום וצפה בחישובים ←';
+                nextBtn.style.display = 'inline-flex';
+                nextBtn.innerHTML = currentQ < questions.length - 1 ? 
+                    '<span>שאלה הבאה</span><i class="fas fa-arrow-left text-sm"></i>' : 
+                    '<span>סיום וצפה בחישובים</span><i class="fas fa-arrow-left text-sm"></i>';
                 document.getElementById('hint-btn').style.display = 'none';
             }
         }
@@ -1172,21 +2325,40 @@
         document.getElementById('results-panel').classList.add('visible');
         const pct = Math.round((score / questions.length) * 100);
         const circle = document.getElementById('score-circle');
-        let color, emoji;
-        if (pct >= 85) { color = '#16a34a'; emoji = '🏆'; }
-        else if (pct >= 57) { color = '#d97706'; emoji = '💪'; }
-        else { color = '#dc2626'; emoji = '📚'; }
-        circle.style.background = `${color}18`;
-        circle.style.border = `3px solid ${color}`;
-        circle.innerHTML = `<span style="font-size:1.6rem;">${emoji}</span><span style="font-size:1.1rem;font-weight:800;color:${color};">${score}/${questions.length}</span>`;
-        const msgs = ['המשיכו לתרגל — הנושא מצריך עוד תרגול 💪','ביצוע טוב! כמה עקרונות עדיין צריכים חיזוק.','מצוין! שלטתם היטב בחומר הרכוש הקבוע! 🎉'];
-        document.getElementById('score-msg').textContent = pct >= 85 ? msgs[2] : pct >= 57 ? msgs[1] : msgs[0];
+        let color, emoji, msg;
+        
+        if (pct >= 85) { 
+            color = '#16a34a'; 
+            emoji = '🏆'; 
+            msg = 'מצוין! שלטתם היטב בחומר הרכוש הקבוע! 🎉';
+        }
+        else if (pct >= 57) { 
+            color = '#d97706'; 
+            emoji = '💪'; 
+            msg = 'ביצוע טוב! כמה עקרונות עדיין צריכים חיזוק.';
+        }
+        else { 
+            color = '#dc2626'; 
+            emoji = '📚'; 
+            msg = 'המשיכו לתרגל — הנושא מצריך עוד תרגול 💪';
+        }
+        
+        circle.style.background = `linear-gradient(145deg, ${color}18, ${color}08)`;
+        circle.style.borderColor = color;
+        circle.innerHTML = `<span class="text-2xl">${emoji}</span><span class="text-xl font-extrabold mt-1" style="color:${color}">${score}/${questions.length}</span>`;
+        
+        document.getElementById('score-msg').textContent = msg;
+        
         let firstTry = 0, secondTry = 0;
-        questionAttempts.forEach(a => { if (a === 1) firstTry++; else if (a === 2) secondTry++; });
+        questionAttempts.forEach(a => { 
+            if (a === 1) firstTry++; 
+            else if (a === 2) secondTry++; 
+        });
+        
         document.getElementById('summary-grid').innerHTML = `
             <div class="summary-item">✅ נכון בנסיון ראשון<span>${firstTry}</span></div>
             <div class="summary-item">🔄 נכון בנסיון שני<span>${secondTry}</span></div>
-            <div class="summary-item">📊 סה"כ ניקוד<span>${score} / ${questions.length}</span></div>
+            <div class="summary-item">📊 סה"כ ניקוד<span>${score.toFixed(1)} / ${questions.length}</span></div>
             <div class="summary-item">🎯 אחוז הצלחה<span>${pct}%</span></div>`;
         document.getElementById('progress-fill').style.width = '100%';
         document.getElementById('progress-label').textContent = 'הסתיים ✓';
@@ -1195,9 +2367,27 @@
     function toggleHint() {
         hintVisible = !hintVisible;
         document.getElementById('hint-box').classList.toggle('visible', hintVisible);
+        const btn = document.getElementById('hint-btn');
+        if (hintVisible) {
+            btn.classList.add('scale-95');
+            setTimeout(() => btn.classList.remove('scale-95'), 150);
+        }
     }
-    document.getElementById('quiz-overlay').addEventListener('click', function(e) { if (e.target === this) closeQuiz(); });
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && document.getElementById('quiz-overlay').classList.contains('open')) closeQuiz(); });
+    
+    document.getElementById('quiz-overlay').addEventListener('click', function(e) { 
+        if (e.target === this) closeQuiz(); 
+    });
+    
+    document.addEventListener('keydown', function(e) { 
+        if (e.key === 'Escape' && document.getElementById('quiz-overlay').classList.contains('open')) {
+            closeQuiz();
+        }
+    });
+    
+    window.addEventListener('beforeunload', () => {
+        document.body.style.overflow = '';
+    });
     </script>
 </body>
 </html>
+
